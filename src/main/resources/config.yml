@@ -1,4 +1,31 @@
 
+#Placeholders:
+#%minplayer%
+#%waitingplayers%
+#%arenaname%
+#%neededplayers%
+#%aliveplayers%
+scoreboards:
+  titles: "Pillars"
+  lobby:
+    - ""
+    - "<green>Players: <white>%pillars_arenaname%"
+    - "<green>Arenas: <white>5"
+    - "<aqua>Kills: <white>0"
+    - ""
+  waiting:
+    - ""
+    - "<green>Arena: <white>%pillars_arenaname%"
+    - "<green>Needed: <white>%pillars_waitingplayers%/%pillars_minplayers%"
+    - "<aqua>State: <white>Waiting..."
+    - ""
+  in-game:
+    - ""
+    - "<green>Arena: <white>${arena.name}"
+    - "<aqua>Alive: <white>$"
+    - "<yellow>Kills: <white>0"
+    - ""
+
 spawn:
   world: "world"
   x: 1
@@ -10,31 +37,28 @@ spawn:
 Arenas:
   bella: #Nome della arena
     min-players: 1
+    world: "world"
     #Il massimo sono il numero di spawns
     spawns:
       1:
-        world: "world"
         x: 1
         y: 1
         z: 1
         yaw: 1
         pitch: 1
       2:
-        world: "world"
         x: 1
         y: 1
         z: 1
         yaw: 1
         pitch: 1
       3:
-        world: "world"
         x: 1
         y: 1
         z: 1
         yaw: 1
         pitch: 1
       4:
-        world: "world"
         x: 1
         y: 1
         z: 1
@@ -42,31 +66,28 @@ Arenas:
         pitch: 1
   brutta:
     min-players: 2
+    world: "world"
     #Il massimo sono il numero di spawns
     spawns:
       1:
-        world: "world"
         x: 1
         y: 1
         z: 1
         yaw: 1
         pitch: 1
       2:
-        world: "world"
         x: 1
         y: 1
         z: 1
         yaw: 1
         pitch: 1
       3:
-        world: "world"
         x: 1
         y: 1
         z: 1
         yaw: 1
         pitch: 1
       4:
-        world: "world"
         x: 1
         y: 1
         z: 1

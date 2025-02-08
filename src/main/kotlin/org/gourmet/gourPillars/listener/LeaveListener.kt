@@ -21,7 +21,7 @@ class LeaveListener : Listener {
         arena.removePlayer(player)
         if(arena.gameState == State.INGAME){
             gameRunnable.playerEliminated(player)
-            gameRunnable.alivePlayer.forEach{player ->
+            gameRunnable.alivePlayer.forEach{(player, _)->
                 player.sendMessage("${player.name} e' uscito dal gioco")
             }
         }

@@ -10,5 +10,6 @@ class JoinListener : Listener{
     @EventHandler
     fun joinEvent(event: PlayerJoinEvent){
         GourPillars.spawnManager.teleportPlayerToSpawn(event.player)
+        GourPillars.lobbyScoreboardManager.setScoreboard(event.player)
     }
 }
