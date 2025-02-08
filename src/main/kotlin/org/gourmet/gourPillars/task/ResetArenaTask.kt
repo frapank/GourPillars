@@ -16,14 +16,14 @@ class ResetArenaTask(val arena: Arena) : BukkitRunnable(){
     override fun run() {
         val arenaManager = GourPillars.arenaManager
         val arenaName = arena.name
-        zipManager.restoreBackup("arena")
+        val worldName = GourPillars.instance.config.getString("Arenas.${arena.name}.world").toString()
+        zipManager.restoreBackup(worldName)
         object : BukkitRunnable(){
             override fun run(){
-
                 arenaManager.onlineArenas.forEach{ (name, arena) ->
                     if(name == arenaName){
                         arena.spawnMap.forEach{(location, boolean) ->
-                            location.world = Bukkit.getWorld(name)
+                            location.world = Bukkit.getWorld(worldName)
                         }
                     }
                 }
@@ -32,12 +32,4 @@ class ResetArenaTask(val arena: Arena) : BukkitRunnable(){
         }.runTaskLater(GourPillars.instance, 100L)
     }
 
-    fun clearEntities(world: World?) {
-        if(world == null) return
-        for (entity in world.entities) {
-            if (entity !is Player) {
-                entity.remove()
-            }
-        }
-    }
 }

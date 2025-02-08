@@ -5,7 +5,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.arena.State
-import org.gourmet.gourPillars.managers.toMini
+import org.gourmet.gourPillars.managers.arena.toMini
 
 class BeakBlockListener : Listener{
 

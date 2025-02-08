@@ -31,9 +31,8 @@ class ArenaManager {
         return null
     }
 
-
     private fun loadArenas() {
-        val config = plugin.config
+        val config = GourPillars.instance.config
         val arenasSection = config.getConfigurationSection("Arenas") ?: return
 
         onlineArenas.clear()
@@ -42,19 +41,17 @@ class ArenaManager {
         for (arenaName in arenasSection.getKeys(false)) {
             val arenaSection = arenasSection.getConfigurationSection(arenaName) ?: continue
             val minPlayers = arenaSection.getInt("min-players")
-            val spawnsSection = arenaSection.getConfigurationSection("spawns") ?: continue
+            val worldName = arenaSection.getString("world") ?: continue
+            val world = Bukkit.getWorld(worldName)
+            if (world == null) {
+                Bukkit.getLogger().warning("[ArenaManager] Mondo non trovato: $worldName")
+                continue
+            }
 
+            val spawnsSection = arenaSection.getConfigurationSection("spawns") ?: continue
             val spawnsList = mutableMapOf<Location, Player?>()
             for (spawnKey in spawnsSection.getKeys(false)) {
                 val spawn = spawnsSection.getConfigurationSection(spawnKey) ?: continue
-                val world = Bukkit.getWorld(arenaName ?: continue) //?: continue
-                if (world == null) {
-                    Bukkit.getLogger().warning("[ArenaManager] Mondo non trovato: ${spawn.getString("world")}")
-                    Bukkit.getWorlds().forEach{world ->
-                        Bukkit.getLogger().warning("  --  ${world.name}")
-                    }
-                    continue
-                }
                 val x = spawn.getDouble("x")
                 val y = spawn.getDouble("y") + 2
                 val z = spawn.getDouble("z")
@@ -72,4 +69,46 @@ class ArenaManager {
 
         Bukkit.getLogger().info("[ArenaManager] Caricamento delle arene completato. ${onlineArenas.size} arene caricate.")
     }
+
+
+    //private fun loadArenas() {
+    //    val config = plugin.config
+    //    val arenasSection = config.getConfigurationSection("Arenas") ?: return
+    //
+    //    onlineArenas.clear()
+    //    Bukkit.getLogger().info("[ArenaManager] Inizio caricamento delle arene...")
+    //
+    //    for (arenaName in arenasSection.getKeys(false)) {
+    //        val arenaSection = arenasSection.getConfigurationSection(arenaName) ?: continue
+    //        val minPlayers = arenaSection.getInt("min-players")
+    //        val spawnsSection = arenaSection.getConfigurationSection("spawns") ?: continue
+    //
+    //        val spawnsList = mutableMapOf<Location, Player?>()
+    //        for (spawnKey in spawnsSection.getKeys(false)) {
+    //            val spawn = spawnsSection.getConfigurationSection(spawnKey) ?: continue
+    //            val world = Bukkit.getWorld(arenaName ?: continue) //?: continue
+    //            if (world == null) {
+    //                Bukkit.getLogger().warning("[ArenaManager] Mondo non trovato: ${spawn.getString("world")}")
+    //                Bukkit.getWorlds().forEach{world ->
+    //                    Bukkit.getLogger().warning("  --  ${world.name}")
+    //                }
+    //                continue
+    //            }
+    //            val x = spawn.getDouble("x")
+    //            val y = spawn.getDouble("y") + 2
+    //            val z = spawn.getDouble("z")
+    //            val yaw = spawn.getDouble("yaw").toFloat()
+    //            val pitch = spawn.getDouble("pitch").toFloat()
+    //            spawnsList[Location(world, x, y, z, yaw, pitch)] = null
+    //            Bukkit.getLogger().info("[ArenaManager] Spawn aggiunto per arena $arenaName: $world ($x, $y, $z, $yaw, $pitch)")
+    //        }
+    //
+    //        val maxPlayers = spawnsList.size
+    //        val arena = Arena(spawnsList, maxPlayers, minPlayers, arenaName)
+    //        onlineArenas[arenaName] = arena
+    //        Bukkit.getLogger().info("[ArenaManager] Arena caricata: $arenaName con $maxPlayers spawn e minimo $minPlayers giocatori.")
+    //    }
+    //
+    //    Bukkit.getLogger().info("[ArenaManager] Caricamento delle arene completato. ${onlineArenas.size} arene caricate.")
+    //}
 }

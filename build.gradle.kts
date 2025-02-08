@@ -56,4 +56,5 @@ bukkit {
     version = getVersion().toString()
     author = "Gourmet"
     depend = listOf("Multiverse-Core")
+    softDepend = listOf("PlaceholderAPI")
 }

@@ -1,5 +1,4 @@
 package org.gourmet.gourPillars.managers
-
 import org.bukkit.Bukkit
 import org.bukkit.WorldCreator
 import org.bukkit.scheduler.BukkitRunnable
@@ -14,11 +13,11 @@ import java.util.zip.ZipOutputStream
 
 class ZipManager {
 
-    private val dataFolder = GourPillars.instance.dataFolder
+    private val backupFolder = File(GourPillars.instance.dataFolder, "backups").apply { mkdirs() }
 
     fun restoreBackup(worldName: String) {
-        val backupFile = File(dataFolder, "$worldName-backup.zip")
-        val worldFolder = File(worldName)
+        val backupFile = File(backupFolder, "$worldName-backup.zip")
+        val worldFolder = File(Bukkit.getWorldContainer(), worldName)
 
         if (!backupFile.exists()) {
             Bukkit.getLogger().warning("Nessun backup trovato per $worldName!")
@@ -31,7 +30,6 @@ class ZipManager {
         }
 
         worldFolder.deleteRecursively()
-
         Thread.sleep(1000)
 
         ZipInputStream(FileInputStream(backupFile)).use { zipIn ->
@@ -49,11 +47,10 @@ class ZipManager {
             }
         }
 
-
         File(worldFolder, "session.lock").delete()
 
-        object : BukkitRunnable(){
-            override fun run(){
+        object : BukkitRunnable() {
+            override fun run() {
                 val wc = WorldCreator(worldName)
                 val newWorld = Bukkit.createWorld(wc)
                 val spawn = newWorld?.spawnLocation
@@ -69,21 +66,20 @@ class ZipManager {
                 Bukkit.getLogger().info("Backup di $worldName caricato!")
             }
         }.runTaskLater(GourPillars.instance, 80L)
+
         if (!File(worldFolder, "level.dat").exists()) {
             Bukkit.getLogger().warning("Attenzione: level.dat mancante! Il mondo potrebbe non caricarsi correttamente.")
         }
-
     }
 
-
     fun saveBackup(worldName: String) {
-        val worldFolder = File(worldName)
+        val worldFolder = File(Bukkit.getWorldContainer(), worldName)
         if (!worldFolder.exists()) {
             Bukkit.getLogger().warning("Il mondo $worldName non esiste!")
             return
         }
 
-        val backupFile = File(dataFolder, "$worldName-backup.zip")
+        val backupFile = File(backupFolder, "$worldName-backup.zip")
         if (backupFile.exists()) backupFile.delete()
 
         ZipOutputStream(FileOutputStream(backupFile)).use { zipOut ->
@@ -100,5 +96,4 @@ class ZipManager {
 
         Bukkit.getLogger().info("Backup di $worldName salvato in ${backupFile.absolutePath}")
     }
-
 }

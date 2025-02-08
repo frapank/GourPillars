@@ -1,5 +1,6 @@
 package org.gourmet.gourPillars.listener
 
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -16,7 +17,8 @@ class DeathListener : Listener {
 
     @EventHandler
     fun onDeath(event: PlayerDeathEvent){
-        event.deathMessage(null)
+        Bukkit.getLogger().info("${event.deathMessage()}")
+
         val player: Player = event.player
         val arena: Arena = arenaManager.getArenaByPlayer(player) ?: run {
             GourPillars.spawnManager.teleportPlayerToSpawn(player)
@@ -24,6 +26,10 @@ class DeathListener : Listener {
         }
         val gameRunnable: GameTask = arena.gameTask
         if(arena.gameState != State.INGAME) return
-        gameRunnable.playerEliminated(player)
+        if(player.killer != null && player.killer is Player ){
+            gameRunnable.playerEliminated(player, player.killer!!)
+        } else {
+            gameRunnable.playerEliminated(player)
+        }
     }
 }
