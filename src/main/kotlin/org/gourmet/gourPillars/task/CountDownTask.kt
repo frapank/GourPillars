@@ -7,22 +7,24 @@ import org.gourmet.gourPillars.managers.arena.State
 
 class CountDownTask(val arena: Arena) : BukkitRunnable(){
 
-    private var counter = 0
+    private var counter = 10
 
     override fun run() {
 
                 if(arena.waitingPlayer.size < arena.minPlayer){
-                    arena.sendMessageToPlayerInGame("<red>E' uscito un player, mancano ${arena.minPlayer - arena.waitingPlayer.size} player")
                     arena.gameState = State.WAITING
-                    counter = 0
+                    counter = 10
                     cancel()
                     return
                 }
-                if(counter >= 5){
-                    arena.sendTitleToPlayerInGame("&aPartita cominciata!", "")
+                if(counter <= 0){
+                    arena.sendTitleToPlayerInGame("&7Uccidi i tuoi avversari", "&8Ma non cadere...")
+                    arena.waitingPlayer.forEach { player ->
+                        player.playSound(player.location, Sound.ENTITY_WITHER_SPAWN, 0.8f, 2.0f)
+                    }
                     arena.gameState = State.INGAME
                     arena.gameTask.run()
-                    counter = 0
+                    counter = 10
                     cancel()
                     return
                 }
@@ -34,12 +36,12 @@ class CountDownTask(val arena: Arena) : BukkitRunnable(){
                     player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_PLING, volume, pitch)
                 }
 
-                counter++
                 val countPrefix: String = when(counter){
-                    1,2 -> "&a"
-                    3 -> "&e"
-                    else -> "&c"
+                    1,2 -> "&c"
+                    3,4,5 -> "&e"
+                    else -> "&a"
                 }
                 arena.sendTitleToPlayerInGame("$countPrefix $counter", "")
+        counter--
     }
 }
