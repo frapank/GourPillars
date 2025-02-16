@@ -7,18 +7,21 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.arena.State
 import org.gourmet.gourPillars.managers.arena.toMini
 
-class BeakBlockListener : Listener{
+class BlockBreakListener : Listener{
 
     private val arenaManager = GourPillars.arenaManager
+    private val prefix = "<bold><aqua>Game </bold><gray>|"
 
     @EventHandler
     fun breakListener(event: BlockBreakEvent){
         val player = event.player
         val arena = arenaManager.getArenaByPlayer(player) ?: return
+
         if (arena.gameState != State.INGAME){
             event.isCancelled = true
-            player.sendMessage("<red>Non puoi rompere i blocchi".toMini())
+            player.sendMessage("$prefix <red>Non puoi rompere i blocchi".toMini())
             return
         }
+
     }
 }

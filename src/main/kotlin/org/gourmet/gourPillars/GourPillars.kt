@@ -1,25 +1,29 @@
 package org.gourmet.gourPillars
 
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
-import org.gourmet.gourPillars.commands.EditCMD
-import org.gourmet.gourPillars.commands.JoinerCMD
-import org.gourmet.gourPillars.commands.TestCMD
+import org.gourmet.gourPillars.commands.*
+import org.gourmet.gourPillars.data.JsonManager
 import org.gourmet.gourPillars.external.PlaceHolderManager
 import org.gourmet.gourPillars.listener.*
+import org.gourmet.gourPillars.listener.BlockBreakListener
+import org.gourmet.gourPillars.listener.ClickItemEvent
 import org.gourmet.gourPillars.managers.ArenaManager
-import org.gourmet.gourPillars.managers.GameScoreboardManager
 import org.gourmet.gourPillars.managers.LobbyScoreboardManager
+import org.gourmet.gourPillars.managers.PartyManager
 import org.gourmet.gourPillars.managers.SpawnManager
+import org.gourmet.gourPillars.task.ShowPlayerTask
 import revxrsal.commands.bukkit.BukkitLamp
 
 class GourPillars : JavaPlugin() {
+
 
     companion object{
         lateinit var instance: GourPillars
         lateinit var arenaManager: ArenaManager
         lateinit var spawnManager: SpawnManager
+        lateinit var partyManager: PartyManager
+        lateinit var jsonManager: JsonManager
         lateinit var lobbyScoreboardManager: LobbyScoreboardManager
         var isEditing = false
     }
@@ -27,20 +31,30 @@ class GourPillars : JavaPlugin() {
     override fun onEnable() {
         saveDefaultConfig()
         instance = this
+        jsonManager = JsonManager()
+        partyManager = PartyManager()
         spawnManager = SpawnManager()
+        ShowPlayerTask().runTaskTimer(this, 0L, 20L)
 
 
         arenaManager = ArenaManager()
         Bukkit.getPluginManager().registerEvents(DeathListener(), this)
         Bukkit.getPluginManager().registerEvents(JoinListener(), this)
-        Bukkit.getPluginManager().registerEvents(BeakBlockListener(), this)
+        Bukkit.getPluginManager().registerEvents(BlockBreakListener(), this)
         Bukkit.getPluginManager().registerEvents(LeaveListener(), this)
-        Bukkit.getPluginManager().registerEvents(FallDeathListener(), this)
+        Bukkit.getPluginManager().registerEvents(FallListener(), this)
+        Bukkit.getPluginManager().registerEvents(ChatListener(), this)
+        Bukkit.getPluginManager().registerEvents(PlaceBlockListener(), this)
+        Bukkit.getPluginManager().registerEvents(LevelListener(), this)
+        Bukkit.getPluginManager().registerEvents(ClickItemEvent(), this)
+        Bukkit.getPluginManager().registerEvents(KnockBackEvent(), this)
         val handler = BukkitLamp.builder(this).build()
         handler.register(
             JoinerCMD,
             TestCMD,
-            EditCMD
+            PartyCMD,
+            EditCMD,
+            StatsCMD
         )
 
         lobbyScoreboardManager = LobbyScoreboardManager()
@@ -57,11 +71,10 @@ class GourPillars : JavaPlugin() {
         PlaceHolderManager().register()
     }
 
+    // Lista
     /*
-        Estetica codice
-        Gestione eliminazioni fix
-        Letti dormire fix
-        Blocchi non validi fix
+        - una
+        - due
      */
 
 }

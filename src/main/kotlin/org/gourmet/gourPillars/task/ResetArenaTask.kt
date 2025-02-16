@@ -22,14 +22,16 @@ class ResetArenaTask(val arena: Arena) : BukkitRunnable(){
             override fun run(){
                 arenaManager.onlineArenas.forEach{ (name, arena) ->
                     if(name == arenaName){
-                        arena.spawnMap.forEach{(location, boolean) ->
+                        arena.spawnMap.forEach{(location, _) ->
                             location.world = Bukkit.getWorld(worldName)
                         }
+                        arena.spawnMainLocation.world = Bukkit.getWorld(worldName)
                     }
                 }
                 arena.gameState = State.WAITING
             }
         }.runTaskLater(GourPillars.instance, 100L)
+        GourPillars.arenaManager.shuffleArenas()
     }
 
 }

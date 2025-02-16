@@ -11,7 +11,7 @@ class SpawnManager {
     companion object{
         var spawn: Location? = null
     }
-    val config = GourPillars.instance.config
+    private val config = GourPillars.instance.config
 
     init{
         spawn = loadSpawn()

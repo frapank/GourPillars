@@ -36,37 +36,17 @@ spawn:
 
 Arenas:
   bella: #Nome della arena
+    max-height: 200
+    min-height: 80
     min-players: 1
     world: "world"
-    #Il massimo sono il numero di spawns
-    spawns:
-      1:
-        x: 1
-        y: 1
-        z: 1
-        yaw: 1
-        pitch: 1
-      2:
-        x: 1
-        y: 1
-        z: 1
-        yaw: 1
-        pitch: 1
-      3:
-        x: 1
-        y: 1
-        z: 1
-        yaw: 1
-        pitch: 1
-      4:
-        x: 1
-        y: 1
-        z: 1
-        yaw: 1
-        pitch: 1
-  brutta:
-    min-players: 2
-    world: "world"
+    slow-falling-time: 1
+    main-spawn:
+      x: 0
+      y: 0
+      z: 0
+      yaw: 0
+      pitch: 0
     #Il massimo sono il numero di spawns
     spawns:
       1:

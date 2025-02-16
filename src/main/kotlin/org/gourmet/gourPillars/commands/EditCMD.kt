@@ -1,6 +1,7 @@
 package org.gourmet.gourPillars.commands
 
 import org.bukkit.Bukkit
+import org.bukkit.GameRule
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
@@ -10,14 +11,14 @@ import revxrsal.commands.annotation.Command
 import revxrsal.commands.annotation.Subcommand
 import revxrsal.commands.bukkit.annotation.CommandPermission
 
-data class ArenaEdit(val editor: Player, var name: String?, var minPlayers: Int?, var locations: MutableMap<Int, Location>)
+data class ArenaEdit(val editor: Player, var name: String?, var minPlayers: Int?, var maxHeight: Int?, var minHeight: Int?, var slowFallingTime: Int?, var deathSpawn: Location?, var locations: MutableMap<Int, Location>)
 
 @Command("edit")
 @CommandPermission("gpillars.admim")
 object EditCMD {
 
     private val arenaManager = GourPillars.arenaManager
-    val editingPlayers: MutableMap<Player, ArenaEdit> = mutableMapOf()
+    private val editingPlayers: MutableMap<Player, ArenaEdit> = mutableMapOf()
     private val zipManager = ZipManager()
     private var isEditing = GourPillars.isEditing
 
@@ -28,7 +29,7 @@ object EditCMD {
             return
         }
 
-        editingPlayers[player] = ArenaEdit(player, null, null, mutableMapOf())
+        editingPlayers[player] = ArenaEdit(player, null, null, null, null, null, null, mutableMapOf())
         isEditing = true
         player.sendMessage("<green>Ora sti editando".toMini())
     }
@@ -53,13 +54,39 @@ object EditCMD {
             player.sendMessage("<red>Devi impostare il min-player!".toMini())
             return
         }
+        if(arenaEdit.maxHeight == null){
+            player.sendMessage("<red>Devi impostare il max-height!".toMini())
+        }
+        if(arenaEdit.minHeight == null){
+            player.sendMessage("<red>Devi impostare il min-height!".toMini())
+        }
+        if(arenaEdit.deathSpawn == null){
+            player.sendMessage("<red>Devi impostare il dath spawn!".toMini())
+        }
 
         val config = GourPillars.instance.config
         val arenaPath = "Arenas.$name"
 
-        val worldName = locations.values.first().world.name
+        val world = locations.values.first().world
+        val worldName = world.name
+
+        world.let{
+            it.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false)
+            it.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
+            it.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false)
+        }
+
         config.set("$arenaPath.world", worldName)
         config.set("$arenaPath.min-players", arenaEdit.minPlayers)
+        config.set("$arenaPath.max-height", arenaEdit.maxHeight)
+        config.set("$arenaPath.min-height", arenaEdit.minHeight)
+        config.set("$arenaPath.slow-falling-time", arenaEdit.slowFallingTime)
+
+        config.set("$arenaPath.main-spawn.x", arenaEdit.deathSpawn?.x)
+        config.set("$arenaPath.main-spawn.y", arenaEdit.deathSpawn?.y)
+        config.set("$arenaPath.main-spawn.z", arenaEdit.deathSpawn?.z)
+        config.set("$arenaPath.main-spawn.yaw", arenaEdit.deathSpawn?.yaw)
+        config.set("$arenaPath.main-spawn.pitch", arenaEdit.deathSpawn?.pitch)
 
         locations.forEach { (index, location) ->
             config.set("$arenaPath.spawns.$index.x", location.x)
@@ -75,6 +102,29 @@ object EditCMD {
         zipManager.saveBackup(worldName)
     }
 
+    @Subcommand("setMaxHeight")
+    fun setMaxHeight(player: Player){
+        editingPlayers[player]?.maxHeight = player.location.y.toInt()
+        player.sendMessage("<green>Altezza impostata a ${player.location.y.toInt()}".toMini())
+    }
+
+    @Subcommand("setDeathSpawn")
+    fun setDeathSpawn(player: Player){
+        editingPlayers[player]?.deathSpawn = player.location
+        player.sendMessage("<green>Spawn dei morti impostato!".toMini())
+    }
+
+    @Subcommand("setFallingTime <number>")
+    fun setFallingTime(player: Player, number: Int){
+        editingPlayers[player]?.slowFallingTime = number
+        player.sendMessage("<green>Altezza impostata number".toMini())
+    }
+
+    @Subcommand("setMinHeight")
+    fun setMinHeight(player: Player){
+        editingPlayers[player]?.minHeight = player.location.y.toInt()
+        player.sendMessage("<green>Altezza impostata a ${player.location.y.toInt()}".toMini())
+    }
 
     @Subcommand("stop")
     fun stopEditing(player: Player){
@@ -82,19 +132,22 @@ object EditCMD {
 
         editingPlayers.remove(player)
         isEditing = false
+        player.sendMessage("<green>Non stai piu' editando".toMini())
     }
 
     @Subcommand("name <name>")
-    fun setSpawn(player: Player, name: String){
+    fun setName(player: Player, name: String){
         if(!checkIfEditing(player)) return
 
         editingPlayers[player]?.name = name
+        player.sendMessage("<green>Nome impostato a $name".toMini())
     }
     @Subcommand("minplayers <min>")
     fun setMinPlayers(player: Player, min: Int){
         if(!checkIfEditing(player)) return
 
         editingPlayers[player]?.minPlayers = min
+        player.sendMessage("<green>Player minimi impostati a $min".toMini())
     }
 
     @Subcommand("spawn <number>")
@@ -117,7 +170,7 @@ object EditCMD {
         }
 
         locationsEditor?.set(number, spawnLocation)
-        player.sendMessage("$number aggiunto con successo")
+        player.sendMessage("<green>$number aggiunto con successo".toMini())
     }
 
     @Subcommand("check")
@@ -127,14 +180,14 @@ object EditCMD {
         val editorName = player.name
         val name = editingPlayers[player]?.name ?: "Non settato"
         val locations = editingPlayers[player]?.locations
-        player.sendMessage("<yellow>-----------------------------")
+        player.sendMessage("<yellow>-----------------------------".toMini())
         player.sendMessage("<yellow>Editor <green>-> $editorName".toMini())
         player.sendMessage("<yellow>Name <green>-> $name".toMini())
         player.sendMessage("Arenas:".toMini())
         locations?.forEach { (index, location) ->
             player.sendMessage("<yellow>$index <green>-> ${location.world.name}, ${location.x.toInt()}, ${location.y.toInt()}, ${location.z.toInt()}".toMini())
         }
-        player.sendMessage("<yellow>-----------------------------")
+        player.sendMessage("<yellow>-----------------------------".toMini())
     }
 
     private fun checkIfEditing(player: Player): Boolean{

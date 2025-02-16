@@ -4,6 +4,7 @@ import me.clip.placeholderapi.PlaceholderAPI
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.scoreboard.DisplaySlot
@@ -48,22 +49,25 @@ class GameScoreboardManager(private val arena: Arena) {
     }
 
     private fun setLines(player: Player, objective: Objective, lines: List<String>) {
+        val scoreboard = objective.scoreboard
         var lineNumber = lines.size
+
         for (line in lines) {
             val parsedLine = PlaceholderAPI.setPlaceholders(player, line)
             val componentText: Component = miniMessage.deserialize(parsedLine)
 
-            val teamName = "line$lineNumber"
-            val team = objective.scoreboard?.getTeam(teamName) ?: objective.scoreboard?.registerNewTeam(teamName)
+            val entry = ChatColor.COLOR_CHAR.toString() + lineNumber
+
+            val teamName = "line_$lineNumber"
+            val team = scoreboard?.getTeam(teamName) ?: scoreboard?.registerNewTeam(teamName)
+
             team?.prefix(componentText)
-            team?.addEntry("§$lineNumber")
-            objective.getScore("§$lineNumber").score = lineNumber
+            team?.addEntry(entry)
+
+            objective.getScore(entry).score = lineNumber
+
             lineNumber--
         }
     }
 
-    fun removeScoreboard(player: Player) {
-        player.scoreboard = Bukkit.getScoreboardManager().newScoreboard
-        scoreboards.remove(player)
-    }
 }
