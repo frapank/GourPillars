@@ -9,7 +9,7 @@ import org.gourmet.gourPillars.managers.ArenaManager
 import org.gourmet.gourPillars.task.GameTask
 import org.gourmet.gourPillars.managers.arena.Arena
 import org.gourmet.gourPillars.managers.arena.State
-import org.gourmet.gourPillars.managers.arena.toMini
+import org.gourmet.gourPillars.other.toMini
 
 class LeaveListener : Listener {
 

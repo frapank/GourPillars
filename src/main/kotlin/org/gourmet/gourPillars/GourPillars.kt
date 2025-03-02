@@ -12,6 +12,7 @@ import org.gourmet.gourPillars.managers.ArenaManager
 import org.gourmet.gourPillars.managers.LobbyScoreboardManager
 import org.gourmet.gourPillars.managers.PartyManager
 import org.gourmet.gourPillars.managers.SpawnManager
+import org.gourmet.gourPillars.other.messages.LanguageManager
 import org.gourmet.gourPillars.task.ShowPlayerTask
 import revxrsal.commands.bukkit.BukkitLamp
 
@@ -25,12 +26,16 @@ class GourPillars : JavaPlugin() {
         lateinit var partyManager: PartyManager
         lateinit var jsonManager: JsonManager
         lateinit var lobbyScoreboardManager: LobbyScoreboardManager
+        lateinit var languageManager: LanguageManager
         var isEditing = false
     }
 
     override fun onEnable() {
-        saveDefaultConfig()
         instance = this
+        saveDefaultConfig()
+        languageManager = LanguageManager()
+        languageManager.saveDefaultLanguageFile()
+
         jsonManager = JsonManager()
         partyManager = PartyManager()
         spawnManager = SpawnManager()

@@ -12,6 +12,9 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.data.PlayerData
 import org.gourmet.gourPillars.managers.arena.*
+import org.gourmet.gourPillars.other.Utils
+import org.gourmet.gourPillars.other.messages.MessageData
+import org.gourmet.gourPillars.other.toMini
 
 
 class GameTask(private val arena: Arena, private val plugin: JavaPlugin): BukkitRunnable(){
@@ -90,9 +93,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         arena.sendTitleToPlayerInGame("&aGioco terminato!", "&e${winner?.name} &fha vinto")
         if (winner != null) {
             arena.waitingPlayer.forEach { messagePlayer ->
-                messagePlayer.sendMessage("<gray>--------------------------".toMini())
-                messagePlayer.sendMessage("<yellow>${winner.name} <green>won the game!".toMini())
-                messagePlayer.sendMessage("<gray>--------------------------".toMini())
+                messagePlayer.sendMessage(MessageData.WIN_GAME)
 
             }
         }
@@ -139,7 +140,6 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
 
                 cancel()
                 arena.resetArenaTask.run()
-                GourPillars.instance.logger.info("Iniziato il reset")
             }
         }.runTaskLater(plugin, 80L)
     }

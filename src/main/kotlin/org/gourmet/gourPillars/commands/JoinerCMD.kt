@@ -5,7 +5,7 @@ import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.arena.Arena
 import org.gourmet.gourPillars.managers.arena.State
-import org.gourmet.gourPillars.managers.arena.toMini
+import org.gourmet.gourPillars.other.toMini
 import revxrsal.commands.annotation.Command
 
 object JoinerCMD {

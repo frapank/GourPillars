@@ -1,0 +1,74 @@
+prefix:
+  game: "<bold><aqua>Game </bold><gray>| "
+  party: "<bold><green>Party <bold><gray>| "
+
+game:
+  end-game: ""
+  win-game:
+    - "<gray>--------------------------"
+    - "<yellow>{winner} <green>won the game!"
+    - "<gray>--------------------------"
+
+
+arena:
+  join: "{prefix-game}"
+  leave: "{prefix_game} <red>Sei uscito da questa arena"
+  player-needed: "{prefix_game}"
+  errors:
+    already-in-game: "{prefix_game} <red>Sei gia in questa aren"
+    arena-not-ready: "{prefix_game} <red>Arena non pronta"
+    the-game-is-full: "{prefix_game} <red>Partita piena!"
+
+  title:
+    start:
+    end:
+    countdown-other: "<green>{number}</green>"
+    countdown-5: "<yellow>{number}</yellow>"
+    countdown-4: "<yellow>{number}</yellow>"
+    countdown-3: "<yellow>{number}</yellow>"
+    countdown-2: "<red>{number}</red>"
+    countdown-1: "<red>{number}</red>"
+
+
+
+party:
+
+
+scoreboard:
+  lobby:
+    title: "<bold><red>❤ <#f6f5f4>Pillars of luck <red>❤"
+    lines:
+      - ""
+      - "<#c061cb>Players: <#f6f5f4>%pillars_playersinmatch%"
+      - "<#c061cb>Arenas: <#f6f5f4>%pillars_arenacount%"
+      - "<#c061cb>Kills: <#f6f5f4>%pillars_kills%"
+      - ""
+      - "<#62a0ea>play.frisknetwork.it"
+
+  waiting:
+    title: "<bold><red>❤ <#f6f5f4>Pillars of luck <red>❤"
+    lines:
+      - ""
+      - "<#c061cb>State"
+      - "<#f6f5f4>Waiting..."
+      - ""
+      - "<#c061cb>Players:"
+      - "<#cf6f5f4>(%pillars_waitingplayers%/%pillars_minplayers%)"
+      - ""
+      - "<#77767b>Map: %pillars_arenaname%"
+      - "<#62a0ea>play.frisknetwork.it"
+
+  playing:
+    title: "<bold><red>❤ <#f6f5f4>Pillars of luck <red>❤"
+    lines:
+      - ""
+      - "<#c061cb>Time: <#f6f5f4>%pillars_time%"
+      - "<#c061cb>Alive: <#f6f5f4>%pillars_aliveplayers%"
+      - "<#c061cb>Kills: <#f6f5f4>%pillars_ingamekills%"
+      - ""
+      - "<#77767b>Map: %pillars_arenaname%"
+      - "<#62a0ea>play.frisknetwork.it"
+
+gui:
+
+stats:

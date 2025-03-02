@@ -5,7 +5,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.arena.State
-import org.gourmet.gourPillars.managers.arena.toMini
 
 class BlockBreakListener : Listener{
 
@@ -19,7 +18,6 @@ class BlockBreakListener : Listener{
 
         if (arena.gameState != State.INGAME){
             event.isCancelled = true
-            player.sendMessage("$prefix <red>Non puoi rompere i blocchi".toMini())
             return
         }
 
