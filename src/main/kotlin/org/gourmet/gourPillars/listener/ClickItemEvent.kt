@@ -13,7 +13,7 @@ import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.guis.VoteInventory
 import org.gourmet.gourPillars.managers.arena.State
-import org.gourmet.gourPillars.managers.arena.toMini
+import org.gourmet.gourPillars.other.toMini
 
 class ClickItemEvent : Listener {
 
@@ -61,7 +61,7 @@ class ClickItemEvent : Listener {
         }
 
         if (hasItemTag(item, "knockback-event")) {
-            if (arena.knockbackVote.contains(player) || arena.armoredEvent.contains(player)) {
+            if (arena.knockbackVote.contains(player) || arena.armoredEvent.contains(player) || arena.noEventVote.contains(player)) {
                 player.sendMessage("$prefix <red>Hai gia votato un evento!".toMini())
                 return
             }
@@ -72,13 +72,23 @@ class ClickItemEvent : Listener {
         }
 
         if (hasItemTag(item, "armored-event")) {
-            if (arena.knockbackVote.contains(player) || arena.armoredEvent.contains(player)) {
+            if (arena.knockbackVote.contains(player) || arena.armoredEvent.contains(player) || arena.noEventVote.contains(player)) {
                 player.sendMessage("$prefix <red>Hai gia votato un evento!".toMini())
                 return
             }
 
             arena.armoredEvent.add(player)
             arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato l'evento <yellow><bold>armored")
+            return
+        }
+        if (hasItemTag(item, "no-event")) {
+            if (arena.knockbackVote.contains(player) || arena.armoredEvent.contains(player) || arena.noEventVote.contains(player)) {
+                player.sendMessage("$prefix <red>Hai gia votato un evento!".toMini())
+                return
+            }
+
+            arena.noEventVote.add(player)
+            arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato per una partita <yellow><bold>classica")
             return
         }
 
@@ -103,16 +113,7 @@ class ClickItemEvent : Listener {
             arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato il <yellow><bold>giorno")
             return
         }
-        if (hasItemTag(item, "no-event")) {
-            if (arena.noEventVote.contains(player)) {
-                player.sendMessage("$prefix <red>Hai gia votato un evento!".toMini())
-                return
-            }
 
-            arena.noEventVote.add(player)
-            arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato per una partita <yellow><bold>classica")
-            return
-        }
 
 
     }

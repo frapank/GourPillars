@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.managers.arena
+package org.gourmet.gourPillars.other
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage

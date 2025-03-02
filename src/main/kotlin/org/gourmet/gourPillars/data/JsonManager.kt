@@ -6,7 +6,7 @@ import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.LevelBarManager
-import org.gourmet.gourPillars.managers.arena.toMini
+import org.gourmet.gourPillars.other.toMini
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter

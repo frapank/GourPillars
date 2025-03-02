@@ -6,6 +6,9 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.GameScoreboardManager
+import org.gourmet.gourPillars.other.Utils
+import org.gourmet.gourPillars.other.messages.MessageData
+import org.gourmet.gourPillars.other.toMini
 import org.gourmet.gourPillars.task.GameTask
 import org.gourmet.gourPillars.task.ResetArenaTask
 import org.gourmet.gourPillars.task.CountDownTask
@@ -44,12 +47,12 @@ class Arena(
     /* Utils */
     fun addPlayer(player: Player){
         if(waitingPlayer.contains(player)){
-            player.sendMessage("$prefix <red>Sei gia in questa arena".toMini())
+            player.sendMessage(MessageData.ARENA_ERRORS_ALREADY_IN_GAME)
             return
         }
 
         if(gameState == State.INGAME || gameState == State.STOPPED){
-            player.sendMessage("$prefix <red>Arena non pronta".toMini())
+            player.sendMessage(MessageData.ARENA_ERRORS_ARENA_NOT_READY)
             return
         }
 
@@ -78,7 +81,7 @@ class Arena(
             }
             return
         } else {
-            player.sendMessage("$prefix <red>Partita piena!".toMini())
+            player.sendMessage(MessageData.ARENA_ERRORS_THE_GAME_IS_FULL)
             return
         }
     }
@@ -123,7 +126,7 @@ class Arena(
         nightVote.remove(player)
         waitingPlayer.remove(player)
         player.sendTitle("", "")
-        player.sendMessage("$prefix <red>Sei uscito da questa arena".toMini())
+        player.sendMessage(MessageData.ARENA_LEAVE)
         reloadWaitingScoreboard()
         if(waitingPlayer.size < minPlayer && gameState != State.INGAME){
             gameState = State.WAITING

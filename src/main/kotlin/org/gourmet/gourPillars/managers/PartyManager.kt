@@ -1,7 +1,7 @@
 package org.gourmet.gourPillars.managers
 
 import org.bukkit.entity.Player
-import org.gourmet.gourPillars.managers.arena.toMini
+import org.gourmet.gourPillars.other.toMini
 
 class PartyManager {
 
