@@ -71,7 +71,12 @@ class Arena(
             player.health = 20.0
             player.foodLevel = 20
             giveWaitingItems(player)
-            sendMessageToPlayerInGame("$prefix <white>${player.name} <yellow>e' entrato (<green>${waitingPlayer.size}<white>/<green>$maxPlayer<yellow>)")
+            //sendMessageToPlayerInGame("$prefix <white>${player.name} <yellow>e' entrato (<green>${waitingPlayer.size}<white>/<green>$maxPlayer<yellow>)")
+            sendDynamicMessageToPlayerInGame(MessageData.ARENA_JOIN,
+                "{player}" to player.name,
+                "{on}" to waitingPlayer.size.toString(),
+                "{max}" to maxPlayer.toString())
+
             for ((location, playerInSpawn) in spawnMap) {
                 if (playerInSpawn == null) {
                     Utils.setGlass(true, location)
@@ -138,7 +143,8 @@ class Arena(
         if(waitingPlayer.size < minPlayer && gameState != State.INGAME){
             gameState = State.WAITING
             val playerRequired = maxPlayer - waitingPlayer.size
-            sendMessageToPlayerInGame("$prefix <green>Mancano <yellow>$playerRequired<green> player per cominciare")
+            //sendMessageToPlayerInGame("$prefix <green>Mancano <yellow>$playerRequired<green> player per cominciare")
+            sendDynamicMessageToPlayerInGame(MessageData.ARENA_PLAYER_NEEDED, "{playerRequired}" to playerRequired.toString())
             return
         }
     }
