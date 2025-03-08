@@ -3,6 +3,7 @@
 package org.gourmet.gourPillars.other.messages
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.JoinConfiguration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
@@ -23,6 +24,7 @@ class DynamicMessage(private val rawMessage: String) {
         pairs.forEach { (k, v) -> processed = processed.replace(k, v) }
         return miniMessage.deserialize(processed)
     }
+
 }
 
 object MessageData {
@@ -100,6 +102,20 @@ object MessageData {
     lateinit var ARENA_VOTE_DAY_VOTED: DynamicMessage
     lateinit var ARENA_VOTE_ALREADY_VOTED_EVENT: DynamicMessage
     lateinit var ARENA_VOTE_ALREADY_VOTED_TIME: DynamicMessage
+
+    // Gui
+    lateinit var GUI_VOTE_TITLE: Component
+    lateinit var GUI_ITEM_FILLER_NAME: Component
+    lateinit var GUI_CLASSIC_VOTE_NAME: Component
+    lateinit var GUI_CLASSIC_VOTE_LORE: Component
+    lateinit var GUI_KNOCKBACK_VOTE_NAME: Component
+    lateinit var GUI_KNOCKBACK_VOTE_LORE: Component
+    lateinit var GUI_LAVA_VOTE_NAME: Component
+    lateinit var GUI_LAVA_VOTE_LORE: Component
+    lateinit var GUI_DAY_VOTE_NAME: Component
+    lateinit var GUI_DAY_VOTE_LORE: Component
+    lateinit var GUI_NIGHT_VOTE_NAME: Component
+    lateinit var GUI_NIGHT_VOTE_LORE: Component
 
     // Scoreboard
     lateinit var SCOREBOARD_LOBBY_TITLE: DynamicMessage
@@ -198,6 +214,20 @@ object MessageData {
         ARENA_ERRORS_THE_GAME_IS_FULL = getMessage(config, "arena.errors.the-game-is-full")
         ARENA_ERRORS_LIMIT_REACHED = getMessage(config, "arena.errors.arena.errors.")
 
+        // Gui
+        GUI_VOTE_TITLE = getMessageComponent(config, "gui.vote.title")
+        GUI_ITEM_FILLER_NAME = getMessageComponent(config, "gui.vote.item-filler-name")
+        GUI_CLASSIC_VOTE_NAME = getMessageComponent(config, "gui.vote.classic-vote-name")
+        GUI_CLASSIC_VOTE_LORE = getMessageComponent(config, "gui.vote.classic-vote-lore")
+        GUI_KNOCKBACK_VOTE_NAME = getMessageComponent(config, "gui.vote.knockback-vote-name")
+        GUI_KNOCKBACK_VOTE_LORE = getMessageComponent(config, "gui.vote.knockback-vote-lore")
+        GUI_LAVA_VOTE_NAME = getMessageComponent(config, "gui.vote.lava-vote-name")
+        GUI_LAVA_VOTE_LORE = getMessageComponent(config, "gui.vote.lava-vote-lore")
+        GUI_DAY_VOTE_NAME = getMessageComponent(config, "gui.vote.day-vote-name")
+        GUI_DAY_VOTE_LORE = getMessageComponent(config, "gui.vote.day-vote-lore")
+        GUI_NIGHT_VOTE_NAME = getMessageComponent(config, "gui.vote.night-vote-name")
+        GUI_NIGHT_VOTE_LORE = getMessageComponent(config, "gui.vote.night-vote-lore")
+
         // Scoreboard
         SCOREBOARD_LOBBY_TITLE = getMessage(config, "scoreboard.lobby.title")
         SCOREBOARD_LOBBY_LINES = getMessage(config, "scoreboard.lobby.lines")
@@ -226,6 +256,19 @@ object MessageData {
             is String -> DynamicMessage(processString(value))
             is List<*> -> DynamicMessage(processList(value))
             else -> DynamicMessage("<red>Messaggio non trovato!")
+        }
+    }
+
+    private fun getMessageComponent(config: FileConfiguration, path: String): Component {
+        return when (val value = config.get(path)) {
+            is String -> miniMessage.deserialize(processString(value))
+            is List<*> -> {
+                val components = (value as List<String>).map { miniMessage.deserialize(processString(it)) }
+                Component.text().append(components).build()
+
+            }
+
+            else -> miniMessage.deserialize("<red>Messaggio non trovato!")
         }
     }
 

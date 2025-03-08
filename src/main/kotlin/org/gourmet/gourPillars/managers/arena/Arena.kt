@@ -132,6 +132,7 @@ class Arena(
                 spawnMap[location] = null
             }
         }
+        noEventVote.remove(player)
         lavaEvent.remove(player)
         knockbackVote.remove(player)
         dayVote.remove(player)
