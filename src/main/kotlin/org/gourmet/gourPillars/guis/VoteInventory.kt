@@ -12,9 +12,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.other.messages.DynamicMessage
 import org.gourmet.gourPillars.other.messages.MessageData
-import org.gourmet.gourPillars.other.messages.MessageData.GUI_ITEM_FILLER_NAME
 import java.util.*
 
 object VoteInventory {
