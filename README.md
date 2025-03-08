@@ -1,11 +1,11 @@
-# Luck of the Pillars 🏹⛓️  
+# Pillars of Luck 🏹⛓️  
 
 ---
 
 ## 🔥 Key Features  
 - 🧱 Dynamic pillar collapse system  
 - 🎁 Random items/blocks every 2 seconds (configurable)  
-- 🏆 Player statistics tracking (kills, deaths, wins)  
+- 🏆 Player statistics tracking (kills, deaths, wins)
 - 🛠️ Dual configuration system (`config.yml` + `language.yml`)  
 - 📊 15+ Placeholders for integration with other plugins  
 - 🏰 Future-proof arena-specific configurations  
@@ -17,22 +17,25 @@
 ### PlaceholderAPI Variables  
 ``` 
 Arena Info:
-%luckofthepillars_minplayers%     - Minimum players to start
-%luckofthepillars_waitingplayers% - Players in lobby
-%luckofthepillars_arenaname%      - Current arena name
-%luckofthepillars_aliveplayers%   - Remaining players
-%luckofthepillars_time%           - Elapsed game time
+%pillars_minplayers%     - Minimum players to start
+%pillars_waitingplayers% - Players in lobby
+%pillars_arenaname%      - Current arena name
+%pillars_aliveplayers%   - Remaining players
+%pillars_time%           - Elapsed game time
+%pillars_ingamekills%    - Player kills in game
 
 Player Stats:
-%luckofthepillars_kills%          - Total kills
-%luckofthepillars_deaths%         - Total deaths
-%luckofthepillars_wins%           - Total victories
-%luckofthepillars_level%          - Player level
-%luckofthepillars_xp%             - Current XP
+%pillars_kills%          - Total kills
+%pillars_deaths%         - Total deaths
+%pillars_wins%           - Total victories
+%pillars_defeats%        - Total defeats
+%pillars_gamesplayed%    - Total games played
+%pillars_level%          - Player level
+%pillars_xp%             - Current XP
 
 Global Stats:
-%luckofthepillars_arenacount%     - Active arenas
-%luckofthepillars_playersinmatch% - Total players ingame
+%pillars_arenacount%     - Active arenas
+%pillars_playersinmatch% - Total players ingame
 ```
 
 ---
