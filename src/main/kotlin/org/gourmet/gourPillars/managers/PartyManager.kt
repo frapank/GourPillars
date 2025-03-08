@@ -1,20 +1,23 @@
 package org.gourmet.gourPillars.managers
 
 import org.bukkit.entity.Player
+import org.gourmet.gourPillars.other.messages.MessageData
+import org.gourmet.gourPillars.other.messages.sendDynamicMessage
+import org.gourmet.gourPillars.other.miniMessage
 import org.gourmet.gourPillars.other.toMini
 
 class PartyManager {
 
     //todo stringa identificativa party
-    private val prefix = "<bold><green>Party </bold><green>|"
+    //private val prefix = "<bold><green>Party </bold><green>|"
     private val parties: MutableSet<PartyData> = mutableSetOf()
 
     fun createParty(creator: Player){
         if(isInParty(creator)){
-            creator.sendMessage("$prefix <red>Sei gia in un party".toMini())
+            creator.sendDynamicMessage(MessageData.PARTY_ERRORS_USER_ALREADY_IN_PARTY)
             return
         }
-        creator.sendMessage("$prefix <yellow>Hai creato un party!".toMini())
+        creator.sendDynamicMessage(MessageData.PARTY_PARTY_CREATED)
         val newParty = PartyData(creator)
         newParty.members.add(creator)
         parties.add(newParty)
@@ -23,15 +26,13 @@ class PartyManager {
 
     fun disbandParty(partyData: PartyData) {
 
-
-
         if (partyData.partyAdmin !in partyData.members) {
-            partyData.partyAdmin.sendMessage("$prefix <red>Non sei l'owner del party!".toMini())
+            partyData.partyAdmin.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_PARTY_ADMIN)
             return
         }
 
         for (member in partyData.members) {
-            member.sendMessage("$prefix <yellow>Il party è stato sciolto".toMini())
+            member.sendDynamicMessage(MessageData.PARTY_PARTY_DISBAND)
         }
 
         partyData.members.clear()
@@ -43,25 +44,25 @@ class PartyManager {
 
     fun addMember(owner: Player, target: Player){
         val party = getPartyByPlayer(owner) ?: run {
-            owner.sendMessage("$prefix <red>Non sei in nessun party".toMini())
+            owner.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_IN_PARTY)
             return
         }
         if(isInParty(target)){
-            owner.sendMessage("$prefix <red>Questo utente e' gia in un party".toMini())
+            owner.sendDynamicMessage(MessageData.PARTY_ERRORS_USER_ALREADY_IN_PARTY)
             return
         }
         if(party.partyAdmin != owner){
-            owner.sendMessage("$prefix <red>Non sei l'admin del party".toMini())
+            owner.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_PARTY_ADMIN)
             return
         }
         if(party.members.size >= 8) {
-            owner.sendMessage("$prefix<red>Puoi invitare fino a 7 persone nel tuo party".toMini())
+            owner.sendDynamicMessage(MessageData.PARTY_ERRORS_MAX_PARTY_MEMBER)
             return
         }
         party.members.forEach { player ->
-            player.sendMessage("$prefix <white>${target.name} <yellow>e' entrato nel party!".toMini())
+            player.sendDynamicMessage(MessageData.PARTY_PLAYER_JOINED_BROADCAST, "{player}" to target.name)
         }
-        target.sendMessage("$prefix <yellow>Sei entrato nel party di <white>${owner.name}!".toMini())
+        target.sendDynamicMessage(MessageData.PARTY_PLAYER_JOINED, "{player}" to owner.name)
         party.members.add(target)
     }
 
@@ -76,19 +77,21 @@ class PartyManager {
      */
     fun kickPlayerFromParty(owner: Player, target: Player): Boolean {
         val party = getPartyByPlayer(owner) ?: run {
-            owner.sendMessage("$prefix <red>Non sei in nessun party".toMini())
+            owner.sendDynamicMessage(MessageData.PARTY_ERRORS_PLAYER_NOT_IN_PARTY)
             return false
         }
         if(party.partyAdmin != owner){
-            owner.sendMessage("$prefix<red>Non sei owner del party".toMini())
+            owner.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_PARTY_ADMIN)
             return false
         }
         if(!party.members.contains(target)){
-            owner.sendMessage("$prefix ${target.name} non e' nel party".toMini())
+            //owner.sendMessage("$prefix ${target.name} non e' nel party".toMini())
+            owner.sendDynamicMessage(MessageData.PARTY_ERRORS_TARGET_NOT_IN_PARTY, "{player}" to target.name)
             return false
         }
         party.members.forEach { player ->
-            player.sendMessage("$prefix <white>${target.name} <yellow>e' uscito dal party!".toMini())
+            //player.sendMessage("$prefix <white>${target.name} <yellow>e' uscito dal party!".toMini())
+            player.sendDynamicMessage(MessageData.PARTY_USER_LEFT_PARTY, "{player}" to target.name)
         }
         party.members.remove(target)
         return true
@@ -101,29 +104,31 @@ class PartyManager {
      */
     fun leaveParty(player: Player){
         val party = getPartyByPlayer(player) ?: run {
-            player.sendMessage("$prefix <red>Non sei in nessun party".toMini())
+            player.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_IN_PARTY)
             return
         }
         if(player == party.partyAdmin){
             if(party.members.size <= 1){
                 parties.remove(party)
-                player.sendMessage("$prefix <green>Party vuoto eliminato".toMini())
+                player.sendDynamicMessage(MessageData.PARTY_PARTY_DISBAND)
                 return
             }
             party.members.remove(player)
             val first = party.members.first()
             party.partyAdmin = first
-            first.sendMessage("$prefix <green>Sei stato promosso ad owner del party!".toMini())
+            first.sendDynamicMessage(MessageData.PARTY_PARTY_PROMOTE)
             party.members.forEach { member ->
                 if(member != first)
-                    member.sendMessage("$prefix <green>${first.name} e' il nuovo owner del party!".toMini())
+                    //member.sendMessage("$prefix <green>${first.name} e' il nuovo owner del party!".toMini())
+                    member.sendDynamicMessage(MessageData.PARTY_PARTY_PROMOTE_BROADCAST, "{player}" to first.name)
             }
         } else {
             party.members.remove(player)
             party.members.forEach { member ->
-                member.sendMessage("$prefix <red>${player.name} e' uscito dal party".toMini())
+                //member.sendMessage("$prefix <red>${player.name} e' uscito dal party".toMini())
+                member.sendDynamicMessage(MessageData.PARTY_USER_LEFT_PARTY, "{player}" to player.name)
             }
-            player.sendMessage("$prefix <green>Sei uscito dal party".toMini())
+            player.sendDynamicMessage(MessageData.PARTY_PARTY_LEAVE)
         }
 
     }
@@ -131,10 +136,11 @@ class PartyManager {
     fun promote(owner: Player, target: Player): Boolean {
         val party = getPartyByPlayer(owner) ?: return false
         party.partyAdmin = target
-        target.sendMessage("$prefix <green>Sei il nuovo owner del party!".toMini())
+        target.sendDynamicMessage(MessageData.PARTY_PARTY_PROMOTE)
         party.members.forEach { member ->
             if(member != party.partyAdmin)
-                member.sendMessage("$prefix <white>${target.name} <yellow>e' il nuovo owner del party!".toMini())
+                //member.sendMessage("$prefix <white>${target.name} <yellow>e' il nuovo owner del party!".toMini())
+                member.sendDynamicMessage(MessageData.PARTY_PARTY_PROMOTE_BROADCAST, "{player}" to target.name)
         }
         return true
     }

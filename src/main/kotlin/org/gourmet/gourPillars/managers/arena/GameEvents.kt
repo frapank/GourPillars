@@ -1,6 +1,6 @@
 package org.gourmet.gourPillars.managers.arena
 
 enum class GameEvents {
-    ARMORED,
+    LAVA,
     KNOCKBACK
 }

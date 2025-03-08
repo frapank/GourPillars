@@ -8,6 +8,7 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.arena.Arena
 import org.gourmet.gourPillars.managers.arena.State
 import org.gourmet.gourPillars.managers.ZipManager
+import org.gourmet.gourPillars.other.Region
 
 class ResetArenaTask(val arena: Arena) : BukkitRunnable(){
 
@@ -26,6 +27,7 @@ class ResetArenaTask(val arena: Arena) : BukkitRunnable(){
                             location.world = Bukkit.getWorld(worldName)
                         }
                         arena.spawnMainLocation.world = Bukkit.getWorld(worldName)
+                        arena.region.world = Bukkit.getWorld(worldName)!!
                     }
                 }
                 arena.gameState = State.WAITING

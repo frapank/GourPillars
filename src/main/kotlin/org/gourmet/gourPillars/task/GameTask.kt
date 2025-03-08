@@ -14,6 +14,7 @@ import org.gourmet.gourPillars.data.PlayerData
 import org.gourmet.gourPillars.managers.arena.*
 import org.gourmet.gourPillars.other.Utils
 import org.gourmet.gourPillars.other.messages.MessageData
+import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 import org.gourmet.gourPillars.other.toMini
 
 
@@ -24,16 +25,19 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     private var secondsPassed = 300
     private var lastPlayer: Player? = null
     private val jsonManager = GourPillars.jsonManager
+    private var lavaLevel = arena.minHeight
     private val prefix = "<bold><aqua>Game </bold><gray>|"
 
     override fun run(){
         running = true
+        lavaLevel = arena.minHeight
         alivePlayer = mutableMapOf()
         setupEvent()
         removeAllGlass()
         preparePlayer()
         setTimeByVote()
         startRandomItemTask()
+        lavaEventManager()
         object : BukkitRunnable() {
             override fun run() {
                 secondsPassed--
@@ -50,15 +54,28 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     }
 
 
-    private fun setupEvent() {
-        if (arena.knockbackVote.isEmpty() && arena.armoredEvent.isEmpty()) return
-        if (arena.knockbackVote.size == arena.armoredEvent.size) return
-        if(arena.noEventVote.size >= arena.knockbackVote.size && arena.noEventVote.size >= arena.armoredEvent.size) return
+    private fun lavaEventManager(){
+        if(arena.gameEvent != GameEvents.LAVA) return
+        object : BukkitRunnable(){
+            override fun run() {
+                if(!running) cancel()
+                arena.region.replaceYLevelWithLava(lavaLevel)
+                lavaLevel++
 
-        arena.gameEvent = if (arena.knockbackVote.size >= arena.armoredEvent.size) {
+            }
+
+        }.runTaskTimer(GourPillars.instance, 0L, 4 * 20)
+    }
+
+    private fun setupEvent() {
+        if (arena.knockbackVote.isEmpty() && arena.lavaEvent.isEmpty()) return
+        if (arena.knockbackVote.size == arena.lavaEvent.size) return
+        if(arena.noEventVote.size >= arena.knockbackVote.size && arena.noEventVote.size >= arena.lavaEvent.size) return
+
+        arena.gameEvent = if (arena.knockbackVote.size >= arena.lavaEvent.size) {
             GameEvents.KNOCKBACK
         } else {
-            GameEvents.ARMORED
+            GameEvents.LAVA
         }
     }
 
@@ -93,7 +110,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         arena.sendTitleToPlayerInGame("&aGioco terminato!", "&e${winner?.name} &fha vinto")
         if (winner != null) {
             arena.waitingPlayer.forEach { messagePlayer ->
-                messagePlayer.sendMessage(MessageData.WIN_GAME)
+                messagePlayer.sendDynamicMessage(MessageData.WIN_GAME, "{winner}" to winner.name) //TODO: Mettere la placeholder winner
 
             }
         }
@@ -101,7 +118,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         arena.nightVote.clear()
         arena.dayVote.clear()
         arena.knockbackVote.clear()
-        arena.armoredEvent.clear()
+        arena.lavaEvent.clear()
         if (winner != null) {
             winner.isInvulnerable = true
             val winnerData = jsonManager.getPlayerData(winner) ?: PlayerData(winner.name, 0, 0, 0, 0,0, 0, 0)
@@ -164,33 +181,6 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
             player.closeInventory()
             arena.scoreboardManager.setGameScoreboard(player)
         }
-        if (arena.gameEvent == GameEvents.ARMORED) {
-            alivePlayer.forEach { (playerToArmor, _) ->
-                val helmet = ItemStack(Material.LEATHER_HELMET)
-                val boots = ItemStack(Material.LEATHER_BOOTS)
-
-                val leatherMetaHelmet = helmet.itemMeta as LeatherArmorMeta
-                leatherMetaHelmet.setColor(Color.fromRGB(255, 105, 180))
-                helmet.itemMeta = leatherMetaHelmet
-
-                val leatherMetaBoots = boots.itemMeta as LeatherArmorMeta
-                leatherMetaBoots.setColor(Color.fromRGB(255, 105, 180))
-                boots.itemMeta = leatherMetaBoots
-
-                val woodenSword = ItemStack(Material.WOODEN_SWORD)
-                val swordMeta = woodenSword.itemMeta
-                swordMeta.isUnbreakable = false
-                swordMeta.setDisplayName("§6Spada Fragile")
-                woodenSword.itemMeta = swordMeta
-
-                woodenSword.durability = (Material.WOODEN_SWORD.maxDurability - 3).toShort()
-
-                playerToArmor.inventory.helmet = helmet
-                playerToArmor.inventory.boots = boots
-                playerToArmor.inventory.addItem(woodenSword)
-            }
-        }
-
     }
 
     private fun startRandomItemTask() {

@@ -11,7 +11,16 @@ import revxrsal.commands.annotation.Command
 import revxrsal.commands.annotation.Subcommand
 import revxrsal.commands.bukkit.annotation.CommandPermission
 
-data class ArenaEdit(val editor: Player, var name: String?, var minPlayers: Int?, var maxHeight: Int?, var minHeight: Int?, var slowFallingTime: Int?, var deathSpawn: Location?, var locations: MutableMap<Int, Location>)
+data class ArenaEdit(val editor: Player,
+                     var name: String?,
+                     var minPlayers: Int?,
+                     var maxHeight: Int?,
+                     var minHeight: Int?,
+                     var slowFallingTime: Int?,
+                     var deathSpawn: Location?,
+                     var regionLocationOne: Location?,
+                     var regionLocationSecond: Location?,
+                     var locations: MutableMap<Int, Location>)
 
 @Command("edit")
 @CommandPermission("gpillars.admim")
@@ -29,9 +38,9 @@ object EditCMD {
             return
         }
 
-        editingPlayers[player] = ArenaEdit(player, null, null, null, null, null, null, mutableMapOf())
+        editingPlayers[player] = ArenaEdit(player, null, null, null, null, null, null, null, null ,mutableMapOf())
         isEditing = true
-        player.sendMessage("<green>Ora sti editando".toMini())
+        player.sendMessage("<green>Ora stai editando".toMini())
     }
 
     @Subcommand("save")
@@ -63,6 +72,12 @@ object EditCMD {
         if(arenaEdit.deathSpawn == null){
             player.sendMessage("<red>Devi impostare il dath spawn!".toMini())
         }
+        if(arenaEdit.regionLocationOne == null){
+            player.sendMessage("<red>Devi impostare la prima region!".toMini())
+        }
+        if(arenaEdit.regionLocationSecond == null){
+            player.sendMessage("<red>Devi impostare la seconda region!".toMini())
+        }
 
         val config = GourPillars.instance.config
         val arenaPath = "Arenas.$name"
@@ -88,6 +103,14 @@ object EditCMD {
         config.set("$arenaPath.main-spawn.yaw", arenaEdit.deathSpawn?.yaw)
         config.set("$arenaPath.main-spawn.pitch", arenaEdit.deathSpawn?.pitch)
 
+        config.set("$arenaPath.region.loc-1.x", arenaEdit.regionLocationOne?.x)
+        config.set("$arenaPath.region.loc-1.y", arenaEdit.regionLocationOne?.y)
+        config.set("$arenaPath.region.loc-1.z", arenaEdit.regionLocationOne?.z)
+
+        config.set("$arenaPath.region.loc-2.x", arenaEdit.regionLocationSecond?.x)
+        config.set("$arenaPath.region.loc-2.y", arenaEdit.regionLocationSecond?.y)
+        config.set("$arenaPath.region.loc-2.z", arenaEdit.regionLocationSecond?.z)
+
         locations.forEach { (index, location) ->
             config.set("$arenaPath.spawns.$index.x", location.x)
             config.set("$arenaPath.spawns.$index.y", location.y)
@@ -100,6 +123,18 @@ object EditCMD {
         player.sendMessage("<green>Arena '$name' salvata con successo!".toMini())
         editingPlayers.remove(player)
         zipManager.saveBackup(worldName)
+    }
+
+    @Subcommand("setRegionOne")
+    fun setRegionOne(player: Player){
+        editingPlayers[player]?.regionLocationOne = player.location
+        player.sendMessage("".toMini())
+    }
+
+    @Subcommand("setRegionTwo")
+    fun setRegionTwo(player: Player){
+        editingPlayers[player]?.regionLocationSecond = player.location
+        player.sendMessage("".toMini())
     }
 
     @Subcommand("setMaxHeight")

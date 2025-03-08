@@ -1,5 +1,6 @@
 package org.gourmet.gourPillars.listener
 
+import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
@@ -14,12 +15,11 @@ class PlaceBlockListener : Listener{
     fun onBlockPlace(event: BlockPlaceEvent) {
 
         val player = event.player
-        val blockY = event.blockPlaced.location.y
         val arena = arenaManager.getArenaByPlayer(player) ?: return
 
-        if (blockY >= arena.maxHeight) {
+        if (!arena.region.isInRegion(player.location)) {
             event.isCancelled = true
-            player.sendMessage("<red>Altezza massima raggiunta".toMini())
+            player.sendMessage("<red>Limite raggiunto".toMini())
         }
     }
 }

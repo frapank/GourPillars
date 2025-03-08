@@ -8,7 +8,7 @@ import java.io.File
 class LanguageManager {
 
     private lateinit var langFile: File
-    private lateinit var langConfig: FileConfiguration
+    lateinit var langConfig: FileConfiguration
     private val plugin = GourPillars.instance
 
     fun saveDefaultLanguageFile() {
@@ -24,6 +24,7 @@ class LanguageManager {
         check(::langConfig.isInitialized) { "Language config non inizializzato" }
         return langConfig
     }
+
 
     fun reloadLanguage() {
         langConfig = YamlConfiguration.loadConfiguration(langFile)

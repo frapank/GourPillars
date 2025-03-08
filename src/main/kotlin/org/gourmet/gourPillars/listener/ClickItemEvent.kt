@@ -61,7 +61,7 @@ class ClickItemEvent : Listener {
         }
 
         if (hasItemTag(item, "knockback-event")) {
-            if (arena.knockbackVote.contains(player) || arena.armoredEvent.contains(player) || arena.noEventVote.contains(player)) {
+            if (arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) || arena.noEventVote.contains(player)) {
                 player.sendMessage("$prefix <red>Hai gia votato un evento!".toMini())
                 return
             }
@@ -71,18 +71,18 @@ class ClickItemEvent : Listener {
             return
         }
 
-        if (hasItemTag(item, "armored-event")) {
-            if (arena.knockbackVote.contains(player) || arena.armoredEvent.contains(player) || arena.noEventVote.contains(player)) {
+        if (hasItemTag(item, "lava-event")) {
+            if (arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) || arena.noEventVote.contains(player)) {
                 player.sendMessage("$prefix <red>Hai gia votato un evento!".toMini())
                 return
             }
 
-            arena.armoredEvent.add(player)
+            arena.lavaEvent.add(player)
             arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato l'evento <yellow><bold>armored")
             return
         }
         if (hasItemTag(item, "no-event")) {
-            if (arena.knockbackVote.contains(player) || arena.armoredEvent.contains(player) || arena.noEventVote.contains(player)) {
+            if (arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) || arena.noEventVote.contains(player)) {
                 player.sendMessage("$prefix <red>Hai gia votato un evento!".toMini())
                 return
             }
