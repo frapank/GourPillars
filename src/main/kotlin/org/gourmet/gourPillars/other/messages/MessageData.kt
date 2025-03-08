@@ -117,6 +117,12 @@ object MessageData {
     lateinit var GUI_NIGHT_VOTE_NAME: Component
     lateinit var GUI_NIGHT_VOTE_LORE: Component
 
+    // Items
+    lateinit var WAITING_ITEMS_VOTE_NAME: Component
+    lateinit var WAITING_ITEMS_VOTE_LORE: Component
+    lateinit var WAITING_ITEMS_LEAVE_NAME: Component
+    lateinit var WAITING_ITEMS_LEAVE_LORE: Component
+
     // Scoreboard
     lateinit var SCOREBOARD_LOBBY_TITLE: DynamicMessage
     lateinit var SCOREBOARD_LOBBY_LINES: DynamicMessage
@@ -227,6 +233,12 @@ object MessageData {
         GUI_DAY_VOTE_LORE = getMessageComponent(config, "gui.vote.day-vote-lore")
         GUI_NIGHT_VOTE_NAME = getMessageComponent(config, "gui.vote.night-vote-name")
         GUI_NIGHT_VOTE_LORE = getMessageComponent(config, "gui.vote.night-vote-lore")
+
+        // Items
+        WAITING_ITEMS_VOTE_NAME = getMessageComponent(config, "items.waiting.vote-name")
+        WAITING_ITEMS_VOTE_LORE = getMessageComponent(config, "items.waiting.vote-lore")
+        WAITING_ITEMS_LEAVE_NAME = getMessageComponent(config, "items.waiting.leave-name")
+        WAITING_ITEMS_LEAVE_LORE = getMessageComponent(config, "items.waiting.leave-name")
 
         // Scoreboard
         SCOREBOARD_LOBBY_TITLE = getMessage(config, "scoreboard.lobby.title")

@@ -55,6 +55,13 @@ arena:
     already-voted-event: "{prefix_game} <red>Hai gia votato un evento!"
     already-voted-time: "{prefix_game} <red>Hai gia votato il tempo!"
 
+items:
+  waiting:
+    vote-name: "<green>Vota!"
+    vote-lore: ""
+    leave-name: "<red>Esci"
+    leave-lore: ""
+
 party:
   party-created: "{prefix_party} <yellow>Hai creato un party!"
   party-invited: "{prefix_party} <yellow>Hai invitato <white>${player}</white> nel party</yellow>"

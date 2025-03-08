@@ -1,5 +1,7 @@
 package org.gourmet.gourPillars.managers.arena
 
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.*
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -99,11 +101,14 @@ class Arena(
     }
 
     private fun giveWaitingItems(player: Player){
-        val leaveMaterial = ItemStack(Material.RED_DYE)
-        val eventMaterial = ItemStack(Material.PAPER)
+        //val leaveMaterial = ItemStack(Material.RED_DYE)
+        //val eventMaterial = ItemStack(Material.PAPER)
 
-        val leaveMeta = leaveMaterial.itemMeta.apply {
-            displayName("<red>Esci".toMini())
+        val leaveItem = createWaitingItem("RED_DYE", MessageData.WAITING_ITEMS_LEAVE_NAME, MessageData.WAITING_ITEMS_LEAVE_LORE, "leave-item")
+        val voteItem = createWaitingItem("PAPER", MessageData.WAITING_ITEMS_VOTE_NAME, MessageData.WAITING_ITEMS_VOTE_LORE, "vote-item")
+
+        /*val leaveMeta = leaveMaterial.itemMeta.apply {
+            displayName(MessageData.WAITING_ITEMS_LEAVE_NAME)
             lore()
 
             val key = NamespacedKey(GourPillars.instance, "leave-item")
@@ -113,16 +118,32 @@ class Arena(
         leaveMaterial.itemMeta = leaveMeta
 
         val eventMeta = eventMaterial.itemMeta.apply {
-            displayName("<green>Vota!".toMini())
+            displayName(MessageData.WAITING_ITEMS_VOTE_NAME)
 
             val key = NamespacedKey(GourPillars.instance, "vote-item")
 
             persistentDataContainer.set(key, PersistentDataType.STRING, "true")
         }
         eventMaterial.itemMeta = eventMeta
+         */
 
-        player.inventory.setItem(8, leaveMaterial)
-        player.inventory.setItem(0, eventMaterial)
+        player.inventory.setItem(8, leaveItem)
+        player.inventory.setItem(0, voteItem)
+    }
+
+    private fun createWaitingItem(material: String, name: Component, lore: Component, tag: String): ItemStack {
+        val mm = MiniMessage.miniMessage()
+        val item = ItemStack(Material.valueOf(material), 1)
+        val meta = item.itemMeta
+
+        meta.displayName(name)
+        meta.lore(lore.children())
+
+        val key = NamespacedKey(GourPillars.instance, tag)
+        meta.persistentDataContainer.set(key, PersistentDataType.STRING, "true")
+
+        item.itemMeta = meta
+        return item
     }
 
     fun removePlayer(player: Player){
