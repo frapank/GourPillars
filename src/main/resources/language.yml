@@ -2,8 +2,8 @@
 #{target} Target
 
 prefix:
-  game: "<bold><aqua>Game </bold><gray>|<bold>"
-  party: "<bold><green>Party <bold><gray>|<bold>"
+  game: "<bold><aqua>Game </bold><gray>|"
+  party: "<bold><green>Party </bold><gray>|"
 
 game:
   end-game:
@@ -21,7 +21,7 @@ game:
 
 
 arena:
-  join: "{prefix-game} <white>{player} <yellow>e' entrato (<green>{on}<white>/<green>{max}<yellow>)"
+  join: "{prefix_game} <white>{player} <yellow>e' entrato (<green>{on}<white>/<green>{max}<yellow>)"
   leave: "{prefix_game} <red>Sei uscito da questa arena"
   player-left: "{prefix_game} <green>${player} <yellow>e' uscito dal gioco"
   player-needed: "{prefix_game} <green>Mancano <yellow>{playerRequired}<green> player per cominciare"
@@ -70,14 +70,14 @@ party:
   party-promote-broadcast: "{prefix_party} <white>{player} <yellow>e' il nuovo owner del party!"
   party-info:
     - "<gradient:#c061cb:#3584e4>✦━━━ INFO PARTY ━━━✦</gradient>"
-    - "<gray>👑 Admin:</gray> <yellow>${partyAdmin}</yellow>"
+    - "<gray>👑 Admin:</gray> <yellow>{partyAdmin}</yellow>"
     - "<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>"
     - "<gray>👥 Membri: {members}</gray>"
     - ""
     - "<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>"
   party-info-no-members:
     - "<gradient:#c061cb:#3584e4>✦━━━ INFO PARTY ━━━✦</gradient>"
-    - "<gray>👑 Admin:</gray> <yellow>${partyAdmin}</yellow>"
+    - "<gray>👑 Admin:</gray> <yellow>{partyAdmin}</yellow>"
     - ""
     - "<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>"
   command-help:
@@ -113,6 +113,23 @@ party:
     party-invite-expired: "{prefix_party} <red>L'invito al party e' scaduto"
 
 gui:
+  vote:
+    title: "<light_purple>Vota 🌟"
+    item-filler-name: "<gray>────</gray>"
+    classic-vote-name: "<red>No event"
+    classic-vote-lore: "<gray>Voti per una partita classica!"
+    knockback-vote-name: "<green>Knockback Event"
+    knockback-vote-lore:
+      - "<gray>I giocatori avranno un"
+      - "<gray>knockback potenziato!"
+    lava-vote-name: "<yellow>Lava event"
+    lava-vote-lore:
+      - "<gray>Un pavimento di lava apparirà"
+      - "<gray>sotto i vostri piedi!"
+    day-vote-name: "<aqua>Day time"
+    day-vote-lore: "<gray>Una partita illuminata!"
+    night-vote-name: "<yellow>Night event"
+    night-vote-lore: "<gray>Una partita notturna!"
 
 stats:
   stats-user:
