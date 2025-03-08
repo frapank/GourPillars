@@ -13,6 +13,8 @@ import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.guis.VoteInventory
 import org.gourmet.gourPillars.managers.arena.State
+import org.gourmet.gourPillars.other.messages.MessageData
+import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 import org.gourmet.gourPillars.other.toMini
 
 class ClickItemEvent : Listener {
@@ -62,59 +64,67 @@ class ClickItemEvent : Listener {
 
         if (hasItemTag(item, "knockback-event")) {
             if (arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) || arena.noEventVote.contains(player)) {
-                player.sendMessage("$prefix <red>Hai gia votato un evento!".toMini())
+                //player.sendMessage("$prefix <red>Hai gia votato un evento!".toMini())
+                player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_EVENT)
                 return
             }
 
             arena.knockbackVote.add(player)
-            arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato l'evento <yellow><bold>knockback")
+            //arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato l'evento <yellow><bold>knockback")
+            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_KNOCKBACK_VOTED, "{player}" to player.name)
             return
         }
 
         if (hasItemTag(item, "lava-event")) {
             if (arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) || arena.noEventVote.contains(player)) {
-                player.sendMessage("$prefix <red>Hai gia votato un evento!".toMini())
+                //player.sendMessage("$prefix <red>Hai gia votato un evento!".toMini())
+                player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_EVENT)
                 return
             }
 
             arena.lavaEvent.add(player)
-            arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato l'evento <yellow><bold>armored")
+            //arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato l'evento <yellow><bold>lava")
+            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_LAVA_VOTED, "{player}" to player.name)
             return
         }
         if (hasItemTag(item, "no-event")) {
             if (arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) || arena.noEventVote.contains(player)) {
-                player.sendMessage("$prefix <red>Hai gia votato un evento!".toMini())
+                //player.sendMessage("$prefix <red>Hai gia votato un evento!".toMini())
+                player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_EVENT)
                 return
             }
 
             arena.noEventVote.add(player)
-            arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato per una partita <yellow><bold>classica")
+            //arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato per una partita <yellow><bold>classica")
+            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_CLASSIC_VOTED, "{player}" to player.name)
             return
         }
 
         if (hasItemTag(item, "day-vote")) {
             if (arena.dayVote.contains(player) || arena.nightVote.contains(player)) {
-                player.sendMessage("$prefix <red>Hai gia votato il tempo!".toMini())
+                //player.sendMessage("$prefix <red>Hai gia votato il tempo!".toMini())
+                player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_TIME)
                 return
             }
 
             arena.dayVote.add(player)
-            arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato la <yellow><bold>notte")
+            //arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato la <yellow><bold>notte")
+            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_NIGHT_VOTED, "{player}" to player.name)
             return
         }
 
         if (hasItemTag(item, "night-vote")) {
             if (arena.dayVote.contains(player) || arena.nightVote.contains(player)) {
-                player.sendMessage("$prefix <red>Hai gia votato il tempo!".toMini())
+                //player.sendMessage("$prefix <red>Hai gia votato il tempo!".toMini())
+                player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_TIME)
                 return
             }
 
             arena.nightVote.add(player)
-            arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato il <yellow><bold>giorno")
+            //arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato il <yellow><bold>giorno")
+            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_DAY_VOTED, "{player}" to player.name)
             return
         }
-
-
 
     }
 

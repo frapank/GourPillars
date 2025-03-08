@@ -6,7 +6,14 @@ prefix:
   party: "<bold><green>Party <bold><gray>|<bold>"
 
 game:
-  end-game: ""
+  end-game:
+    - "<gray>--------------------------"
+    - "<dark_gray>•<gray> Game length: <yellow>{time}"
+    - "<dark_gray>•<gray> Kills: <yellow>{kills}"
+    - "<dark_gray>•<gray> Map: <yellow>{map}"
+    - "<gray>--------------------------"
+    - "<hover:show_text:'<green>Start a new game'><click:run_command:/joinrandom><gray>Click Here to <green>play again"
+    - "<gray>--------------------------"
   win-game:
     - "<gray>--------------------------"
     - "<yellow>{winner} <green>ha vinto il gioco!"
@@ -14,17 +21,24 @@ game:
 
 
 arena:
-  join: "{prefix-game}"
+  join: "{prefix-game} <white>{player} <yellow>e' entrato (<green>{on}<white>/<green>{max}<yellow>)"
   leave: "{prefix_game} <red>Sei uscito da questa arena"
-  player-needed: "{prefix_game}"
+  player-left: "{prefix_game} <green>${player} <yellow>e' uscito dal gioco"
+  player-needed: "{prefix_game} <green>Mancano <yellow>{playerRequired}<green> player per cominciare"
+  player-eliminated: "{prefix-game} <yellow><green>{player}</green> e' stato eliminato</yellow>"
+  player-eliminated-fall: "{prefix-game} <yellow><green>{player}</green> e' caduto</yellow>"
+  player-eliminated-kill: "{prefix-game} <yellow><green>{player}</green> e' stato eliminato da <green>{killer}</green></yellow>"
   errors:
     already-in-game: "{prefix_game} <red>Sei gia in questa aren"
     arena-not-ready: "{prefix_game} <red>Arena non pronta"
     the-game-is-full: "{prefix_game} <red>Partita piena!"
+    limit-reached: "{prefix_game} Limite raggiunto"
 
   title:
-    start:
-    end:
+    start-title: "<gray>Uccidi i tuoi avversari"
+    start-subtitle: "<dark_gray>Ma non cadere..."
+    end-title: "<green>Gioco terminato!"
+    end-subtitle: "<ywllow>{winner} <white>ha vinto"
     countdown-other: "<green>{number}</green>"
     countdown-5: "<yellow>{number}</yellow>"
     countdown-4: "<yellow>{number}</yellow>"
@@ -32,7 +46,14 @@ arena:
     countdown-2: "<red>{number}</red>"
     countdown-1: "<red>{number}</red>"
 
-
+  vote:
+    classic-voted: "{prefix_game} <green>{player} ha votato per una partita <yellow><bold>classica"
+    lava-voted: "{prefix_game} <green>{player} ha votato l'evento <yellow><bold>lava"
+    knockback-voted: "{prefix_game} <green>{player} ha votato l'evento <yellow><bold>knockback"
+    night-voted: "{prefix_game} <green>{player} ha votato la <yellow><bold>notte"
+    day-voted: "{prefix_game} <green>{player} ha votato il <yellow><bold>giorno"
+    already-voted-event: "{prefix_game} <red>Hai gia votato un evento!"
+    already-voted-time: "{prefix_game} <red>Hai gia votato il tempo!"
 
 party:
   party-created: "{prefix_party} <yellow>Hai creato un party!"
@@ -47,6 +68,34 @@ party:
   party-promote: "{prefix_party} <green>Sei stato promosso owner del party"
   user-left-party: "{prefix_party} <white>{player} <yellow>e' uscito dal party!"
   party-promote-broadcast: "{prefix_party} <white>{player} <yellow>e' il nuovo owner del party!"
+  party-info:
+    - "<gradient:#c061cb:#3584e4>✦━━━ INFO PARTY ━━━✦</gradient>"
+    - "<gray>👑 Admin:</gray> <yellow>${partyAdmin}</yellow>"
+    - "<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>"
+    - "<gray>👥 Membri: {members}</gray>"
+    - ""
+    - "<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>"
+  party-info-no-members:
+    - "<gradient:#c061cb:#3584e4>✦━━━ INFO PARTY ━━━✦</gradient>"
+    - "<gray>👑 Admin:</gray> <yellow>${partyAdmin}</yellow>"
+    - ""
+    - "<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>"
+  command-help:
+    - ""
+    - "<gradient:#c061cb:#3584e4>━━━━━━━━━━━━━━━━━━━━━━━</gradient>"
+    - "<bold><gradient:#00ff99:#00ccff>☘ Comandi Party ☘</gradient></bold>"
+    - ""
+    - "<gold>/party create</gold> <gray>- <yellow>Crea il party</yellow>"
+    - "<gold>/party invite <player></gold> <gray>- <yellow>Invita un giocatore</yellow>"
+    - "<gold>/party accept</gold> <gray>- <yellow>Accetta un invito</yellow>"
+    - "<gold>/party leave</gold> <gray>- <yellow>Lascia il party</yellow>"
+    - "<gold>/party disband</gold> <gray>- <yellow>Sciogli il party</yellow>"
+    - "<gold>/party remove <player></gold> <gray>- <yellow>Rimuovi un membro</yellow>"
+    - "<gold>/party promote <player></gold> <gray>- <yellow>Promuovi un admin</yellow>"
+    - "<gold>/party info</gold> <gray>- <yellow>Info sul party</yellow>"
+    - ""
+    - "<gradient:#c061cb:#3584e4>━━━━━━━━━━━━━━━━━━━━━━━</gradient>"
+    - ""
   errors:
     user-already-in-party: "{prefix_party} <red>Sei gia in un party"
     cant-invite-yourself: "{prefix_party} <red>Non puoi invitarti da solo"
