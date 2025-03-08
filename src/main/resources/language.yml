@@ -1,12 +1,15 @@
+#{player} Winner/Player
+#{target} Target
+
 prefix:
-  game: "<bold><aqua>Game </bold><gray>| "
-  party: "<bold><green>Party <bold><gray>| "
+  game: "<bold><aqua>Game </bold><gray>|<bold>"
+  party: "<bold><green>Party <bold><gray>|<bold>"
 
 game:
   end-game: ""
   win-game:
     - "<gray>--------------------------"
-    - "<yellow>{winner} <green>won the game!"
+    - "<yellow>{winner} <green>ha vinto il gioco!"
     - "<gray>--------------------------"
 
 
@@ -32,7 +35,83 @@ arena:
 
 
 party:
+  party-created: "{prefix_party} <yellow>Hai creato un party!"
+  party-invited: "{prefix_party} <yellow>Hai invitato <white>${player}</white> nel party</yellow>"
+  party-invite-receive:
+    - "{prefix_party} <yellow>Sei stato invitato nel party da <white>{player}</white>, clicca per accettare</yellow>"
+    - "<hover:show_text:'<white>/party accept'><click:run_command:/party accept><green><bold>ACCETTA"
+  party-disband: "{prefix_party} <yellow>Il party è stato sciolto"
+  party-leave:  "{prefix_party} <yellow>Sei uscito dal party"
+  player-joined: "{prefix_party} Sei entrato nel party di <white>${player}!"
+  player-joined-broadcast: "{prefix_party} <white>{player} <yellow>e' entrato nel party!"
+  party-promote: "{prefix_party} <green>Sei stato promosso owner del party"
+  user-left-party: "{prefix_party} <white>{player} <yellow>e' uscito dal party!"
+  party-promote-broadcast: "{prefix_party} <white>{player} <yellow>e' il nuovo owner del party!"
+  errors:
+    user-already-in-party: "{prefix_party} <red>Sei gia in un party"
+    cant-invite-yourself: "{prefix_party} <red>Non puoi invitarti da solo"
+    no-party-request: "{prefix_party} <red>Non hai nessuna richiesta"
+    player-not-in-party:
+      - "{prefix_party} <red>Non sei in nessun party"
+      - "<hover:show_text:'<white>/party create'><click:run_command:/party create><green><bold>CREA UN PARTY"
+    max-party-member: "{prefix_party} <red>Puoi invitare fino a 7 persone nel tuo party"
+    not-party-admin: "{prefix_party} <red>Non sei l'owner del party!"
+    user-in-party: "{prefix_party} <red>Questo utente e' gia in un party"
+    not-in-party: "{prefix_party} <red>Non sei in nessun party"
+    not-the-owner: "{prefix_party} <red>Non sei l'owner del party"
+    already-in-party: "{prefix_party} <red>Sei gia' in un party"
+    target-not-in-party: "{prefix_party} <white>{player} <red>non e' nel party"
+    party-invite-expired: "{prefix_party} <red>L'invito al party e' scaduto"
 
+gui:
+
+stats:
+  stats-user:
+    - "<gradient:#c061cb:#3584e4>✦━━━━━ Stats ━━━━━✦</gradient>"
+    - ""
+    - "<gray>👤 Player<gray>:</gray> <yellow>{player}</yellow>"
+    - "<gray>💀 Deaths<gray>:</gray> <yellow>{deaths}</yellow>"
+    - "<gray>⚔ Defeats<gray>:</gray> <yellow>{defeats}</yellow>"
+    - "<gray>🏹 Kills:</gray> <yellow>{kills}</yellow>"
+    - "<gray>🏆 Wins:</gray> <yellow>{wins}</yellow>"
+    - "<gray>🎮 Games Played:</gray> <yellow>{gamesPlayed}</yellow>"
+    - "<gray>⭐ XP:</gray> <yellow>{xp}</yellow>"
+    - "<gray>⬆ Level:</gray> <yellow>{level}</yellow>"
+    - ""
+    - "<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━✦</gradient>"
+  stats-target:
+    - ""
+    - "<gradient:#ffcc00:#ff6699>✦━━━━━━━━━━━━━━━━━━━━━━━✦</gradient>"
+    - "<bold><gradient:#00ff99:#00ccff>📊 Statistiche Giocatore 📊</gradient></bold>"
+    - ""
+    - "<yellow>👤 Player</yellow> <gray>»</gray> <green>{player}</green>"
+    - "<yellow>💀 Deaths</yellow> <gray>»</gray> <red>{deaths}</red>"
+    - "<yellow>⚔ Defeats</yellow> <gray>»</gray> <red>{defeats}</red>"
+    - "<yellow>🏹 Kills</yellow> <gray>»</gray> <green>{kills}</green>"
+    - "<yellow>🏆 Wins</yellow> <gray>»</gray> <aqua>{wins}</aqua>"
+    - "<yellow>🎮 Games Played</yellow> <gray>»</gray> <gold>{gamesPlayed}</gold>"
+    - "<yellow>⭐ XP</yellow> <gray>»</gray> <light_purple>{xp}</light_purple>"
+    - "<yellow>⬆ Level</yellow> <gray>»</gray> <blue>{level}</blue>"
+    - ""
+    - "<gradient:#ff6699:#ffcc00>✦━━━━━━━━━━━━━━━━━━━━━━━✦</gradient>"
+    - ""
+
+join-leave-cmd:
+  errors:
+    arena-editing: "{prefix_game} <red>Un operatore sta modificando l'arena, non puoi giocare"
+    arena-not-exist: "{prefix_game} <red>Arena non esistente"
+    arena-not-available: "{prefix_game} <red>Non ci sono arene disponibili per entrare"
+    not-in-arena: "{prefix_game} <red>Non sei in nessuna arena"
+    user-in-party: "{prefix_game} <red>Non puoi entrare in partita perchè sei in un party!"
+    already-best-arena: "{prefix_game} <green>Sei gia nella arena migliore"
+    wait: "{prefix_game} <red>Aspetta qualche secondo"
+
+spectate-cmd:
+  joined: ""
+  errors:
+    not-in-game: ""
+    already-in-game: ""
+    game-not-started: ""
 
 scoreboard:
   lobby:
@@ -69,6 +148,5 @@ scoreboard:
       - "<#77767b>Map: %pillars_arenaname%"
       - "<#62a0ea>play.frisknetwork.it"
 
-gui:
 
-stats:
+cosmetics:

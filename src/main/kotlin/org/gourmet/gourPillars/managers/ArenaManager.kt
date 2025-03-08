@@ -5,6 +5,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.arena.Arena
+import org.gourmet.gourPillars.other.Region
 import kotlin.random.Random
 
 class ArenaManager {
@@ -72,6 +73,22 @@ class ArenaManager {
                 arenaSection.getDouble("main-spawn.pitch").toFloat(),
             )
 
+            val regionLocOne = Location(
+                world,
+                arenaSection.getDouble("region.loc-1.x"),
+                arenaSection.getDouble("region.loc-1.y"),
+                arenaSection.getDouble("region.loc-1.z"),
+            )
+
+            val regionLocSecond = Location(
+                world,
+                arenaSection.getDouble("region.loc-2.x"),
+                arenaSection.getDouble("region.loc-2.y"),
+                arenaSection.getDouble("region.loc-2.z"),
+            )
+
+            val region = Region.createRegion(regionLocOne, regionLocSecond)
+
             val spawnsSection = arenaSection.getConfigurationSection("spawns") ?: continue
             val spawnsList = mutableMapOf<Location, Player?>()
             for (spawnKey in spawnsSection.getKeys(false)) {
@@ -85,7 +102,7 @@ class ArenaManager {
             }
 
             val maxPlayers = spawnsList.size
-            val arena = Arena(spawnsList, mainSpawnLocation, slowFallingTime, maxPlayers, minPlayers, maxHeight, minHeight, arenaName)
+            val arena = Arena(spawnsList, mainSpawnLocation, slowFallingTime, maxPlayers, minPlayers, maxHeight, minHeight, regionLocOne, regionLocSecond ,region ,arenaName)
             onlineArenas[arenaName] = arena
             Bukkit.getLogger().info("[ArenaManager] Arena caricata: $arenaName con $maxPlayers spawn e minimo $minPlayers giocatori.")
         }

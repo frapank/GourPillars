@@ -6,8 +6,12 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.GameScoreboardManager
+import org.gourmet.gourPillars.other.Region
 import org.gourmet.gourPillars.other.Utils
+import org.gourmet.gourPillars.other.messages.DynamicMessage
 import org.gourmet.gourPillars.other.messages.MessageData
+import org.gourmet.gourPillars.other.messages.sendDynamicMessage
+import org.gourmet.gourPillars.other.messages.sendDynamicTitle
 import org.gourmet.gourPillars.other.toMini
 import org.gourmet.gourPillars.task.GameTask
 import org.gourmet.gourPillars.task.ResetArenaTask
@@ -21,6 +25,9 @@ class Arena(
     val minPlayer: Int,
     val maxHeight: Int,
     val minHeight: Int,
+    val regionLocOne: Location,
+    val regionLocTwo: Location,
+    var region: Region,
     val name: String)
 {
 
@@ -35,7 +42,7 @@ class Arena(
     var gameEvent: GameEvents? = null
     val noEventVote: ArrayList<Player> = ArrayList()
     val knockbackVote: ArrayList<Player> = ArrayList()
-    val armoredEvent: ArrayList<Player> = ArrayList()
+    val lavaEvent: ArrayList<Player> = ArrayList()
     val dayVote: ArrayList<Player> = ArrayList()
     val nightVote: ArrayList<Player> = ArrayList()
 
@@ -47,12 +54,12 @@ class Arena(
     /* Utils */
     fun addPlayer(player: Player){
         if(waitingPlayer.contains(player)){
-            player.sendMessage(MessageData.ARENA_ERRORS_ALREADY_IN_GAME)
+            player.sendDynamicMessage(MessageData.ARENA_ERRORS_ALREADY_IN_GAME)
             return
         }
 
         if(gameState == State.INGAME || gameState == State.STOPPED){
-            player.sendMessage(MessageData.ARENA_ERRORS_ARENA_NOT_READY)
+            player.sendDynamicMessage(MessageData.ARENA_ERRORS_ARENA_NOT_READY)
             return
         }
 
@@ -81,7 +88,7 @@ class Arena(
             }
             return
         } else {
-            player.sendMessage(MessageData.ARENA_ERRORS_THE_GAME_IS_FULL)
+            player.sendDynamicMessage(MessageData.ARENA_ERRORS_THE_GAME_IS_FULL)
             return
         }
     }
@@ -120,13 +127,13 @@ class Arena(
                 spawnMap[location] = null
             }
         }
-        armoredEvent.remove(player)
+        lavaEvent.remove(player)
         knockbackVote.remove(player)
         dayVote.remove(player)
         nightVote.remove(player)
         waitingPlayer.remove(player)
         player.sendTitle("", "")
-        player.sendMessage(MessageData.ARENA_LEAVE)
+        player.sendDynamicMessage(MessageData.ARENA_LEAVE)
         reloadWaitingScoreboard()
         if(waitingPlayer.size < minPlayer && gameState != State.INGAME){
             gameState = State.WAITING
@@ -156,13 +163,22 @@ class Arena(
     fun sendMessageToPlayerInGame(message: String){
         waitingPlayer.forEach{ player: Player ->  player.sendMessage(message.toMini())}
     }
+
+    fun sendDynamicMessageToPlayerInGame(message: DynamicMessage, vararg pairs: Pair<String, String>) {
+        waitingPlayer.forEach{ player: Player ->  player.sendDynamicMessage(message, *pairs)}
+    }
+
+    fun sendDynamicTitleToPlayerInGame(title: DynamicMessage, subtitle: DynamicMessage, vararg pairs: Pair<String, String>) {
+        waitingPlayer.forEach { player: Player ->
+            player.sendDynamicTitle(title, subtitle, *pairs)
+        }
+    }
+
     fun sendTitleToPlayerInGame(title: String, subtitle: String){
         waitingPlayer.forEach{ player: Player ->
             player.sendTitle(title.replace("&", "§"), subtitle.replace("&", "§"))
         }
 
     }
-
-
 
 }

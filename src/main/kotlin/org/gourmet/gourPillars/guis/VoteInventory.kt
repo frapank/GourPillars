@@ -36,11 +36,11 @@ object VoteInventory {
         "night-vote"
     )
 
-    private val armoredEvent = createHeadItem(
-        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTZkMmRlMzFmNTgyMGEyZDkyM2UyN2ZlOTU2YzI5ZjE3YjBkNTUzZjQ3ZGExNTQyOTBjZTcwNmNiZTk4NWMzYSJ9fX0=",
-        "<yellow>Armored Event",
+    private val lavaEvent = createHeadItem(
+        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjY5YTMyY2ZmZjAzMTU1YjlmODEwOTg1OGQ4MzAzYjA2ZmU3MGQwYjUzNWJhNjRiNTFkMDMwMmZmMzM5ZTBjYiJ9fX0=",
+        "<yellow>Lava event",
         listOf("<gray>Tutti avranno un set di armatura!"),
-        "armored-event"
+        "lava-event"
     )
 
     private val knockbackEvent = createHeadItem(
@@ -59,13 +59,9 @@ object VoteInventory {
         }
         for (i in 0 until 27) inventory.setItem(i, glassPane)
 
-        //val armoredEvent = createItem(Material.IRON_HELMET, "<yellow>Armored Event", listOf("<gray>Tutti avranno un set di armatura!"), "armored-event")
-        //val knockbackEvent = createItem(Material.SLIME_BLOCK, "<green>Knockback Event", listOf("<gray>I giocatori avranno un", "<gray>knockback potenziato!"), "knockback-event")
-        //val dayEvent = createItem(Material.YELLOW_WOOL, "<gold>Giorno", listOf("<gray>Imposta il mondo su <yellow>Giorno</yellow>"), "day-vote")
-        //val nightEvent = createItem(Material.BLUE_WOOL, "<dark_blue>Notte", listOf("<gray>Imposta il mondo su <dark_blue>Notte</dark_blue>"), "night-vote")
 
         inventory.setItem(10, noEvent)
-        inventory.setItem(11, armoredEvent)
+        inventory.setItem(11, lavaEvent)
         inventory.setItem(12, knockbackEvent)
         inventory.setItem(15, dayEvent)
         inventory.setItem(16, nightEvent)

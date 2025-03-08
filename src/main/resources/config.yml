@@ -35,7 +35,7 @@ spawn:
   pitch: 1
 
 Arenas:
-  bella: #Nome della arena
+  bella:
     max-height: 200
     min-height: 80
     min-players: 1
@@ -47,7 +47,15 @@ Arenas:
       z: 0
       yaw: 0
       pitch: 0
-    #Il massimo sono il numero di spawns
+    region:
+      loc-1:
+        x: 0
+        y: 0
+        z: 0
+      loc-2:
+        x: 0
+        y: 0
+        z: 0
     spawns:
       1:
         x: 1

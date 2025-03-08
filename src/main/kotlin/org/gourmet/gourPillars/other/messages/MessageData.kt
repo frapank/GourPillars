@@ -5,9 +5,26 @@ package org.gourmet.gourPillars.other.messages
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.configuration.file.FileConfiguration
+import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.other.miniMessage
-import org.gourmet.gourPillars.other.toMini
+
+class DynamicMessage(private val rawMessage: String) {
+    private val replacements = mutableMapOf<String, String>()
+
+    fun replace(placeholder: String, value: String): DynamicMessage {
+        replacements[placeholder] = value
+        return this
+    }
+
+    fun build(vararg pairs: Pair<String, String>): Component {
+        var processed = rawMessage
+        replacements.forEach { (k, v) -> processed = processed.replace(k, v) }
+        pairs.forEach { (k, v) -> processed = processed.replace(k, v) }
+        return miniMessage.deserialize(processed)
+    }
+}
+
 object MessageData {
     private lateinit var config: FileConfiguration
     private val miniMessage: MiniMessage = MiniMessage.miniMessage()
@@ -17,34 +34,73 @@ object MessageData {
     lateinit var PREFIX_PARTY_STRING: String
 
     // Game
-    lateinit var WIN_GAME: Component
-    lateinit var END_GAME: Component
+    lateinit var WIN_GAME: DynamicMessage
+    lateinit var END_GAME: DynamicMessage
+
+    // Party
+    lateinit var PARTY_PARTY_CREATED: DynamicMessage
+    lateinit var PARTY_INVITE: DynamicMessage
+    lateinit var PARTY_INVITE_RECEIVE: DynamicMessage
+    lateinit var PARTY_PARTY_DISBAND: DynamicMessage
+    lateinit var PARTY_PARTY_LEAVE: DynamicMessage
+    lateinit var PARTY_PLAYER_JOINED: DynamicMessage
+    lateinit var PARTY_PLAYER_JOINED_BROADCAST: DynamicMessage
+    lateinit var PARTY_PARTY_PROMOTE: DynamicMessage
+    lateinit var PARTY_USER_LEFT_PARTY: DynamicMessage
+    lateinit var PARTY_PARTY_PROMOTE_BROADCAST: DynamicMessage
+
+    // Party Errors
+    lateinit var PARTY_ERRORS_USER_ALREADY_IN_PARTY: DynamicMessage
+    lateinit var PARTY_ERRORS_CANT_INVITE_YOURSELF: DynamicMessage
+    lateinit var PARTY_ERRORS_NO_PARTY_REQUEST: DynamicMessage
+    lateinit var PARTY_ERRORS_PLAYER_NOT_IN_PARTY: DynamicMessage
+    lateinit var PARTY_ERRORS_MAX_PARTY_MEMBER: DynamicMessage
+    lateinit var PARTY_ERRORS_NOT_PARTY_ADMIN: DynamicMessage
+    lateinit var PARTY_ERRORS_USER_IN_PARTY: DynamicMessage
+    lateinit var PARTY_ERRORS_NOT_IN_PARTY: DynamicMessage
+    lateinit var PARTY_ERRORS_NOT_THE_OWNER: DynamicMessage
+    lateinit var PARTY_ERRORS_ALREADY_IN_PARTY: DynamicMessage
+    lateinit var PARTY_ERRORS_TARGET_NOT_IN_PARTY: DynamicMessage
+    lateinit var PARTY_ERRORS_INVITE_EXPIRED: DynamicMessage
 
     // Arena
-    lateinit var ARENA_JOIN: Component
-    lateinit var ARENA_LEAVE: Component
-    lateinit var ARENA_PLAYER_NEEDED: Component
-    lateinit var ARENA_TITLE_START: Component
-    lateinit var ARENA_TITLE_END: Component
-    lateinit var ARENA_TITLE_COUNTDOWN_OTHER: Component
-    lateinit var ARENA_TITLE_COUNTDOWN_5: Component
-    lateinit var ARENA_TITLE_COUNTDOWN_4: Component
-    lateinit var ARENA_TITLE_COUNTDOWN_3: Component
-    lateinit var ARENA_TITLE_COUNTDOWN_2: Component
-    lateinit var ARENA_TITLE_COUNTDOWN_1: Component
+    lateinit var ARENA_JOIN: DynamicMessage
+    lateinit var ARENA_LEAVE: DynamicMessage
+    lateinit var ARENA_PLAYER_NEEDED: DynamicMessage
+    lateinit var ARENA_TITLE_START: DynamicMessage
+    lateinit var ARENA_TITLE_END: DynamicMessage
+    lateinit var ARENA_TITLE_COUNTDOWN_OTHER: DynamicMessage
+    lateinit var ARENA_TITLE_COUNTDOWN_5: DynamicMessage
+    lateinit var ARENA_TITLE_COUNTDOWN_4: DynamicMessage
+    lateinit var ARENA_TITLE_COUNTDOWN_3: DynamicMessage
+    lateinit var ARENA_TITLE_COUNTDOWN_2: DynamicMessage
+    lateinit var ARENA_TITLE_COUNTDOWN_1: DynamicMessage
 
     // Arena Errors
-    lateinit var ARENA_ERRORS_ALREADY_IN_GAME: Component
-    lateinit var ARENA_ERRORS_ARENA_NOT_READY: Component
-    lateinit var ARENA_ERRORS_THE_GAME_IS_FULL: Component
+    lateinit var ARENA_ERRORS_ALREADY_IN_GAME: DynamicMessage
+    lateinit var ARENA_ERRORS_ARENA_NOT_READY: DynamicMessage
+    lateinit var ARENA_ERRORS_THE_GAME_IS_FULL: DynamicMessage
 
     // Scoreboard
-    lateinit var SCOREBOARD_LOBBY_TITLE: Component
-    lateinit var SCOREBOARD_LOBBY_LINES: Component
-    lateinit var SCOREBOARD_WAITING_TITLE: Component
-    lateinit var SCOREBOARD_WAITING_LINES: Component
-    lateinit var SCOREBOARD_PLAYING_TITLE: Component
-    lateinit var SCOREBOARD_PLAYING_LINES: Component
+    lateinit var SCOREBOARD_LOBBY_TITLE: DynamicMessage
+    lateinit var SCOREBOARD_LOBBY_LINES: DynamicMessage
+    lateinit var SCOREBOARD_WAITING_TITLE: DynamicMessage
+    lateinit var SCOREBOARD_WAITING_LINES: DynamicMessage
+    lateinit var SCOREBOARD_PLAYING_TITLE: DynamicMessage
+    lateinit var SCOREBOARD_PLAYING_LINES: DynamicMessage
+
+    //stats
+    lateinit var STATS_USER: DynamicMessage
+    lateinit var STATS_TARGET: DynamicMessage
+
+    //stats-leave cmd
+    lateinit var JOIN_LEAVE_ERRORS_ARENA_EDIT: DynamicMessage
+    lateinit var JOIN_LEAVE_ERRORS_ARENA_NOT_EXIST: DynamicMessage
+    lateinit var JOIN_LEAVE_ERRORS_ARENA_NOT_AVAILABLE: DynamicMessage
+    lateinit var JOIN_LEAVE_ERRORS_NOT_IN_ARENA: DynamicMessage
+    lateinit var JOIN_LEAVE_ERRORS_USER_IN_PARTY: DynamicMessage
+    lateinit var JOIN_LEAVE_ERRORS_ALREADY_BEST_ARENA: DynamicMessage
+    lateinit var JOIN_LEAVE_ERRORS_WAIT: DynamicMessage
 
     fun load() {
         config = GourPillars.languageManager.getLanguageConfig()
@@ -72,6 +128,33 @@ object MessageData {
         ARENA_TITLE_COUNTDOWN_2 = getMessage(config, "arena.title.countdown-2")
         ARENA_TITLE_COUNTDOWN_1 = getMessage(config, "arena.title.countdown-1")
 
+
+        // Party
+        PARTY_PARTY_CREATED = getMessage(config, "party.party-created")
+        PARTY_INVITE = getMessage(config, "party.party-invited")
+        PARTY_INVITE_RECEIVE = getMessage(config, "party.party-invite-receive")
+        PARTY_PARTY_DISBAND = getMessage(config, "party.party-disband")
+        PARTY_PARTY_LEAVE = getMessage(config, "party.party-leave")
+        PARTY_PLAYER_JOINED = getMessage(config, "party.player-joined")
+        PARTY_PLAYER_JOINED_BROADCAST = getMessage(config, "party.player-joined-broadcast")
+        PARTY_PARTY_PROMOTE = getMessage(config, "party.party-promote")
+        PARTY_USER_LEFT_PARTY = getMessage(config, "party.user-left-party")
+        PARTY_PARTY_PROMOTE_BROADCAST = getMessage(config, "party.party-promote-broadcast")
+
+        // Party Errors
+        PARTY_ERRORS_USER_ALREADY_IN_PARTY = getMessage(config, "party.errors.user-already-in-party")
+        PARTY_ERRORS_CANT_INVITE_YOURSELF = getMessage(config, "party.errors.cant-invite-yourself")
+        PARTY_ERRORS_NO_PARTY_REQUEST = getMessage(config, "party.errors.no-party-request")
+        PARTY_ERRORS_PLAYER_NOT_IN_PARTY = getMessage(config, "party.errors.player-not-in-party")
+        PARTY_ERRORS_MAX_PARTY_MEMBER = getMessage(config, "party.errors.max-party-member")
+        PARTY_ERRORS_NOT_PARTY_ADMIN = getMessage(config, "party.errors.not-party-admin")
+        PARTY_ERRORS_USER_IN_PARTY = getMessage(config, "party.errors.user-in-party")
+        PARTY_ERRORS_NOT_IN_PARTY = getMessage(config, "party.errors.not-in-party")
+        PARTY_ERRORS_NOT_THE_OWNER = getMessage(config, "party.errors.not-the-owner")
+        PARTY_ERRORS_ALREADY_IN_PARTY = getMessage(config, "party.errors.already-in-party")
+        PARTY_ERRORS_TARGET_NOT_IN_PARTY = getMessage(config, "party.errors.target-not-in-party")
+        PARTY_ERRORS_INVITE_EXPIRED = getMessage(config, "party.errors.party-invite-expired")
+
         // Arena Errors
         ARENA_ERRORS_ALREADY_IN_GAME = getMessage(config, "arena.errors.already-in-game")
         ARENA_ERRORS_ARENA_NOT_READY = getMessage(config, "arena.errors.arena-not-ready")
@@ -84,30 +167,57 @@ object MessageData {
         SCOREBOARD_WAITING_LINES = getMessage(config, "scoreboard.waiting.lines")
         SCOREBOARD_PLAYING_TITLE = getMessage(config, "scoreboard.playing.title")
         SCOREBOARD_PLAYING_LINES = getMessage(config, "scoreboard.playing.lines")
+
+        //stats
+        STATS_USER = getMessage(config, "stats.stats-user")
+        STATS_TARGET = getMessage(config, "stats.stats-target")
+
+        //join-leave cmd
+        JOIN_LEAVE_ERRORS_ARENA_EDIT = getMessage(config, "join-leave-cmd.errors.arena-editing")
+        JOIN_LEAVE_ERRORS_ARENA_NOT_EXIST = getMessage(config, "join-leave-cmd.errors.arena-not-exist")
+        JOIN_LEAVE_ERRORS_ARENA_NOT_AVAILABLE = getMessage(config, "join-leave-cmd.errors.arena-not-available")
+        JOIN_LEAVE_ERRORS_NOT_IN_ARENA = getMessage(config, "join-leave-cmd.errors.not-in-arena")
+        JOIN_LEAVE_ERRORS_USER_IN_PARTY = getMessage(config, "join-leave-cmd.errors.user-in-party")
+        JOIN_LEAVE_ERRORS_ALREADY_BEST_ARENA = getMessage(config, "join-leave-cmd.errors.already-best-arena")
+        JOIN_LEAVE_ERRORS_WAIT = getMessage(config, "join-leave-cmd.errors.wait")
+
     }
 
-    private fun getMessage(config: FileConfiguration, path: String): Component {
+    private fun getMessage(config: FileConfiguration, path: String): DynamicMessage {
         return when (val value = config.get(path)) {
-            is String -> processString(value)
-            is List<*> -> processList(value)
-            else -> miniMessage.deserialize("<red>Messaggio non trovato!") // Sostituito §c con <red>
+            is String -> DynamicMessage(processString(value))
+            is List<*> -> DynamicMessage(processList(value))
+            else -> DynamicMessage("<red>Messaggio non trovato!")
         }
     }
 
-    private fun processString(value: String): Component {
-        return miniMessage.deserialize(
-            value.replace("{prefix_game}", PREFIX_GAME_STRING)
-                .replace("{prefix_party}", PREFIX_PARTY_STRING)
-        )
+    private fun processString(value: String): String {
+        return value.replace("{prefix_game}", PREFIX_GAME_STRING)
+            .replace("{prefix_party}", PREFIX_PARTY_STRING)
     }
 
-    private fun processList(value: List<*>): Component {
-        val processed = value.filterIsInstance<String>()
+    private fun processList(value: List<*>): String {
+        return value.filterIsInstance<String>()
             .joinToString("\n") { line ->
                 line.replace("{prefix_game}", PREFIX_GAME_STRING)
                     .replace("{prefix_party}", PREFIX_PARTY_STRING)
             }
-        return if (processed.isEmpty()) Component.empty()
-        else miniMessage.deserialize(processed)
     }
+}
+
+// Extension functions per l'invio
+fun Player.sendDynamicMessage(message: DynamicMessage, vararg replacements: Pair<String, String>) {
+    this.sendMessage(message.build(*replacements))
+}
+
+fun Player.sendDynamicMessage(message: DynamicMessage) {
+    this.sendMessage(message.build())
+}
+
+fun Player.sendDynamicTitle(title: DynamicMessage, subTitle: DynamicMessage) {
+    this.sendTitle(title.build().toString(), subTitle.build().toString())
+}
+
+fun Player.sendDynamicTitle(title: DynamicMessage, subTitle: DynamicMessage, vararg titleReplace: Pair<String, String>) {
+    this.sendTitle(title.build(*titleReplace).toString(), subTitle.build().toString())
 }
