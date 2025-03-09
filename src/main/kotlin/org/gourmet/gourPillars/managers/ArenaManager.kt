@@ -2,10 +2,13 @@ package org.gourmet.gourPillars.managers
 
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.configuration.file.FileConfiguration
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.arena.Arena
 import org.gourmet.gourPillars.other.Region
+import java.io.File
 import kotlin.random.Random
 
 class ArenaManager {
@@ -44,70 +47,81 @@ class ArenaManager {
     }
 
     private fun loadArenas() {
-        val config = GourPillars.instance.config
-        val arenasSection = config.getConfigurationSection("Arenas") ?: return
+        val plugin = GourPillars.instance
 
-        onlineArenas.clear()
-        Bukkit.getLogger().info("[ArenaManager] Inizio caricamento delle arene...")
+        val dataFolder = plugin.dataFolder
+        val arenaFolder = File(dataFolder, "arena")
 
-        for (arenaName in arenasSection.getKeys(false)) {
-            val arenaSection = arenasSection.getConfigurationSection(arenaName) ?: continue
-            val minPlayers = arenaSection.getInt("min-players")
-            val worldName = arenaSection.getString("world") ?: continue
-            val minHeight = arenaSection.getInt("min-height") ?: continue
-            val maxHeight = arenaSection.getInt("max-height") ?: continue
-            val slowFallingTime = arenaSection.getInt("slow-falling-time") ?: continue
-            val world = Bukkit.getWorld(worldName)
-
-            if (world == null) {
-                Bukkit.getLogger().warning("[ArenaManager] Mondo non trovato: $worldName")
-                continue
-            }
-
-            val mainSpawnLocation = Location(
-                world,
-                arenaSection.getDouble("main-spawn.x"),
-                arenaSection.getDouble("main-spawn.y"),
-                arenaSection.getDouble("main-spawn.z"),
-                arenaSection.getDouble("main-spawn.yaw").toFloat(),
-                arenaSection.getDouble("main-spawn.pitch").toFloat(),
-            )
-
-            val regionLocOne = Location(
-                world,
-                arenaSection.getDouble("region.loc-1.x"),
-                arenaSection.getDouble("region.loc-1.y"),
-                arenaSection.getDouble("region.loc-1.z"),
-            )
-
-            val regionLocSecond = Location(
-                world,
-                arenaSection.getDouble("region.loc-2.x"),
-                arenaSection.getDouble("region.loc-2.y"),
-                arenaSection.getDouble("region.loc-2.z"),
-            )
-
-            val region = Region.createRegion(regionLocOne, regionLocSecond)
-
-            val spawnsSection = arenaSection.getConfigurationSection("spawns") ?: continue
-            val spawnsList = mutableMapOf<Location, Player?>()
-            for (spawnKey in spawnsSection.getKeys(false)) {
-                val spawn = spawnsSection.getConfigurationSection(spawnKey) ?: continue
-                val x = spawn.getDouble("x")
-                val y = spawn.getDouble("y") + 3
-                val z = spawn.getDouble("z")
-                val yaw = spawn.getDouble("yaw").toFloat()
-                val pitch = spawn.getDouble("pitch").toFloat()
-                spawnsList[Location(world, x, y, z, yaw, pitch)] = null
-            }
-
-            val maxPlayers = spawnsList.size
-            val arena = Arena(spawnsList, mainSpawnLocation, slowFallingTime, maxPlayers, minPlayers, maxHeight, minHeight, regionLocOne, regionLocSecond ,region ,arenaName)
-            onlineArenas[arenaName] = arena
-            Bukkit.getLogger().info("[ArenaManager] Arena caricata: $arenaName con $maxPlayers spawn e minimo $minPlayers giocatori.")
+        if (!arenaFolder.exists() || !arenaFolder.isDirectory){
+            Bukkit.getLogger().info("")
+            return
         }
 
-        Bukkit.getLogger().info("[ArenaManager] Caricamento delle arene completato. ${onlineArenas.size} arene caricate.")
-    }
+        val arenaFile = arenaFolder.listFiles()
+        for (file in arenaFile) {
+            val current_config: FileConfiguration = YamlConfiguration.loadConfiguration(file)
 
+            //Basic info
+            val arenaWorld = Bukkit.getWorld(current_config.getString("basic.world") ?: "world")
+            val arenaName = current_config.getString("basic.name") ?: "error_arena_game"
+            val minHeight = current_config.getInt("basic.min-height")
+            val minPlayer = current_config.getInt("basic.min-players") ?: 2
+            val slowFalling = current_config.getInt("basic.slow-falling") ?: 2
+
+            //main-spawn
+            var mainSpawn = Location (
+                arenaWorld,
+                current_config.getDouble("spawns.main-spawn.x"),
+                current_config.getDouble("spawns.main-spawn.y"),
+                current_config.getDouble("spawns.main-spawn.z"),
+                current_config.getDouble("spawns.main-spawn.yaw").toFloat(),
+                current_config.getDouble("spawns.main-spawn.pitch").toFloat(),
+            )
+
+            //region
+            val regionLocOne = Location (
+                arenaWorld,
+                current_config.getDouble("spawns.regions.loc-1.x"),
+                current_config.getDouble("spawns.regions.loc-1.y"),
+                current_config.getDouble("spawns.regions.loc-1.z"),
+                current_config.getDouble("spawns.regions.loc-1.yaw").toFloat(),
+                current_config.getDouble("spawns.regions.loc-1.pitch").toFloat(),
+            )
+            val regionLocTwo = Location (
+                arenaWorld,
+                current_config.getDouble("spawns.regions.loc-2.x"),
+                current_config.getDouble("spawns.regions.loc-2.y"),
+                current_config.getDouble("spawns.regions.loc-2.z"),
+                current_config.getDouble("spawns.regions.loc-2.yaw").toFloat(),
+                current_config.getDouble("spawns.regions.loc-2.pitch").toFloat(),
+            )
+
+            val region = Region.createRegion(regionLocOne, regionLocTwo)
+
+            val spawnsList: MutableMap<Location, Player?> = mutableMapOf()
+            val gameSpawnsSection = current_config.getConfigurationSection("spawns.game-spawns")
+            gameSpawnsSection?.let { section ->
+                for (spawnKey in section.getKeys(false)) {
+                    val spawn = section.getConfigurationSection(spawnKey) ?: continue
+
+                    val x = spawn.getDouble("x")
+                    val y = spawn.getDouble("y") + 3
+                    val z = spawn.getDouble("z")
+                    val yaw = spawn.getDouble("yaw", 0.0).toFloat()
+                    val pitch = spawn.getDouble("pitch", 0.0).toFloat()
+
+                    val location = Location(arenaWorld, x, y, z, yaw, pitch)
+
+                    spawnsList[location] = null
+                }
+            } ?: run {
+                Bukkit.getLogger().warning("Nessuno spawn di gioco trovato per l'arena $arenaName")
+            }
+
+            val arena = Arena(spawnsList, mainSpawn, slowFalling, spawnsList.size, minPlayer, -1, minHeight, regionLocOne, regionLocTwo, region, arenaName)
+            Bukkit.getLogger().info("Created new arena $arenaName")
+            Bukkit.getLogger().info("advanced: ${arena.spawnMap}")
+            onlineArenas[arenaName] = arena
+        }
+    }
 }
