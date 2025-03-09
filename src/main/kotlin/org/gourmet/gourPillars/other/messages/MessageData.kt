@@ -2,9 +2,11 @@
 
 package org.gourmet.gourPillars.other.messages
 
+import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.JoinConfiguration
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.title.Title
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
@@ -218,7 +220,7 @@ object MessageData {
         ARENA_ERRORS_ALREADY_IN_GAME = getMessage(config, "arena.errors.already-in-game")
         ARENA_ERRORS_ARENA_NOT_READY = getMessage(config, "arena.errors.arena-not-ready")
         ARENA_ERRORS_THE_GAME_IS_FULL = getMessage(config, "arena.errors.the-game-is-full")
-        ARENA_ERRORS_LIMIT_REACHED = getMessage(config, "arena.errors.arena.errors.")
+        ARENA_ERRORS_LIMIT_REACHED = getMessage(config, "arena.errors.limit-reached")
 
         // Gui
         GUI_VOTE_TITLE = getMessageComponent(config, "gui.vote.title")
@@ -308,9 +310,19 @@ fun Player.sendDynamicMessage(message: DynamicMessage) {
 }
 
 fun Player.sendDynamicTitle(title: DynamicMessage, subTitle: DynamicMessage) {
-    this.sendTitle(title.build().toString(), subTitle.build().toString())
+    val mainTitle: Component = title.build()
+    val subTitle: Component = subTitle.build()
+
+    val title: Title = Title.title(mainTitle, subTitle)
+
+    this.showTitle(title)
 }
 
-fun Player.sendDynamicTitle(title: DynamicMessage, subTitle: DynamicMessage, vararg titleReplace: Pair<String, String>) {
-    this.sendTitle(title.build(*titleReplace).toString(), subTitle.build().toString())
+fun Player.sendDynamicTitle(title: DynamicMessage, subTitle: DynamicMessage, vararg subTitleReplace: Pair<String, String>) {
+    val mainTitle: Component = title.build()
+    val subTitle: Component = subTitle.build(*subTitleReplace)
+
+    val title: Title = Title.title(mainTitle, subTitle)
+
+    this.showTitle(title)
 }
