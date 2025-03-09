@@ -119,13 +119,20 @@ object PartyCMD {
                 .joinToString(" <gray>|</gray> ") { "<yellow>${it.name}</yellow>" }
 
 
-            player.sendMessage("<gradient:#c061cb:#3584e4>✦━━━ INFO PARTY ━━━✦</gradient>".toMini())
-            player.sendMessage("<gray>👑 Admin:</gray> <yellow>${party.partyAdmin.name}</yellow>".toMini())
+            //player.sendMessage("<gradient:#c061cb:#3584e4>✦━━━ INFO PARTY ━━━✦</gradient>".toMini())
+            //player.sendMessage("<gray>👑 Admin:</gray> <yellow>${party.partyAdmin.name}</yellow>".toMini())
             if(membersList.isNotEmpty()){
-                player.sendMessage("<gray>👥 Membri:</gray> $membersList".toMini())
-            }
-            player.sendMessage("<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>".toMini())
+                //player.sendMessage("<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>".toMini())
+                //player.sendMessage("<gray>👥 Membri:</gray> $membersList".toMini())
 
+                player.sendDynamicMessage(MessageData.PARTY_PARTY_INFO,
+                    "{partyAdmin}" to party.partyAdmin.name,
+                    "{members}" to membersList)
+            } else {
+                player.sendDynamicMessage(MessageData.PARTY_PARTY_INFO_NO_MEMBERS,
+                    "{partyAdmin}" to party.partyAdmin.name)
+            }
+            //player.sendMessage("<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>".toMini())
 
         } else {
             //player.sendMessage(mm.deserialize("<red> Non sei in un party!"))
@@ -155,7 +162,8 @@ object PartyCMD {
         """.trimIndent()
         )
 
-        player.sendMessage(message)
+        //player.sendMessage(message)
+        player.sendDynamicMessage(MessageData.PARTY_PARTY_COMMAND_HELP)
     }
 }
 

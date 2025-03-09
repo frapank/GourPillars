@@ -5,6 +5,8 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.other.messages.MessageData
+import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 import org.gourmet.gourPillars.other.toMini
 
 class PlaceBlockListener : Listener{
@@ -19,7 +21,8 @@ class PlaceBlockListener : Listener{
 
         if (!arena.region.isInRegion(player.location)) {
             event.isCancelled = true
-            player.sendMessage("<red>Limite raggiunto".toMini())
+            //player.sendMessage("<red>Limite raggiunto".toMini())
+            player.sendDynamicMessage(MessageData.ARENA_ERRORS_LIMIT_REACHED)
         }
     }
 }

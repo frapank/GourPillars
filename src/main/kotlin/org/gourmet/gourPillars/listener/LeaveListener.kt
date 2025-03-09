@@ -9,6 +9,8 @@ import org.gourmet.gourPillars.managers.ArenaManager
 import org.gourmet.gourPillars.task.GameTask
 import org.gourmet.gourPillars.managers.arena.Arena
 import org.gourmet.gourPillars.managers.arena.State
+import org.gourmet.gourPillars.other.messages.MessageData
+import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 import org.gourmet.gourPillars.other.toMini
 
 class LeaveListener : Listener {
@@ -39,7 +41,8 @@ class LeaveListener : Listener {
             }
 
             gameRunnable.alivePlayer.forEach{(member, _)->
-                member.sendMessage("$prefix <green>${player.name} <yellow>e' uscito dal gioco".toMini())
+                //member.sendMessage("$prefix <green>${player.name} <yellow>e' uscito dal gioco".toMini())
+                member.sendDynamicMessage(MessageData.ARENA_PLAYER_LEFT, "{player}" to player.name)
             }
 
         }
