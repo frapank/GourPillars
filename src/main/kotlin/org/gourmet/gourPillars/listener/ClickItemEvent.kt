@@ -99,7 +99,6 @@ class ClickItemEvent : Listener {
             arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_CLASSIC_VOTED, "{player}" to player.name)
             return
         }
-
         if (hasItemTag(item, "day-vote")) {
             if (arena.dayVote.contains(player) || arena.nightVote.contains(player)) {
                 //player.sendMessage("$prefix <red>Hai gia votato il tempo!".toMini())
@@ -109,7 +108,7 @@ class ClickItemEvent : Listener {
 
             arena.dayVote.add(player)
             //arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato la <yellow><bold>notte")
-            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_NIGHT_VOTED, "{player}" to player.name)
+            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_DAY_VOTED, "{player}" to player.name)
             return
         }
 
@@ -122,7 +121,7 @@ class ClickItemEvent : Listener {
 
             arena.nightVote.add(player)
             //arena.sendMessageToPlayerInGame("$prefix <green>${player.name} ha votato il <yellow><bold>giorno")
-            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_DAY_VOTED, "{player}" to player.name)
+            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_NIGHT_VOTED, "{player}" to player.name)
             return
         }
 
