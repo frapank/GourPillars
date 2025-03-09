@@ -2,8 +2,11 @@
 
 package org.gourmet.gourPillars.other.messages
 
+import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.JoinConfiguration
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.title.Title
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
@@ -23,6 +26,7 @@ class DynamicMessage(private val rawMessage: String) {
         pairs.forEach { (k, v) -> processed = processed.replace(k, v) }
         return miniMessage.deserialize(processed)
     }
+
 }
 
 object MessageData {
@@ -48,6 +52,9 @@ object MessageData {
     lateinit var PARTY_PARTY_PROMOTE: DynamicMessage
     lateinit var PARTY_USER_LEFT_PARTY: DynamicMessage
     lateinit var PARTY_PARTY_PROMOTE_BROADCAST: DynamicMessage
+    lateinit var PARTY_PARTY_INFO: DynamicMessage
+    lateinit var PARTY_PARTY_INFO_NO_MEMBERS: DynamicMessage
+    lateinit var PARTY_PARTY_COMMAND_HELP: DynamicMessage
 
     // Party Errors
     lateinit var PARTY_ERRORS_USER_ALREADY_IN_PARTY: DynamicMessage
@@ -66,9 +73,16 @@ object MessageData {
     // Arena
     lateinit var ARENA_JOIN: DynamicMessage
     lateinit var ARENA_LEAVE: DynamicMessage
+    lateinit var ARENA_PLAYER_LEFT: DynamicMessage
     lateinit var ARENA_PLAYER_NEEDED: DynamicMessage
     lateinit var ARENA_TITLE_START: DynamicMessage
+    lateinit var ARENA_SUBTITLE_START: DynamicMessage
     lateinit var ARENA_TITLE_END: DynamicMessage
+    lateinit var ARENA_SUBTITLE_END: DynamicMessage
+    lateinit var ARENA_PLAYER_ELIMINATED: DynamicMessage
+    lateinit var ARENA_PLAYER_ELIMINATED_FALL: DynamicMessage
+    lateinit var ARENA_PLAYER_ELIMINATED_KILL: DynamicMessage
+
     lateinit var ARENA_TITLE_COUNTDOWN_OTHER: DynamicMessage
     lateinit var ARENA_TITLE_COUNTDOWN_5: DynamicMessage
     lateinit var ARENA_TITLE_COUNTDOWN_4: DynamicMessage
@@ -80,6 +94,36 @@ object MessageData {
     lateinit var ARENA_ERRORS_ALREADY_IN_GAME: DynamicMessage
     lateinit var ARENA_ERRORS_ARENA_NOT_READY: DynamicMessage
     lateinit var ARENA_ERRORS_THE_GAME_IS_FULL: DynamicMessage
+    lateinit var ARENA_ERRORS_LIMIT_REACHED: DynamicMessage
+
+    // Arena Vote
+    lateinit var ARENA_VOTE_CLASSIC_VOTED: DynamicMessage
+    lateinit var ARENA_VOTE_LAVA_VOTED: DynamicMessage
+    lateinit var ARENA_VOTE_KNOCKBACK_VOTED: DynamicMessage
+    lateinit var ARENA_VOTE_NIGHT_VOTED: DynamicMessage
+    lateinit var ARENA_VOTE_DAY_VOTED: DynamicMessage
+    lateinit var ARENA_VOTE_ALREADY_VOTED_EVENT: DynamicMessage
+    lateinit var ARENA_VOTE_ALREADY_VOTED_TIME: DynamicMessage
+
+    // Gui
+    lateinit var GUI_VOTE_TITLE: Component
+    lateinit var GUI_ITEM_FILLER_NAME: Component
+    lateinit var GUI_CLASSIC_VOTE_NAME: Component
+    lateinit var GUI_CLASSIC_VOTE_LORE: Component
+    lateinit var GUI_KNOCKBACK_VOTE_NAME: Component
+    lateinit var GUI_KNOCKBACK_VOTE_LORE: Component
+    lateinit var GUI_LAVA_VOTE_NAME: Component
+    lateinit var GUI_LAVA_VOTE_LORE: Component
+    lateinit var GUI_DAY_VOTE_NAME: Component
+    lateinit var GUI_DAY_VOTE_LORE: Component
+    lateinit var GUI_NIGHT_VOTE_NAME: Component
+    lateinit var GUI_NIGHT_VOTE_LORE: Component
+
+    // Items
+    lateinit var WAITING_ITEMS_VOTE_NAME: Component
+    lateinit var WAITING_ITEMS_VOTE_LORE: Component
+    lateinit var WAITING_ITEMS_LEAVE_NAME: Component
+    lateinit var WAITING_ITEMS_LEAVE_LORE: Component
 
     // Scoreboard
     lateinit var SCOREBOARD_LOBBY_TITLE: DynamicMessage
@@ -116,11 +160,17 @@ object MessageData {
         // Arena
         ARENA_JOIN = getMessage(config, "arena.join")
         ARENA_LEAVE = getMessage(config, "arena.leave")
+        ARENA_PLAYER_LEFT = getMessage(config, "arena.player-left")
         ARENA_PLAYER_NEEDED = getMessage(config, "arena.player-needed")
+        ARENA_PLAYER_ELIMINATED = getMessage(config, "arena.player-eliminated")
+        ARENA_PLAYER_ELIMINATED_FALL = getMessage(config, "arena.player-eliminated-fall")
+        ARENA_PLAYER_ELIMINATED_KILL = getMessage(config, "arena.player-eliminated-kill")
 
         // Arena Titles
-        ARENA_TITLE_START = getMessage(config, "arena.title.start")
-        ARENA_TITLE_END = getMessage(config, "arena.title.end")
+        ARENA_TITLE_START = getMessage(config, "arena.title.start-title")
+        ARENA_SUBTITLE_START = getMessage(config, "arena.title.start-subtitle")
+        ARENA_TITLE_END = getMessage(config, "arena.title.end-title")
+        ARENA_SUBTITLE_END = getMessage(config, "arena.title.end-subtitle")
         ARENA_TITLE_COUNTDOWN_OTHER = getMessage(config, "arena.title.countdown-other")
         ARENA_TITLE_COUNTDOWN_5 = getMessage(config, "arena.title.countdown-5")
         ARENA_TITLE_COUNTDOWN_4 = getMessage(config, "arena.title.countdown-4")
@@ -128,6 +178,14 @@ object MessageData {
         ARENA_TITLE_COUNTDOWN_2 = getMessage(config, "arena.title.countdown-2")
         ARENA_TITLE_COUNTDOWN_1 = getMessage(config, "arena.title.countdown-1")
 
+        // Arena Vote
+        ARENA_VOTE_CLASSIC_VOTED = getMessage(config, "arena.vote.classic-voted")
+        ARENA_VOTE_LAVA_VOTED = getMessage(config, "arena.vote.lava-voted")
+        ARENA_VOTE_KNOCKBACK_VOTED = getMessage(config, "arena.vote.knockback-voted")
+        ARENA_VOTE_NIGHT_VOTED = getMessage(config, "arena.vote.night-voted")
+        ARENA_VOTE_DAY_VOTED = getMessage(config, "arena.vote.day-voted")
+        ARENA_VOTE_ALREADY_VOTED_EVENT = getMessage(config, "arena.vote.already-voted-event")
+        ARENA_VOTE_ALREADY_VOTED_TIME = getMessage(config, "arena.vote.already-voted-time")
 
         // Party
         PARTY_PARTY_CREATED = getMessage(config, "party.party-created")
@@ -140,6 +198,9 @@ object MessageData {
         PARTY_PARTY_PROMOTE = getMessage(config, "party.party-promote")
         PARTY_USER_LEFT_PARTY = getMessage(config, "party.user-left-party")
         PARTY_PARTY_PROMOTE_BROADCAST = getMessage(config, "party.party-promote-broadcast")
+        PARTY_PARTY_INFO = getMessage(config, "party.party-info")
+        PARTY_PARTY_INFO_NO_MEMBERS = getMessage(config, "party.party-info-no-members")
+        PARTY_PARTY_COMMAND_HELP = getMessage(config, "party.command-help")
 
         // Party Errors
         PARTY_ERRORS_USER_ALREADY_IN_PARTY = getMessage(config, "party.errors.user-already-in-party")
@@ -159,6 +220,27 @@ object MessageData {
         ARENA_ERRORS_ALREADY_IN_GAME = getMessage(config, "arena.errors.already-in-game")
         ARENA_ERRORS_ARENA_NOT_READY = getMessage(config, "arena.errors.arena-not-ready")
         ARENA_ERRORS_THE_GAME_IS_FULL = getMessage(config, "arena.errors.the-game-is-full")
+        ARENA_ERRORS_LIMIT_REACHED = getMessage(config, "arena.errors.limit-reached")
+
+        // Gui
+        GUI_VOTE_TITLE = getMessageComponent(config, "gui.vote.title")
+        GUI_ITEM_FILLER_NAME = getMessageComponent(config, "gui.vote.item-filler-name")
+        GUI_CLASSIC_VOTE_NAME = getMessageComponent(config, "gui.vote.classic-vote-name")
+        GUI_CLASSIC_VOTE_LORE = getMessageComponent(config, "gui.vote.classic-vote-lore")
+        GUI_KNOCKBACK_VOTE_NAME = getMessageComponent(config, "gui.vote.knockback-vote-name")
+        GUI_KNOCKBACK_VOTE_LORE = getMessageComponent(config, "gui.vote.knockback-vote-lore")
+        GUI_LAVA_VOTE_NAME = getMessageComponent(config, "gui.vote.lava-vote-name")
+        GUI_LAVA_VOTE_LORE = getMessageComponent(config, "gui.vote.lava-vote-lore")
+        GUI_DAY_VOTE_NAME = getMessageComponent(config, "gui.vote.day-vote-name")
+        GUI_DAY_VOTE_LORE = getMessageComponent(config, "gui.vote.day-vote-lore")
+        GUI_NIGHT_VOTE_NAME = getMessageComponent(config, "gui.vote.night-vote-name")
+        GUI_NIGHT_VOTE_LORE = getMessageComponent(config, "gui.vote.night-vote-lore")
+
+        // Items
+        WAITING_ITEMS_VOTE_NAME = getMessageComponent(config, "items.waiting.vote-name")
+        WAITING_ITEMS_VOTE_LORE = getMessageComponent(config, "items.waiting.vote-lore")
+        WAITING_ITEMS_LEAVE_NAME = getMessageComponent(config, "items.waiting.leave-name")
+        WAITING_ITEMS_LEAVE_LORE = getMessageComponent(config, "items.waiting.leave-name")
 
         // Scoreboard
         SCOREBOARD_LOBBY_TITLE = getMessage(config, "scoreboard.lobby.title")
@@ -191,6 +273,19 @@ object MessageData {
         }
     }
 
+    private fun getMessageComponent(config: FileConfiguration, path: String): Component {
+        return when (val value = config.get(path)) {
+            is String -> miniMessage.deserialize(processString(value))
+            is List<*> -> {
+                val components = (value as List<String>).map { miniMessage.deserialize(processString(it)) }
+                Component.text().append(components).build()
+
+            }
+
+            else -> miniMessage.deserialize("<red>Messaggio non trovato!")
+        }
+    }
+
     private fun processString(value: String): String {
         return value.replace("{prefix_game}", PREFIX_GAME_STRING)
             .replace("{prefix_party}", PREFIX_PARTY_STRING)
@@ -215,9 +310,19 @@ fun Player.sendDynamicMessage(message: DynamicMessage) {
 }
 
 fun Player.sendDynamicTitle(title: DynamicMessage, subTitle: DynamicMessage) {
-    this.sendTitle(title.build().toString(), subTitle.build().toString())
+    val mainTitle: Component = title.build()
+    val subTitle: Component = subTitle.build()
+
+    val title: Title = Title.title(mainTitle, subTitle)
+
+    this.showTitle(title)
 }
 
-fun Player.sendDynamicTitle(title: DynamicMessage, subTitle: DynamicMessage, vararg titleReplace: Pair<String, String>) {
-    this.sendTitle(title.build(*titleReplace).toString(), subTitle.build().toString())
+fun Player.sendDynamicTitle(title: DynamicMessage, subTitle: DynamicMessage, vararg subTitleReplace: Pair<String, String>) {
+    val mainTitle: Component = title.build()
+    val subTitle: Component = subTitle.build(*subTitleReplace)
+
+    val title: Title = Title.title(mainTitle, subTitle)
+
+    this.showTitle(title)
 }
