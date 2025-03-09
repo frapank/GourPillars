@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "org.gourmet"
-version = "1.0-beta-1.1.2"
+version = "1.0-beta-1.1.3"
 
 repositories {
     mavenCentral()

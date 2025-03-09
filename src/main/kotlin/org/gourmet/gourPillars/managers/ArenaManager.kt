@@ -69,7 +69,7 @@ class ArenaManager {
             val slowFalling = current_config.getInt("basic.slow-falling") ?: 2
 
             //main-spawn
-            var mainSpawn = Location (
+            val mainSpawn = Location (
                 arenaWorld,
                 current_config.getDouble("spawns.main-spawn.x"),
                 current_config.getDouble("spawns.main-spawn.y"),
