@@ -36,6 +36,7 @@ class GourPillars : JavaPlugin() {
         languageManager = LanguageManager()
         languageManager.saveDefaultLanguageFile()
 
+        Bukkit.getLogger().info("GourPillars starting...")
         jsonManager = JsonManager()
         partyManager = PartyManager()
         spawnManager = SpawnManager()
