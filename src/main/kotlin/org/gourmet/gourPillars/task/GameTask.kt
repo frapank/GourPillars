@@ -107,8 +107,10 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
 
     private fun handleEndGame() {
         val winner = getWinner()
-        arena.sendTitleToPlayerInGame("&aGioco terminato!", "&e${winner?.name} &fha vinto")
+        //arena.sendTitleToPlayerInGame("&aGioco terminato!", "&e${winner?.name} &fha vinto")
+        //arena.sendDynamicTitleToPlayerInGame(MessageData.ARENA_TITLE_END, MessageData.ARENA_SUBTITLE_END, "{winner}" to winner?.name)
         if (winner != null) {
+            arena.sendDynamicTitleToPlayerInGame(MessageData.ARENA_TITLE_END, MessageData.ARENA_SUBTITLE_END, "{winner}" to winner.name)
             arena.waitingPlayer.forEach { messagePlayer ->
                 messagePlayer.sendDynamicMessage(MessageData.WIN_GAME, "{winner}" to winner.name) //TODO: Mettere la placeholder winner
 
@@ -119,6 +121,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         arena.dayVote.clear()
         arena.knockbackVote.clear()
         arena.lavaEvent.clear()
+        arena.noEventVote.clear()
         if (winner != null) {
             winner.isInvulnerable = true
             val winnerData = jsonManager.getPlayerData(winner) ?: PlayerData(winner.name, 0, 0, 0, 0,0, 0, 0)
@@ -260,21 +263,27 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         playerData.defeats += 1
         GourPillars.jsonManager.setPlayerData(player, playerData)
         GourPillars.jsonManager.savePlayerData()
-        player.sendMessage("<gray>--------------------------".toMini())
-        player.sendMessage("<dark_gray>•<gray> Game length: <yellow>${getTimeFormatted()}".toMini())
-        player.sendMessage("<dark_gray>•<gray> Kills: <yellow>${kills}".toMini())
-        player.sendMessage("<dark_gray>•<gray> Map: <yellow>${arena.name}".toMini())
-        player.sendMessage("<gray>--------------------------".toMini())
-        player.sendMessage(("<hover:show_text:\"<green>Start a new game\">" +
-                "<click:run_command:/joinrandom>" +
-                "<gray>Click Here to <green>play again").toMini())
-        player.sendMessage("<gray>--------------------------".toMini())
+        //player.sendMessage("<gray>--------------------------".toMini())
+        //player.sendMessage("<dark_gray>•<gray> Game length: <yellow>${getTimeFormatted()}".toMini())
+        //player.sendMessage("<dark_gray>•<gray> Kills: <yellow>${kills}".toMini())
+        //player.sendMessage("<dark_gray>•<gray> Map: <yellow>${arena.name}".toMini())
+        //player.sendMessage("<gray>--------------------------".toMini())
+        //player.sendMessage(("<hover:show_text:\"<green>Start a new game\">" +
+        //        "<click:run_command:/joinrandom>" +
+        //        "<gray>Click Here to <green>play again").toMini())
+        //player.sendMessage("<gray>--------------------------".toMini())
+
+        player.sendDynamicMessage(MessageData.END_GAME,
+            "{time}" to getTimeFormatted(),
+            "{kills}" to kills.toString(),
+            "{map}" to arena.name)
     }
 
     fun playerEliminated(player: Player){
         eliminationProcess(player)
-        arena.waitingPlayer.forEach { reciverPlayer ->
-            if(reciverPlayer != player) reciverPlayer.sendMessage("$prefix <yellow><green>${player.name}</green> e' stato eliminato</yellow>".toMini())
+        arena.waitingPlayer.forEach { receiverPlayer ->
+            if(receiverPlayer != player) //receiverPlayer.sendMessage("$prefix <yellow><green>${player.name}</green> e' stato eliminato</yellow>".toMini())
+                receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED, "{player}" to player.name)
         }
 
     }
@@ -282,8 +291,9 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     //fall damage death message
     fun playerEliminatedFall(player: Player){
         eliminationProcess(player)
-        arena.waitingPlayer.forEach { reciverPlayer ->
-            if(reciverPlayer != player) reciverPlayer.sendMessage("$prefix <yellow><green>${player.name}</green> e' caduto</yellow>".toMini())
+        arena.waitingPlayer.forEach { receiverPlayer ->
+            if(receiverPlayer != player) //receiverPlayer.sendMessage("$prefix <yellow><green>${player.name}</green> e' caduto</yellow>".toMini())
+                receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED_FALL, "{player}" to player.name)
         }
 
     }
@@ -294,8 +304,11 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
             lastPlayer = player
         alivePlayer.remove(player)
         player.gameMode = GameMode.SPECTATOR
-        arena.waitingPlayer.forEach { reciverPlayer ->
-            if(reciverPlayer != player) reciverPlayer.sendMessage("$prefix <yellow><green>${player.name}</green> e' stato eliminato da <green>${killer.name}</green></yellow>".toMini())
+        arena.waitingPlayer.forEach { receiverPlayer ->
+            if(receiverPlayer != player) //receiverPlayer.sendMessage("$prefix <yellow><green>${player.name}</green> e' stato eliminato da <green>${killer.name}</green></yellow>".toMini())
+                receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED_KILL,
+                    "{player}" to player.name,
+                    "{killer}" to killer.name)
         }
         if(alivePlayer.contains(killer)){
             val oldKills = alivePlayer[killer]!! + 1
