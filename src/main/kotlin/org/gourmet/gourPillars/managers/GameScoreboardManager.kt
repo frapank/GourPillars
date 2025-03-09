@@ -19,14 +19,16 @@ class GameScoreboardManager(private val arena: Arena) {
     private val plugin = GourPillars.instance
     private val miniMessage = MiniMessage.miniMessage()
     private val config: FileConfiguration = plugin.config
+    private lateinit var langCfg: FileConfiguration
 
     fun setWaitingBoard(player: Player) {
+        langCfg = GourPillars.languageManager.getLanguageConfig()
         val scoreboard = Bukkit.getScoreboardManager().newScoreboard
-        val title = PlaceholderAPI.setPlaceholders(player, config.getString("scoreboards.titles", "Pillars")!!)
+        val title = PlaceholderAPI.setPlaceholders(player, langCfg.getString("scoreboard.waiting.title", "Pillars")!!)
         val objective = scoreboard.registerNewObjective("lobby", "dummy", miniMessage.deserialize(title))
         objective.displaySlot = DisplaySlot.SIDEBAR
 
-        val lines = config.getStringList("scoreboards.waiting")
+        val lines = langCfg.getStringList("scoreboard.waiting.lines")
         setLines(player, objective, lines)
 
         player.scoreboard = scoreboard
@@ -34,14 +36,16 @@ class GameScoreboardManager(private val arena: Arena) {
     }
 
     fun setGameScoreboard(player: Player) {
+        langCfg = GourPillars.languageManager.getLanguageConfig()
+
         if (arena.gameState != State.INGAME) return
 
         val scoreboard = Bukkit.getScoreboardManager().newScoreboard
-        val title = PlaceholderAPI.setPlaceholders(player, config.getString("scoreboards.titles", "Pillars")!!)
+        val title = PlaceholderAPI.setPlaceholders(player, langCfg.getString("scoreboard.playing.title", "Pillars")!!)
         val objective = scoreboard.registerNewObjective("game", "dummy", miniMessage.deserialize(title))
         objective.displaySlot = DisplaySlot.SIDEBAR
 
-        val lines = config.getStringList("scoreboards.in-game")
+        val lines = langCfg.getStringList("scoreboard.playing.lines")
         setLines(player, objective, lines)
 
         player.scoreboard = scoreboard
