@@ -4,6 +4,7 @@ import org.bukkit.Sound
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.managers.arena.Arena
 import org.gourmet.gourPillars.managers.arena.State
+import org.gourmet.gourPillars.other.messages.MessageData
 
 class CountDownTask(val arena: Arena) : BukkitRunnable(){
 
@@ -18,7 +19,8 @@ class CountDownTask(val arena: Arena) : BukkitRunnable(){
                     return
                 }
                 if(counter <= 0){
-                    arena.sendTitleToPlayerInGame("&7Uccidi i tuoi avversari", "&8Ma non cadere...")
+                    //arena.sendTitleToPlayerInGame("&7Uccidi i tuoi avversari", "&8Ma non cadere...")
+                    arena.sendDynamicTitleToPlayerInGame(MessageData.ARENA_TITLE_START, MessageData.ARENA_SUBTITLE_START)
                     arena.waitingPlayer.forEach { player ->
                         player.playSound(player.location, Sound.ENTITY_WITHER_SPAWN, 0.8f, 2.0f)
                     }
