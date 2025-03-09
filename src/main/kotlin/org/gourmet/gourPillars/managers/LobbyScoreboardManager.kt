@@ -10,21 +10,25 @@ import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
 import org.bukkit.scoreboard.Scoreboard
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.other.messages.MessageData
 
 class LobbyScoreboardManager() {
     private val scoreboards: MutableMap<Player, Scoreboard> = mutableMapOf()
     private val plugin = GourPillars.instance
     private val miniMessage = MiniMessage.miniMessage()
     private val config: FileConfiguration = plugin.config
+    private lateinit var langCfg: FileConfiguration
 
     fun setScoreboard(player: Player) {
 
+        langCfg = GourPillars.languageManager.getLanguageConfig()
+
         val scoreboard = Bukkit.getScoreboardManager().newScoreboard
-        val title = PlaceholderAPI.setPlaceholders(player, config.getString("scoreboards.titles", "Pillars")!!)
+        val title = PlaceholderAPI.setPlaceholders(player, langCfg.getString("scoreboard.lobby.title", "Pillars")!!)
         val objective = scoreboard.registerNewObjective("game", "dummy", miniMessage.deserialize(title))
         objective.displaySlot = DisplaySlot.SIDEBAR
 
-        val lines = config.getStringList("scoreboards.lobby")
+        val lines = langCfg.getStringList("scoreboard.lobby.lines")
         setLines(player, objective, lines)
 
         player.scoreboard = scoreboard

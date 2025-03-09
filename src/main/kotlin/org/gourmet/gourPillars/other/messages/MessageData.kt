@@ -2,9 +2,7 @@
 
 package org.gourmet.gourPillars.other.messages
 
-import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.JoinConfiguration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.title.Title
 import org.bukkit.configuration.file.FileConfiguration
@@ -126,8 +124,8 @@ object MessageData {
     lateinit var WAITING_ITEMS_LEAVE_LORE: Component
 
     // Scoreboard
-    lateinit var SCOREBOARD_LOBBY_TITLE: DynamicMessage
-    lateinit var SCOREBOARD_LOBBY_LINES: DynamicMessage
+    lateinit var SCOREBOARD_LOBBY_TITLE: Component
+    lateinit var SCOREBOARD_LOBBY_LINES: Component
     lateinit var SCOREBOARD_WAITING_TITLE: DynamicMessage
     lateinit var SCOREBOARD_WAITING_LINES: DynamicMessage
     lateinit var SCOREBOARD_PLAYING_TITLE: DynamicMessage
@@ -243,8 +241,8 @@ object MessageData {
         WAITING_ITEMS_LEAVE_LORE = getMessageComponent(config, "items.waiting.leave-name")
 
         // Scoreboard
-        SCOREBOARD_LOBBY_TITLE = getMessage(config, "scoreboard.lobby.title")
-        SCOREBOARD_LOBBY_LINES = getMessage(config, "scoreboard.lobby.lines")
+        SCOREBOARD_LOBBY_TITLE = getMessageComponent(config, "scoreboard.lobby.title")
+        SCOREBOARD_LOBBY_LINES = getMessageComponent(config, "scoreboard.lobby.lines")
         SCOREBOARD_WAITING_TITLE = getMessage(config, "scoreboard.waiting.title")
         SCOREBOARD_WAITING_LINES = getMessage(config, "scoreboard.waiting.lines")
         SCOREBOARD_PLAYING_TITLE = getMessage(config, "scoreboard.playing.title")
