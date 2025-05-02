@@ -14,7 +14,7 @@ import revxrsal.commands.annotation.Subcommand
 object PartyCMD {
 
     private val partyManager = GourPillars.partyManager
-    private val invitedPlayers: MutableMap<Player, Player> = mutableMapOf() //Target, Owner//private val prefix = "<bold><green>Party <bold><gray>|"
+    private val invitedPlayers: MutableMap<Player, Player> = mutableMapOf() //Target, Owner
     private val chatToggle: MutableMap<Player, Boolean> = mutableMapOf() //Party member, enabled/disabled
 
     @Subcommand()
