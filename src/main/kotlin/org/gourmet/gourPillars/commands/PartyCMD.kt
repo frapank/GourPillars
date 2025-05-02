@@ -7,7 +7,6 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
-import org.gourmet.gourPillars.other.toMini
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.annotation.Subcommand
 
