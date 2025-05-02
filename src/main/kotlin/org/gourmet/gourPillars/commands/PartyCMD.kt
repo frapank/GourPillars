@@ -118,24 +118,21 @@ object PartyCMD {
             val membersList = party.members.filter { it != party.partyAdmin }
                 .joinToString(" <gray>|</gray> ") { "<yellow>${it.name}</yellow>" }
 
-
-            //player.sendMessage("<gradient:#c061cb:#3584e4>✦━━━ INFO PARTY ━━━✦</gradient>".toMini())
-            //player.sendMessage("<gray>👑 Admin:</gray> <yellow>${party.partyAdmin.name}</yellow>".toMini())
             if(membersList.isNotEmpty()){
-                //player.sendMessage("<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>".toMini())
-                //player.sendMessage("<gray>👥 Membri:</gray> $membersList".toMini())
 
                 player.sendDynamicMessage(MessageData.PARTY_PARTY_INFO,
                     "{partyAdmin}" to party.partyAdmin.name,
-                    "{members}" to membersList)
+                    "{members}" to membersList,
+                    "{members_count}" to party.members.size.toString(),
+                    "{members_max}" to "8")
             } else {
                 player.sendDynamicMessage(MessageData.PARTY_PARTY_INFO_NO_MEMBERS,
-                    "{partyAdmin}" to party.partyAdmin.name)
+                    "{partyAdmin}" to party.partyAdmin.name,
+                    "{members_count}" to party.members.size.toString(),
+                    "{members_max}" to "8")
             }
-            //player.sendMessage("<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>".toMini())
 
         } else {
-            //player.sendMessage(mm.deserialize("<red> Non sei in un party!"))
             player.sendDynamicMessage(MessageData.PARTY_ERRORS_PLAYER_NOT_IN_PARTY)
         }
 
