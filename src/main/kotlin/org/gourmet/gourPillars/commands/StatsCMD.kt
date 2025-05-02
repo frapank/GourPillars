@@ -24,21 +24,7 @@ object StatsCMD {
         val gamesPlayed = playerData?.gamesPlayed ?: "error"
         val xp = playerData?.xp ?: "error"
         val level = playerData?.level ?: "error"
-
-        /*
-        player.sendMessage("<gradient:#c061cb:#3584e4>✦━━━━━ Stats ━━━━━✦</gradient>".toMini())
-        player.sendMessage("")
-        player.sendMessage("<gray>👤 Player<gray>:</gray> <yellow>${player.name}</yellow>".toMini())
-        player.sendMessage("<gray>💀 Deaths<gray>:</gray> <yellow>$deaths</yellow>".toMini())
-        player.sendMessage("<gray>⚔ Defeats<gray>:</gray> <yellow>$defeats</yellow>".toMini())
-        player.sendMessage("<gray>🏹 Kills:</gray> <yellow>$kills</yellow>".toMini())
-        player.sendMessage("<gray>🏆 Wins:</gray> <yellow>$wins</yellow>".toMini())
-        player.sendMessage("<gray>🎮 Games Played:</gray> <yellow>$gamesPlayed</yellow>".toMini())
-        player.sendMessage("<gray>⭐ XP:</gray> <yellow>$xp</yellow>".toMini())
-        player.sendMessage("<gray>⬆ Level:</gray> <yellow>$level</yellow>".toMini())
-        player.sendMessage("")
-        player.sendMessage("<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━✦</gradient>".toMini())
-         */
+        val kd = jsonManager.getPlayerKD(player)
 
         player.sendDynamicMessage(MessageData.STATS_USER,
             "{player}" to player.name,
@@ -47,6 +33,7 @@ object StatsCMD {
             "{kills}" to kills.toString(),
             "{wins}" to wins.toString(),
             "{gamesPlayed}" to gamesPlayed.toString(),
+            "{kd}" to kd.toString(),
             "{xp}" to xp.toString(),
             "{level}" to level.toString()
         )
@@ -62,28 +49,8 @@ object StatsCMD {
         val gamesPlayed = playerData?.gamesPlayed ?: "error"
         val xp = playerData?.xp ?: "error"
         val level = playerData?.level ?: "error"
+        val kd = jsonManager.getPlayerKD(target)
 
-        val mm = MiniMessage.miniMessage()
-
-        /*
-        val message = mm.deserialize("""
-        <gradient:#ffcc00:#ff6699>✦━━━━━━━━━━━━━━━━━━━━━━━✦</gradient>
-        <bold><gradient:#00ff99:#00ccff>📊 Statistiche Giocatore 📊</gradient></bold>
-        
-        <yellow>👤 Player</yellow> <gray>»</gray> <green>${target.name}</green>
-        <yellow>💀 Deaths</yellow> <gray>»</gray> <red>$deaths</red>
-        <yellow>⚔ Defeats</yellow> <gray>»</gray> <red>$defeats</red>
-        <yellow>🏹 Kills</yellow> <gray>»</gray> <green>$kills</green>
-        <yellow>🏆 Wins</yellow> <gray>»</gray> <aqua>$wins</aqua>
-        <yellow>🎮 Games Played</yellow> <gray>»</gray> <gold>$gamesPlayed</gold>
-        <yellow>⭐ XP</yellow> <gray>»</gray> <light_purple>$xp</light_purple>
-        <yellow>⬆ Level</yellow> <gray>»</gray> <blue>$level</blue>
-        
-        <gradient:#ff6699:#ffcc00>✦━━━━━━━━━━━━━━━━━━━━━━━✦</gradient>
-        """)
-
-        player.sendMessage(message)
-         */
         player.sendDynamicMessage(MessageData.STATS_TARGET,
             "{player}" to player.name,
             "{deaths}" to deaths.toString(),
@@ -91,6 +58,7 @@ object StatsCMD {
             "{kills}" to kills.toString(),
             "{wins}" to wins.toString(),
             "{gamesPlayed}" to gamesPlayed.toString(),
+            "{kd}" to kd.toString(),
             "{xp}" to xp.toString(),
             "{level}" to level.toString()
         )

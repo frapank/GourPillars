@@ -118,6 +118,20 @@ class JsonManager {
         return playerDataMap
     }
 
+    fun getPlayerKD(player: Player) : Double {
+        val playerData = getPlayerData(player) ?: PlayerData(player.name, 0, 0, 0, 0, 0, 0, 0)
+        val kd: Double
+        if(playerData.deaths == 0) {
+            kd = playerData.kills.toDouble()
+        } else if(playerData.kills == 0) {
+            kd = 0.0
+        } else {
+            kd = (playerData.kills / playerData.deaths).toDouble()
+        }
+        //kd = Math.round(kd * 100.0) / 100.0 //TODO test and check if round is needed
+        return kd
+    }
+
     fun addXP(player: Player, xpToAdd: Int){
         val playerData = getPlayerData(player) ?: PlayerData(player.name, 0, 0, 0, 0, 0, 0, 0)
         playerData.xp += xpToAdd
