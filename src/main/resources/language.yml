@@ -103,6 +103,7 @@ party:
     - ""
     - "<gradient:#c061cb:#3584e4>━━━━━━━━━━━━━━━━━━━━━━━</gradient>"
     - ""
+  command-chat: ""
   errors:
     user-already-in-party: "{prefix_party} <red>Sei gia in un party"
     cant-invite-yourself: "{prefix_party} <red>Non puoi invitarti da solo"

@@ -53,6 +53,7 @@ object MessageData {
     lateinit var PARTY_PARTY_INFO: DynamicMessage
     lateinit var PARTY_PARTY_INFO_NO_MEMBERS: DynamicMessage
     lateinit var PARTY_PARTY_COMMAND_HELP: DynamicMessage
+    lateinit var PARTY_CHAT_ENABLED_DISABLED: DynamicMessage
 
     // Party Errors
     lateinit var PARTY_ERRORS_USER_ALREADY_IN_PARTY: DynamicMessage
@@ -199,6 +200,7 @@ object MessageData {
         PARTY_PARTY_INFO = getMessage(config, "party.party-info")
         PARTY_PARTY_INFO_NO_MEMBERS = getMessage(config, "party.party-info-no-members")
         PARTY_PARTY_COMMAND_HELP = getMessage(config, "party.command-help")
+        PARTY_CHAT_ENABLED_DISABLED = getMessage(config, "party.command-chat")
 
         // Party Errors
         PARTY_ERRORS_USER_ALREADY_IN_PARTY = getMessage(config, "party.errors.user-already-in-party")

@@ -15,8 +15,8 @@ import revxrsal.commands.annotation.Subcommand
 object PartyCMD {
 
     private val partyManager = GourPillars.partyManager
-    private val invitedPlayers: MutableMap<Player, Player> = mutableMapOf() //Target, Owner
-    //private val prefix = "<bold><green>Party <bold><gray>|"
+    private val invitedPlayers: MutableMap<Player, Player> = mutableMapOf() //Target, Owner//private val prefix = "<bold><green>Party <bold><gray>|"
+    private val chatToggle: MutableMap<Player, Boolean> = mutableMapOf() //Party member, enabled/disabled
 
     @Subcommand()
     fun partyMain(player: Player){
@@ -137,6 +137,19 @@ object PartyCMD {
         }
 
         Bukkit.getLogger().info("invites: $invitedPlayers")
+    }
+
+    //todo complete party chat
+    //@Subcommand("chat")
+    fun partyChat(player: Player) {
+        val party = partyManager.getPartyByPlayer(player) ?: return
+        if (partyManager.isInParty(player)) {
+            val chatEnabled: Boolean = chatToggle.getOrDefault(player, false)
+            chatToggle.put(player, !chatEnabled)
+            player.sendDynamicMessage(MessageData.PARTY_CHAT_ENABLED_DISABLED, "{status}" to if (chatEnabled) "" else "")
+        } else {
+            player.sendDynamicMessage(MessageData.PARTY_ERRORS_PLAYER_NOT_IN_PARTY)
+        }
     }
 
     private fun sendCommandsPartyHelp(player: Player) {
