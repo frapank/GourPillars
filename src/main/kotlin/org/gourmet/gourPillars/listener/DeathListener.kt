@@ -9,7 +9,7 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.data.PlayerData
 import org.gourmet.gourPillars.managers.arena.Arena
-import org.gourmet.gourPillars.task.GameTask
+import org.gourmet.gourPillars.task.game.gametasks.GameTask
 import org.gourmet.gourPillars.managers.arena.State
 
 @SuppressWarnings("deprecation")
