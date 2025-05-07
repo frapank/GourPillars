@@ -50,6 +50,7 @@ arena:
     classic-voted: "{prefix_game} <green>{player} ha votato per una partita <yellow><bold>classica"
     lava-voted: "{prefix_game} <green>{player} ha votato l'evento <yellow><bold>lava"
     knockback-voted: "{prefix_game} <green>{player} ha votato l'evento <yellow><bold>knockback"
+    border-voted: "{prefix_game} <green>{player} ha votato l'evento <yellow><bold>Border"
     night-voted: "{prefix_game} <green>{player} ha votato la <yellow><bold>notte"
     day-voted: "{prefix_game} <green>{player} ha votato il <yellow><bold>giorno"
     already-voted-event: "{prefix_game} <red>Hai gia votato un evento!"
@@ -129,6 +130,10 @@ gui:
     knockback-vote-lore:
       - "<gray>I giocatori avranno un"
       - "<gray>knockback potenziato!"
+    border-vote-name: "<green>Border Event"
+    border-vote-lore:
+      - "<gray>il bordo dell'arena"
+      - "<gray>si restringerà!"
     lava-vote-name: "<yellow>Lava event"
     lava-vote-lore:
       - "<gray>Un pavimento di lava apparirà"
