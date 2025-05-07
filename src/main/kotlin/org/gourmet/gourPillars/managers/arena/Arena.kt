@@ -15,7 +15,7 @@ import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 import org.gourmet.gourPillars.other.messages.sendDynamicTitle
 import org.gourmet.gourPillars.other.toMini
-import org.gourmet.gourPillars.task.GameTask
+import org.gourmet.gourPillars.task.game.gametasks.GameTask
 import org.gourmet.gourPillars.task.ResetArenaTask
 import org.gourmet.gourPillars.task.CountDownTask
 
