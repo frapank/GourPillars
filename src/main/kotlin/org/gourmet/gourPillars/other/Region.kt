@@ -6,12 +6,12 @@ import org.bukkit.World
 
 class Region private constructor(
     var world: World,
-    val minX: Int,
+    var minX: Int,
     val minY: Int,
-    val minZ: Int,
-    val maxX: Int,
+    var minZ: Int,
+    var maxX: Int,
     val maxY: Int,
-    val maxZ: Int
+    var maxZ: Int
 ) {
     companion object {
 
@@ -50,4 +50,6 @@ class Region private constructor(
     fun getBounds(): String {
         return "Mondo: ${world.name} | X: $minX-$maxX | Y: $minY-$maxY | Z: $minZ-$maxZ"
     }
+
+    fun clone(): Region = Region(world, minX, minY, minZ, maxX, maxY, maxZ)
 }
