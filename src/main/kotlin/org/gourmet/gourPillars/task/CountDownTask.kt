@@ -19,7 +19,7 @@ class CountDownTask(val arena: Arena) : BukkitRunnable(){
                     return
                 }
                 if(counter <= 0){
-                    //arena.sendTitleToPlayerInGame("&7Uccidi i tuoi avversari", "&8Ma non cadere...")
+                    arena.sendTitleToPlayerInGame("&7Uccidi i tuoi avversari", "&8Ma non cadere...")
                     arena.sendDynamicTitleToPlayerInGame(MessageData.ARENA_TITLE_START, MessageData.ARENA_SUBTITLE_START)
                     arena.waitingPlayer.forEach { player ->
                         player.playSound(player.location, Sound.ENTITY_WITHER_SPAWN, 0.8f, 2.0f)

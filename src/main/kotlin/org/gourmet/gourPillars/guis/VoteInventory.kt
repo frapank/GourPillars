@@ -52,6 +52,13 @@ object VoteInventory {
         "knockback-event"
     )
 
+    private val borderEvent = createHeadItem2(
+        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjk1MGNiNjVlNDFiMWQ2NjhjZjg4MmViODk4NWUwM2UxNzY2MTc5NTU2NjM2NDA3MTRmYzA4ZmJlZTFmMWE0NiJ9fX0=",
+        MessageData.GUI_BORDER_VOTE_NAME,
+        MessageData.GUI_BORDER_VOTE_LORE,
+        "border-event"
+    )
+
     fun displayInventory(player: Player) {
         val mm = MiniMessage.miniMessage()
         val inventory: Inventory = Bukkit.createInventory(null, 27, MessageData.GUI_VOTE_TITLE/*mm.deserialize("<light_purple>Vota 🌟")*/)
@@ -65,6 +72,7 @@ object VoteInventory {
         inventory.setItem(10, noEvent)
         inventory.setItem(11, lavaEvent)
         inventory.setItem(12, knockbackEvent)
+        inventory.setItem(13, borderEvent)
         inventory.setItem(15, dayEvent)
         inventory.setItem(16, nightEvent)
 

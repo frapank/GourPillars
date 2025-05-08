@@ -15,7 +15,7 @@ import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 import org.gourmet.gourPillars.other.messages.sendDynamicTitle
 import org.gourmet.gourPillars.other.toMini
-import org.gourmet.gourPillars.task.GameTask
+import org.gourmet.gourPillars.task.game.gametasks.GameTask
 import org.gourmet.gourPillars.task.ResetArenaTask
 import org.gourmet.gourPillars.task.CountDownTask
 
@@ -45,6 +45,7 @@ class Arena(
     val noEventVote: ArrayList<Player> = ArrayList()
     val knockbackVote: ArrayList<Player> = ArrayList()
     val lavaEvent: ArrayList<Player> = ArrayList()
+    val borderEvent: ArrayList<Player> = ArrayList()
     val dayVote: ArrayList<Player> = ArrayList()
     val nightVote: ArrayList<Player> = ArrayList()
 
@@ -73,7 +74,6 @@ class Arena(
             player.health = 20.0
             player.foodLevel = 20
             giveWaitingItems(player)
-            //sendMessageToPlayerInGame("$prefix <white>${player.name} <yellow>e' entrato (<green>${waitingPlayer.size}<white>/<green>$maxPlayer<yellow>)")
             sendDynamicMessageToPlayerInGame(MessageData.ARENA_JOIN,
                 "{player}" to player.name,
                 "{on}" to waitingPlayer.size.toString(),

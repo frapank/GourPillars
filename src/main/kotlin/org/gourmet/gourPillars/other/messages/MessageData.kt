@@ -99,6 +99,7 @@ object MessageData {
     lateinit var ARENA_VOTE_CLASSIC_VOTED: DynamicMessage
     lateinit var ARENA_VOTE_LAVA_VOTED: DynamicMessage
     lateinit var ARENA_VOTE_KNOCKBACK_VOTED: DynamicMessage
+    lateinit var ARENA_VOTE_BORDER_VOTED: DynamicMessage
     lateinit var ARENA_VOTE_NIGHT_VOTED: DynamicMessage
     lateinit var ARENA_VOTE_DAY_VOTED: DynamicMessage
     lateinit var ARENA_VOTE_ALREADY_VOTED_EVENT: DynamicMessage
@@ -111,6 +112,8 @@ object MessageData {
     lateinit var GUI_CLASSIC_VOTE_LORE: Component
     lateinit var GUI_KNOCKBACK_VOTE_NAME: Component
     lateinit var GUI_KNOCKBACK_VOTE_LORE: Component
+    lateinit var GUI_BORDER_VOTE_NAME: Component
+    lateinit var GUI_BORDER_VOTE_LORE: Component
     lateinit var GUI_LAVA_VOTE_NAME: Component
     lateinit var GUI_LAVA_VOTE_LORE: Component
     lateinit var GUI_DAY_VOTE_NAME: Component
@@ -181,6 +184,7 @@ object MessageData {
         ARENA_VOTE_CLASSIC_VOTED = getMessage(config, "arena.vote.classic-voted")
         ARENA_VOTE_LAVA_VOTED = getMessage(config, "arena.vote.lava-voted")
         ARENA_VOTE_KNOCKBACK_VOTED = getMessage(config, "arena.vote.knockback-voted")
+        ARENA_VOTE_BORDER_VOTED = getMessage(config, "arena.vote.border-voted")
         ARENA_VOTE_NIGHT_VOTED = getMessage(config, "arena.vote.night-voted")
         ARENA_VOTE_DAY_VOTED = getMessage(config, "arena.vote.day-voted")
         ARENA_VOTE_ALREADY_VOTED_EVENT = getMessage(config, "arena.vote.already-voted-event")
@@ -229,6 +233,8 @@ object MessageData {
         GUI_CLASSIC_VOTE_LORE = getMessageComponent(config, "gui.vote.classic-vote-lore")
         GUI_KNOCKBACK_VOTE_NAME = getMessageComponent(config, "gui.vote.knockback-vote-name")
         GUI_KNOCKBACK_VOTE_LORE = getMessageComponent(config, "gui.vote.knockback-vote-lore")
+        GUI_BORDER_VOTE_NAME = getMessageComponent(config, "gui.vote.border-vote-name")
+        GUI_BORDER_VOTE_LORE = getMessageComponent(config, "gui.vote.border-vote-lore")
         GUI_LAVA_VOTE_NAME = getMessageComponent(config, "gui.vote.lava-vote-name")
         GUI_LAVA_VOTE_LORE = getMessageComponent(config, "gui.vote.lava-vote-lore")
         GUI_DAY_VOTE_NAME = getMessageComponent(config, "gui.vote.day-vote-name")
