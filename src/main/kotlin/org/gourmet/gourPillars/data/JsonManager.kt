@@ -126,10 +126,10 @@ class JsonManager {
         } else if(playerData.kills == 0) {
             kd = 0.0
         } else {
-            kd = (playerData.kills / playerData.deaths).toDouble()
+            kd = playerData.kills.toDouble() / playerData.deaths
         }
         //kd = Math.round(kd * 100.0) / 100.0 //TODO test and check if round is needed
-        return kd
+        return String.format("%.2f", kd).toDouble()
     }
 
     fun addXP(player: Player, xpToAdd: Int){
