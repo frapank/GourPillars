@@ -3,8 +3,6 @@ package org.gourmet.gourPillars.managers
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
-import org.gourmet.gourPillars.other.miniMessage
-import org.gourmet.gourPillars.other.toMini
 
 class PartyManager {
 
@@ -125,7 +123,6 @@ class PartyManager {
         } else {
             party.members.remove(player)
             party.members.forEach { member ->
-                //member.sendMessage("$prefix <red>${player.name} e' uscito dal party".toMini())
                 member.sendDynamicMessage(MessageData.PARTY_USER_LEFT_PARTY, "{player}" to player.name)
             }
             player.sendDynamicMessage(MessageData.PARTY_PARTY_LEAVE)

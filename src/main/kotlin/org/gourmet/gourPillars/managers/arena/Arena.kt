@@ -101,31 +101,9 @@ class Arena(
     }
 
     private fun giveWaitingItems(player: Player){
-        //val leaveMaterial = ItemStack(Material.RED_DYE)
-        //val eventMaterial = ItemStack(Material.PAPER)
 
         val leaveItem = createWaitingItem("RED_DYE", MessageData.WAITING_ITEMS_LEAVE_NAME, MessageData.WAITING_ITEMS_LEAVE_LORE, "leave-item")
         val voteItem = createWaitingItem("PAPER", MessageData.WAITING_ITEMS_VOTE_NAME, MessageData.WAITING_ITEMS_VOTE_LORE, "vote-item")
-
-        /*val leaveMeta = leaveMaterial.itemMeta.apply {
-            displayName(MessageData.WAITING_ITEMS_LEAVE_NAME)
-            lore()
-
-            val key = NamespacedKey(GourPillars.instance, "leave-item")
-
-            persistentDataContainer.set(key, PersistentDataType.STRING, "true")
-        }
-        leaveMaterial.itemMeta = leaveMeta
-
-        val eventMeta = eventMaterial.itemMeta.apply {
-            displayName(MessageData.WAITING_ITEMS_VOTE_NAME)
-
-            val key = NamespacedKey(GourPillars.instance, "vote-item")
-
-            persistentDataContainer.set(key, PersistentDataType.STRING, "true")
-        }
-        eventMaterial.itemMeta = eventMeta
-         */
 
         player.inventory.setItem(8, leaveItem)
         player.inventory.setItem(0, voteItem)
@@ -165,7 +143,6 @@ class Arena(
         if(waitingPlayer.size < minPlayer && gameState != State.INGAME){
             gameState = State.WAITING
             val playerRequired = maxPlayer - waitingPlayer.size
-            //sendMessageToPlayerInGame("$prefix <green>Mancano <yellow>$playerRequired<green> player per cominciare")
             sendDynamicMessageToPlayerInGame(MessageData.ARENA_PLAYER_NEEDED, "{playerRequired}" to playerRequired.toString())
             return
         }
@@ -183,7 +160,7 @@ class Arena(
         }
     }
 
-    /* Getter and Settere */
+    /* Getter and Setter */
     fun containPlayer(player: Player): Boolean {
         return waitingPlayer.contains(player)
     }

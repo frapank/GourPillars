@@ -21,7 +21,6 @@ class PlaceBlockListener : Listener{
 
         if (!arena.region.isInRegion(player.location)) {
             event.isCancelled = true
-            //player.sendMessage("<red>Limite raggiunto".toMini())
             player.sendDynamicMessage(MessageData.ARENA_ERRORS_LIMIT_REACHED)
         }
     }

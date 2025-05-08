@@ -41,7 +41,6 @@ class LeaveListener : Listener {
             }
 
             gameRunnable.alivePlayer.forEach{(member, _)->
-                //member.sendMessage("$prefix <green>${player.name} <yellow>e' uscito dal gioco".toMini())
                 member.sendDynamicMessage(MessageData.ARENA_PLAYER_LEFT, "{player}" to player.name)
             }
 

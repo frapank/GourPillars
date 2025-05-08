@@ -19,17 +19,14 @@ object JoinerCMD {
     @Command("join <name>")
     fun joinCommand(player: Player, name: String){
         if(GourPillars.isEditing){
-            //player.sendMessage("$prefix <red>Un operatore sta modificando l'arena, non puoi giocare")
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_ARENA_EDIT)
             return
         }
         val arena: Arena = arenaManager.getArenaByName(name) ?: run{
-            //player.sendMessage("$prefix <red>Arena non esistente".toMini())
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_ARENA_NOT_EXIST)
             return
         }
         if(partyManager.isInParty(player) && !partyManager.isOwner(player)) {
-            //player.sendMessage("$prefix <red>Non puoi entrare in partita perchè sei in un party!".toMini())
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_USER_IN_PARTY)
             return
         }
@@ -81,7 +78,6 @@ object JoinerCMD {
         if (currentArena != null) {
             when (currentArena.gameState){
                 State.STOPPED -> {
-                    //player.sendMessage("$prefix <red>Aspetta qualche secondo".toMini())
                     player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_WAIT)
                     return
                 }
@@ -90,7 +86,6 @@ object JoinerCMD {
                     currentArena.removePlayer(player)
                 }
                 else -> {
-                    //player.sendMessage("$prefix <green>Sei gia nella arena migliore".toMini())
                     player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_ALREADY_BEST_ARENA)
                     return
                 }
@@ -105,13 +100,11 @@ object JoinerCMD {
             .maxByOrNull { it.value.waitingPlayer.size }
 
         if (arena == null) {
-            //player.sendMessage("$prefix <red>Non ci sono arene disponibili per entrare.".toMini())
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_ARENA_NOT_AVAILABLE)
             return
         }
 
         if(partyManager.isInParty(player) && !partyManager.isOwner(player)) {
-            //player.sendMessage("$prefix <red>Non puoi entrare in partita perchè sei in un party!".toMini())
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_USER_IN_PARTY)
             return
         }
@@ -131,7 +124,6 @@ object JoinerCMD {
     @Command("leave")
     fun leaveCommand(player: Player){
         val arena: Arena = arenaManager.getArenaByPlayer(player) ?: run {
-            //player.sendMessage("$prefix <red>Non sei in nessuna arena".toMini())
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_NOT_IN_ARENA)
             return
         }

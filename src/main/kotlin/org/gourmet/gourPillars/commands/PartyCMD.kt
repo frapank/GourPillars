@@ -43,7 +43,6 @@ object PartyCMD {
         //todo automatic party creation & test party members size limit (test)
         val party = partyManager.getPartyByPlayer(player) ?: run {
             player.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_IN_PARTY)
-            //player.sendMessage("$prefix <hover:show_text:\"<white>/party create\"><click:run_command:/party create><green><bold>CREA UN PARTY\"")
             return
         }
         if(player == target){
@@ -60,17 +59,13 @@ object PartyCMD {
         }
         invitedPlayers[target] = player
 
-        //target.sendMessage("$prefix<yellow>Sei stato invitato nel party da <white>${player.name}</white>, clicca per accettare</yellow>")
-        //target.sendMessage("<hover:show_text:\"<white>/party accept\"><click:run_command:/party accept><green><bold>ACCETTA")
         target.sendDynamicMessage(MessageData.PARTY_INVITE_RECEIVE, "{player}" to player.name)
-        //player.sendMessage("$prefix <yellow>Hai invitato <white>${target.name}</white> nel party</yellow>")
         player.sendDynamicMessage(MessageData.PARTY_INVITE, "{player}" to target.name)
 
         object : BukkitRunnable(){
             override fun run(){
 
                 if(invitedPlayers.contains(target)){
-                    //target.sendMessage("$prefix <red>L'invito al party e' scaduto".toMini())
                     target.sendDynamicMessage(MessageData.PARTY_ERRORS_INVITE_EXPIRED)
                     invitedPlayers.remove(target)
                 }
