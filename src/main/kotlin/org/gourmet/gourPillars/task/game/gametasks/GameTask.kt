@@ -147,6 +147,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         arena.dayVote.clear()
         arena.knockbackVote.clear()
         arena.lavaEvent.clear()
+        arena.borderEvent.clear()
         arena.noEventVote.clear()
         if (winner != null) {
             winner.isInvulnerable = true
