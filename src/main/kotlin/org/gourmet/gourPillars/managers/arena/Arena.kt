@@ -53,7 +53,6 @@ class Arena(
         CountDownTask(this).runTaskTimer(GourPillars.instance, 0L, 20L)
     }
 
-
     /* Utils */
     fun addPlayer(player: Player){
         if(waitingPlayer.contains(player)){
@@ -70,6 +69,7 @@ class Arena(
             waitingPlayer.add(player)
             scoreboardManager.setWaitingBoard(player)
             reloadWaitingScoreboard()
+            player.gameMode = GameMode.SURVIVAL
             player.inventory.clear()
             player.health = 20.0
             player.foodLevel = 20
@@ -79,21 +79,23 @@ class Arena(
                 "{on}" to waitingPlayer.size.toString(),
                 "{max}" to maxPlayer.toString())
 
+            //Teleport and set glass pannel
             for ((location, playerInSpawn) in spawnMap) {
                 if (playerInSpawn == null) {
                     Utils.setGlass(true, location)
-                    player.gameMode = GameMode.SURVIVAL
                     player.teleport(location)
                     spawnMap[location] = player
                     break
                 }
             }
 
+            //Start arena if player is enoght
             if(waitingPlayer.size >= minPlayer && gameState == State.WAITING){
                 startArena()
                 this.gameState = State.STARTING
             }
             return
+
         } else {
             player.sendDynamicMessage(MessageData.ARENA_ERRORS_THE_GAME_IS_FULL)
             return
@@ -101,38 +103,14 @@ class Arena(
     }
 
     private fun giveWaitingItems(player: Player){
-        //val leaveMaterial = ItemStack(Material.RED_DYE)
-        //val eventMaterial = ItemStack(Material.PAPER)
-
         val leaveItem = createWaitingItem("RED_DYE", MessageData.WAITING_ITEMS_LEAVE_NAME, MessageData.WAITING_ITEMS_LEAVE_LORE, "leave-item")
         val voteItem = createWaitingItem("PAPER", MessageData.WAITING_ITEMS_VOTE_NAME, MessageData.WAITING_ITEMS_VOTE_LORE, "vote-item")
-
-        /*val leaveMeta = leaveMaterial.itemMeta.apply {
-            displayName(MessageData.WAITING_ITEMS_LEAVE_NAME)
-            lore()
-
-            val key = NamespacedKey(GourPillars.instance, "leave-item")
-
-            persistentDataContainer.set(key, PersistentDataType.STRING, "true")
-        }
-        leaveMaterial.itemMeta = leaveMeta
-
-        val eventMeta = eventMaterial.itemMeta.apply {
-            displayName(MessageData.WAITING_ITEMS_VOTE_NAME)
-
-            val key = NamespacedKey(GourPillars.instance, "vote-item")
-
-            persistentDataContainer.set(key, PersistentDataType.STRING, "true")
-        }
-        eventMaterial.itemMeta = eventMeta
-         */
 
         player.inventory.setItem(8, leaveItem)
         player.inventory.setItem(0, voteItem)
     }
 
     private fun createWaitingItem(material: String, name: Component, lore: Component, tag: String): ItemStack {
-        val mm = MiniMessage.miniMessage()
         val item = ItemStack(Material.valueOf(material), 1)
         val meta = item.itemMeta
 
@@ -146,26 +124,34 @@ class Arena(
         return item
     }
 
+
     fun removePlayer(player: Player){
+
+        //Remove spawn and glass
         spawnMap.forEach{ (location, playerInSpawn) ->
             if(playerInSpawn == player){
                 Utils.setGlass(false, location)
                 spawnMap[location] = null
             }
         }
+
+        //Clear Events vote
         noEventVote.remove(player)
         lavaEvent.remove(player)
         knockbackVote.remove(player)
         dayVote.remove(player)
         nightVote.remove(player)
         waitingPlayer.remove(player)
+
+        //Customization
         player.sendTitle("", "")
         player.sendDynamicMessage(MessageData.ARENA_LEAVE)
         reloadWaitingScoreboard()
+
+        //Stop cooldown if player is not enought
         if(waitingPlayer.size < minPlayer && gameState != State.INGAME){
             gameState = State.WAITING
             val playerRequired = maxPlayer - waitingPlayer.size
-            //sendMessageToPlayerInGame("$prefix <green>Mancano <yellow>$playerRequired<green> player per cominciare")
             sendDynamicMessageToPlayerInGame(MessageData.ARENA_PLAYER_NEEDED, "{playerRequired}" to playerRequired.toString())
             return
         }
