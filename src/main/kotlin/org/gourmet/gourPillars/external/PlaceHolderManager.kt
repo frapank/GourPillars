@@ -38,7 +38,7 @@ class PlaceHolderManager : PlaceholderExpansion() {
             return arenaManager.getArenaByPlayer(gamePlayer)?.gameTask?.getTimeFormatted() ?: "time error"
         }
         if (params.equals("ingamekills", ignoreCase = true)) {
-            return arenaManager.getArenaByPlayer(gamePlayer)?.gameTask?.alivePlayer?.get(player)?.toString() ?: "no arena"
+            return arenaManager.getArenaByPlayer(gamePlayer)?.gameTask?.alivePlayer?.get(player)?.toString() ?: "death"
         }
         if(params.equals("arenacount", ignoreCase = true)) {
             return arenaManager.onlineArenas.size.toString()
