@@ -18,7 +18,11 @@ class ResetArenaTask(val arena: Arena) : BukkitRunnable(){
         val arenaManager = GourPillars.arenaManager
         val arenaName = arena.name
         val worldName = GourPillars.instance.config.getString("Arenas.${arena.name}.world").toString()
+
+        //Reset arena
         zipManager.restoreBackup(worldName)
+
+        //Here I will reset all the pointers
         object : BukkitRunnable(){
             override fun run(){
                 arenaManager.onlineArenas.forEach{ (name, arena) ->
@@ -33,6 +37,8 @@ class ResetArenaTask(val arena: Arena) : BukkitRunnable(){
                 arena.gameState = State.WAITING
             }
         }.runTaskLater(GourPillars.instance, 100L)
+
+        //Randomize arena order
         GourPillars.arenaManager.shuffleArenas()
     }
 
