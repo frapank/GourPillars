@@ -12,6 +12,7 @@ import org.gourmet.gourPillars.managers.ArenaManager
 import org.gourmet.gourPillars.managers.LobbyScoreboardManager
 import org.gourmet.gourPillars.managers.PartyManager
 import org.gourmet.gourPillars.managers.SpawnManager
+import org.gourmet.gourPillars.other.Logger
 import org.gourmet.gourPillars.other.messages.LanguageManager
 import org.gourmet.gourPillars.task.ShowPlayerTask
 import revxrsal.commands.bukkit.BukkitLamp
@@ -36,7 +37,7 @@ class GourPillars : JavaPlugin() {
         languageManager = LanguageManager()
         languageManager.saveDefaultLanguageFile()
 
-        Bukkit.getLogger().info("GourPillars starting...")
+        Logger.info("GourPillars starting...")
         jsonManager = JsonManager()
         partyManager = PartyManager()
         spawnManager = SpawnManager()
@@ -70,7 +71,7 @@ class GourPillars : JavaPlugin() {
 
     private fun placeHolderInit() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
-            logger.severe("Missing PlaceHolderAPI")
+            Logger.warning("Missing PlaceHolderAPI")
             Bukkit.getPluginManager().disablePlugin(this)
             return
         }
