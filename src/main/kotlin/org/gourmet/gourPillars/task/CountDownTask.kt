@@ -12,18 +12,24 @@ class CountDownTask(val arena: Arena) : BukkitRunnable(){
 
     override fun run() {
 
+                //Cancel if player is not enought
                 if(arena.waitingPlayer.size < arena.minPlayer){
                     arena.gameState = State.WAITING
                     counter = 10
                     cancel()
                     return
                 }
+
+                //End countdown
                 if(counter <= 0){
+                    //Messages and Effects
                     arena.sendTitleToPlayerInGame("&7Uccidi i tuoi avversari", "&8Ma non cadere...")
                     arena.sendDynamicTitleToPlayerInGame(MessageData.ARENA_TITLE_START, MessageData.ARENA_SUBTITLE_START)
                     arena.waitingPlayer.forEach { player ->
                         player.playSound(player.location, Sound.ENTITY_WITHER_SPAWN, 0.8f, 2.0f)
                     }
+
+                    //Arena update
                     arena.gameState = State.INGAME
                     arena.gameTask.run()
                     counter = 10
@@ -31,13 +37,16 @@ class CountDownTask(val arena: Arena) : BukkitRunnable(){
                     return
                 }
 
+                //Increse countdown pitch
                 val volume = 0.2f + (counter * 0.2f)
                 val pitch = 2.0f + (counter * 0.1f)
 
+                //Playe countdown sounmd
                 arena.waitingPlayer.forEach { player ->
                     player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_PLING, volume, pitch)
                 }
 
+                //Send countdown with color
                 val countPrefix: String = when(counter){
                     1,2 -> "&c"
                     3,4,5 -> "&e"
