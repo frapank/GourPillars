@@ -33,6 +33,8 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     private val prefix = "<bold><aqua>Game </bold><gray>|"
 
     override fun run(){
+
+        //Init game
         running = true
         lavaLevel = arena.minHeight
         alivePlayer = mutableMapOf()
@@ -41,7 +43,10 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         preparePlayer()
         setTimeByVote()
         GameRandom.startRandomItemTask(alivePlayer, running)
+
+        //Start event if present
         currentEventHandler?.onStart(arena)
+
         object : BukkitRunnable() {
             override fun run() {
                 secondsPassed--
@@ -49,6 +54,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
 
                 updateScoreBoard()
 
+                //End game
                 if (alivePlayer.size <= 1 || secondsPassed == 0) {
                     handleEndGame()
                     cancel()
@@ -56,26 +62,6 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
             }
         }.runTaskTimer(plugin, 0L, 20L)
     }
-
-
-    //private fun setupEvent() {
-    //    if (arena.borderEvent.isEmpty() && arena.lavaEvent.isEmpty()) return
-    //    if (arena.borderEvent.size == arena.lavaEvent.size) return
-    //    if(arena.noEventVote.size >= arena.borderEvent.size && arena.noEventVote.size >= arena.lavaEvent.size) return
-    //
-    //    arena.gameEvent = if (arena.borderEvent.size >= arena.lavaEvent.size) {
-    //        GameEvents.KNOCKBACK
-    //    } else if () {
-    //        GameEvents.LAVA
-    //    }
-    //
-    //    when (arena.gameEvent) {
-    //        GameEvents.LAVA -> LavaHandler()
-    //        GameEvents.BORDER -> BorderHandler()
-    //        else -> null
-    //    }
-    //
-    //}
 
     private fun setupEvent() {
         val voteCounts = mapOf(
@@ -210,10 +196,14 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     }
 
     private fun preparePlayer(){
-        val effect = PotionEffect(PotionEffectType.SLOW_FALLING, arena.slowFallingTime * 20, 0)
+
+        //Reset kills
         arena.waitingPlayer.forEach { player: Player ->
             alivePlayer[player] = 0
         }
+
+        //Reset player foot, level, health and apply slow falling level
+        val effect = PotionEffect(PotionEffectType.SLOW_FALLING, arena.slowFallingTime * 20, 0)
         alivePlayer.forEach{(player, _) ->
             player.isInvulnerable = false
             player.addPotionEffect(effect)
