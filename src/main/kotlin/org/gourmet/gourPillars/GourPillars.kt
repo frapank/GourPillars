@@ -6,8 +6,16 @@ import org.gourmet.gourPillars.commands.*
 import org.gourmet.gourPillars.data.DatabaseManager
 import org.gourmet.gourPillars.external.PlaceHolderManager
 import org.gourmet.gourPillars.listener.*
-import org.gourmet.gourPillars.listener.BlockBreakListener
-import org.gourmet.gourPillars.listener.ClickItemEvent
+import org.gourmet.gourPillars.listener.game.StopBreakStartingEvent
+import org.gourmet.gourPillars.listener.general.GuiClickEvent
+import org.gourmet.gourPillars.listener.game.BorderLimitEvent
+import org.gourmet.gourPillars.listener.game.GameDeathEvent
+import org.gourmet.gourPillars.listener.game.QuitGameEvent
+import org.gourmet.gourPillars.listener.game.VoidKillEvent
+import org.gourmet.gourPillars.listener.general.ChatViewEvent
+import org.gourmet.gourPillars.listener.general.DatabaseEvent
+import org.gourmet.gourPillars.listener.general.LevelEvent
+import org.gourmet.gourPillars.listener.lobby.JoinEvent
 import org.gourmet.gourPillars.managers.ArenaManager
 import org.gourmet.gourPillars.managers.LobbyScoreboardManager
 import org.gourmet.gourPillars.managers.PartyManager
@@ -48,16 +56,16 @@ class GourPillars : JavaPlugin() {
 
 
         arenaManager = ArenaManager()
-        Bukkit.getPluginManager().registerEvents(DeathListener(), this)
-        Bukkit.getPluginManager().registerEvents(DatabaseListeners(), this)
-        Bukkit.getPluginManager().registerEvents(JoinListener(), this)
-        Bukkit.getPluginManager().registerEvents(BlockBreakListener(), this)
-        Bukkit.getPluginManager().registerEvents(LeaveListener(), this)
-        Bukkit.getPluginManager().registerEvents(FallListener(), this)
-        Bukkit.getPluginManager().registerEvents(ChatListener(), this)
-        Bukkit.getPluginManager().registerEvents(PlaceBlockListener(), this)
-        Bukkit.getPluginManager().registerEvents(LevelListener(), this)
-        Bukkit.getPluginManager().registerEvents(ClickItemEvent(), this)
+        Bukkit.getPluginManager().registerEvents(GameDeathEvent(), this)
+        Bukkit.getPluginManager().registerEvents(DatabaseEvent(), this)
+        Bukkit.getPluginManager().registerEvents(JoinEvent(), this)
+        Bukkit.getPluginManager().registerEvents(StopBreakStartingEvent(), this)
+        Bukkit.getPluginManager().registerEvents(QuitGameEvent(), this)
+        Bukkit.getPluginManager().registerEvents(VoidKillEvent(), this)
+        Bukkit.getPluginManager().registerEvents(ChatViewEvent(), this)
+        Bukkit.getPluginManager().registerEvents(BorderLimitEvent(), this)
+        Bukkit.getPluginManager().registerEvents(LevelEvent(), this)
+        Bukkit.getPluginManager().registerEvents(GuiClickEvent(), this)
         Bukkit.getPluginManager().registerEvents(KnockBackEvent(), this)
         val handler = BukkitLamp.builder(this).build()
         handler.register(

@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.listener
+package org.gourmet.gourPillars.listener.general
 
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -9,9 +9,9 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.data.DatabaseManager
 
-class DatabaseListeners : Listener{
+class DatabaseEvent : Listener {
 
-    private val databaseManager = GourPillars.databaseManager
+    private val databaseManager = GourPillars.Companion.databaseManager
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onJoin(event: PlayerJoinEvent) {
