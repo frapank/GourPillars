@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.listener
+package org.gourmet.gourPillars.listener.game
 
 import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
@@ -7,13 +7,12 @@ import org.bukkit.event.player.PlayerMoveEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.arena.State
 
-class FallListener : Listener{
+class VoidKillEvent : Listener {
 
-    val arenaManager = GourPillars.arenaManager
+    val arenaManager = GourPillars.Companion.arenaManager
 
     @EventHandler
     fun onPlayerMove(event: PlayerMoveEvent) {
-
         val player = event.player
         val playerLoc = player.y
         val arena = arenaManager.getArenaByPlayer(player) ?: return
@@ -25,7 +24,6 @@ class FallListener : Listener{
                 }
             }
         }
-
     }
 
 }

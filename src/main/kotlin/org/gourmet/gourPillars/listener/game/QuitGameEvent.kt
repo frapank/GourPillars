@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.listener
+package org.gourmet.gourPillars.listener.game
 
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -6,18 +6,16 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.ArenaManager
-import org.gourmet.gourPillars.task.game.gametasks.GameTask
 import org.gourmet.gourPillars.managers.arena.Arena
 import org.gourmet.gourPillars.managers.arena.State
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
-import org.gourmet.gourPillars.other.toMini
+import org.gourmet.gourPillars.task.game.gametasks.GameTask
 
-class LeaveListener : Listener {
+class QuitGameEvent : Listener {
 
-    private val arenaManager: ArenaManager = GourPillars.arenaManager
-    private val partyManager = GourPillars.partyManager
-    private val prefix = "<bold><aqua>Game </bold><gray>|"
+    private val arenaManager: ArenaManager = GourPillars.Companion.arenaManager
+    private val partyManager = GourPillars.Companion.partyManager
 
     @EventHandler
     fun quitListener(event: PlayerQuitEvent){
@@ -32,6 +30,7 @@ class LeaveListener : Listener {
 
         arena.removePlayer(player)
 
+        //If player quit during the game, he will die and leave the party
         if(arena.gameState == State.INGAME) {
             if(partyManager.isInParty(player)) {
                 partyManager.leaveParty(player)
@@ -41,7 +40,6 @@ class LeaveListener : Listener {
             }
 
             gameRunnable.alivePlayer.forEach{(member, _)->
-                //member.sendMessage("$prefix <green>${player.name} <yellow>e' uscito dal gioco".toMini())
                 member.sendDynamicMessage(MessageData.ARENA_PLAYER_LEFT, "{player}" to player.name)
             }
 

@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.listener
+package org.gourmet.gourPillars.listener.game
 
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -8,13 +8,13 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.arena.Arena
-import org.gourmet.gourPillars.task.game.gametasks.GameTask
 import org.gourmet.gourPillars.managers.arena.State
+import org.gourmet.gourPillars.task.game.gametasks.GameTask
 
 @SuppressWarnings("deprecation")
-class DeathListener : Listener {
+class GameDeathEvent : Listener {
 
-    private val arenaManager = GourPillars.arenaManager
+    private val arenaManager = GourPillars.Companion.arenaManager
 
     @EventHandler
     fun onDeath(event: PlayerDeathEvent){
@@ -25,14 +25,14 @@ class DeathListener : Listener {
         instantRespawn(player)
 
         val arena: Arena = arenaManager.getArenaByPlayer(player) ?: run {
-            GourPillars.spawnManager.teleportPlayerToSpawn(player)
+            GourPillars.Companion.spawnManager.teleportPlayerToSpawn(player)
             return
         }
 
         val gameRunnable: GameTask = arena.gameTask
 
         if(arena.gameState != State.INGAME) return
-        if(player.killer != null && player.killer is Player ){
+        if(player.killer != null && player.killer is Player){
             gameRunnable.playerEliminated(player, player.killer!!)
         } else if(event.entity.lastDamageCause?.cause == EntityDamageEvent.DamageCause.FALL) {
             gameRunnable.playerEliminatedFall(player)
@@ -44,7 +44,7 @@ class DeathListener : Listener {
 
     private fun instantRespawn(player: Player) {
 
-        Bukkit.getScheduler().runTaskLater(GourPillars.instance, Runnable {
+        Bukkit.getScheduler().runTaskLater(GourPillars.Companion.instance, Runnable {
             player.spigot().respawn()
         }, 1L)
 

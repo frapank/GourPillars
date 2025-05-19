@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.listener
+package org.gourmet.gourPillars.listener.game
 
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -6,10 +6,9 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.arena.State
 
-class BlockBreakListener : Listener{
+class StopBreakStartingEvent : Listener {
 
-    private val arenaManager = GourPillars.arenaManager
-    private val prefix = "<bold><aqua>Game </bold><gray>|"
+    private val arenaManager = GourPillars.Companion.arenaManager
 
     @EventHandler
     fun breakListener(event: BlockBreakEvent){
