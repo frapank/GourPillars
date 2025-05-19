@@ -50,12 +50,14 @@ object JoinerCMD {
 
     @Command("joinrandom")
     fun joinRandom(player: Player) {
+
         if (GourPillars.isEditing) {
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_ARENA_EDIT)
             return
         }
 
         val currentArena = arenaManager.getArenaByPlayer(player)
+
         if (currentArena != null) {
             when (currentArena.gameState){
                 State.STOPPED -> {
@@ -76,9 +78,9 @@ object JoinerCMD {
         val arena = arenaManager.onlineArenas
             .filter { (_, arenaCurrent) ->
                 arenaCurrent.gameState != State.INGAME && arenaCurrent.gameState != State.STOPPED &&
-                        arenaCurrent.waitingPlayer.size < arenaCurrent.maxPlayer
+                        arenaCurrent.inGamePlayer.size < arenaCurrent.maxPlayer
             }
-            .maxByOrNull { it.value.waitingPlayer.size }
+            .maxByOrNull { it.value.inGamePlayer.size }
 
         if (arena == null) {
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_ARENA_NOT_AVAILABLE)
@@ -89,7 +91,9 @@ object JoinerCMD {
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_USER_IN_PARTY)
             return
         }
+
         val selectedArena = arena.value
+
         if(partyManager.isInParty(player)){
             val party = partyManager.getPartyByPlayer(player)
             if(party?.partyAdmin == player){
@@ -100,15 +104,19 @@ object JoinerCMD {
         } else {
             selectedArena.addPlayer(player)
         }
+
     }
 
     @Command("leave")
     fun leaveCommand(player: Player){
+
         val arena: Arena = arenaManager.getArenaByPlayer(player) ?: run {
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_NOT_IN_ARENA)
             return
         }
+
         if(arena.gameState == State.INGAME) {
+
             if(partyManager.isInParty(player)){
                 val party = partyManager.getPartyByPlayer(player)
                 if(party?.partyAdmin == player){
@@ -119,10 +127,12 @@ object JoinerCMD {
                 }
             } else {
                 arena.gameTask.playerEliminated(player)
-                arena.waitingPlayer.remove(player)
+                arena.inGamePlayer.remove(player)
                 arena.spawnManager.teleportPlayerToSpawn(player)
             }
+
         } else {
+
             if(partyManager.isInParty(player)){
                 val party = partyManager.getPartyByPlayer(player)
                 if(party?.partyAdmin == player){
@@ -135,6 +145,7 @@ object JoinerCMD {
                 arena.removePlayer(player)
                 arena.spawnManager.teleportPlayerToSpawn(player)
             }
+
         }
 
         player.inventory.clear()
