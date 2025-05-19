@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.managers.arena
+package org.gourmet.gourPillars.managers.game.arena
 
 import net.kyori.adventure.text.Component
 import org.bukkit.*

@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.managers
+package org.gourmet.gourPillars.managers.party
 
 import org.bukkit.entity.Player
 

@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.managers
+package org.gourmet.gourPillars.managers.game
 
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -6,9 +6,10 @@ import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.managers.arena.Arena
+import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.other.Region
 import java.io.File
+import kotlin.collections.iterator
 import kotlin.random.Random
 
 class ArenaManager {
@@ -43,11 +44,11 @@ class ArenaManager {
     }
 
     fun shuffleArenas() {
-        onlineArenas = onlineArenas.entries.shuffled(Random).associate { it.toPair() }.toMutableMap()
+        onlineArenas = onlineArenas.entries.shuffled(Random.Default).associate { it.toPair() }.toMutableMap()
     }
 
     private fun loadArenas() {
-        val plugin = GourPillars.instance
+        val plugin = GourPillars.Companion.instance
 
         val dataFolder = plugin.dataFolder
         val arenaFolder = File(dataFolder, "arena")
@@ -69,7 +70,7 @@ class ArenaManager {
             val slowFalling = current_config.getInt("basic.slow-falling") ?: 2
 
             //main-spawn
-            val mainSpawn = Location (
+            val mainSpawn = Location(
                 arenaWorld,
                 current_config.getDouble("spawns.main-spawn.x"),
                 current_config.getDouble("spawns.main-spawn.y"),
@@ -79,7 +80,7 @@ class ArenaManager {
             )
 
             //region
-            val regionLocOne = Location (
+            val regionLocOne = Location(
                 arenaWorld,
                 current_config.getDouble("spawns.regions.loc-1.x"),
                 current_config.getDouble("spawns.regions.loc-1.y"),
@@ -87,7 +88,7 @@ class ArenaManager {
                 current_config.getDouble("spawns.regions.loc-1.yaw").toFloat(),
                 current_config.getDouble("spawns.regions.loc-1.pitch").toFloat(),
             )
-            val regionLocTwo = Location (
+            val regionLocTwo = Location(
                 arenaWorld,
                 current_config.getDouble("spawns.regions.loc-2.x"),
                 current_config.getDouble("spawns.regions.loc-2.y"),
@@ -96,7 +97,7 @@ class ArenaManager {
                 current_config.getDouble("spawns.regions.loc-2.pitch").toFloat(),
             )
 
-            val region = Region.createRegion(regionLocOne, regionLocTwo)
+            val region = Region.Companion.createRegion(regionLocOne, regionLocTwo)
 
             val spawnsList: MutableMap<Location, Player?> = mutableMapOf()
             val gameSpawnsSection = current_config.getConfigurationSection("spawns.game-spawns")
@@ -118,7 +119,19 @@ class ArenaManager {
                 Bukkit.getLogger().warning("Nessuno spawn di gioco trovato per l'arena $arenaName")
             }
 
-            val arena = Arena(spawnsList, mainSpawn, slowFalling, spawnsList.size, minPlayer, -1, minHeight, regionLocOne, regionLocTwo, region, arenaName)
+            val arena = Arena(
+                spawnsList,
+                mainSpawn,
+                slowFalling,
+                spawnsList.size,
+                minPlayer,
+                -1,
+                minHeight,
+                regionLocOne,
+                regionLocTwo,
+                region,
+                arenaName
+            )
             Bukkit.getLogger().info("Loadednew arena $arenaName")
             onlineArenas[arenaName] = arena
         }

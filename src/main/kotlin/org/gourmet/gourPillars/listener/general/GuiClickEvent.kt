@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.guis.VoteInventory
-import org.gourmet.gourPillars.managers.arena.State
+import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 

@@ -9,9 +9,9 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.managers.arena.Arena
-import org.gourmet.gourPillars.managers.arena.GameEvents
-import org.gourmet.gourPillars.managers.arena.State
+import org.gourmet.gourPillars.managers.game.arena.Arena
+import org.gourmet.gourPillars.managers.game.arena.GameEvents
+import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.Utils
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage

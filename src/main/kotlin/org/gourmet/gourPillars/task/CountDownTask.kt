@@ -2,8 +2,8 @@ package org.gourmet.gourPillars.task
 
 import org.bukkit.Sound
 import org.bukkit.scheduler.BukkitRunnable
-import org.gourmet.gourPillars.managers.arena.Arena
-import org.gourmet.gourPillars.managers.arena.State
+import org.gourmet.gourPillars.managers.game.arena.Arena
+import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.messages.MessageData
 
 class CountDownTask(val arena: Arena) : BukkitRunnable(){

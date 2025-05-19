@@ -1,14 +1,11 @@
 package org.gourmet.gourPillars.task
 
 import org.bukkit.Bukkit
-import org.bukkit.World
-import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.managers.arena.Arena
-import org.gourmet.gourPillars.managers.arena.State
+import org.gourmet.gourPillars.managers.game.arena.Arena
+import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.managers.ZipManager
-import org.gourmet.gourPillars.other.Region
 
 class ResetArenaTask(val arena: Arena) : BukkitRunnable(){
 

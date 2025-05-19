@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.external
+package org.gourmet.gourPillars.managers
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.OfflinePlayer
@@ -13,7 +13,7 @@ class PlaceHolderManager : PlaceholderExpansion() {
         private const val VERSION = "1.0.0"
     }
 
-    val arenaManager = GourPillars.arenaManager
+    val arenaManager = GourPillars.Companion.arenaManager
 
     override fun onRequest(player: OfflinePlayer?, params: String): String {
         if (player == null) {
@@ -21,7 +21,7 @@ class PlaceHolderManager : PlaceholderExpansion() {
         }
 
         val gamePlayer: Player = player as Player
-        val playerData = GourPillars.databaseManager.playersData.get(player)
+        val playerData = GourPillars.Companion.databaseManager.playersData.get(player)
         if (params.equals("minplayers", ignoreCase = true)) {
             return arenaManager.getArenaByPlayer(gamePlayer)?.minPlayer.toString() ?: "no-arena"
         }
