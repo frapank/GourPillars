@@ -7,7 +7,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.data.DatabaseManager
+import org.gourmet.gourPillars.managers.DatabaseManager
 
 class DatabaseEvent : Listener {
 

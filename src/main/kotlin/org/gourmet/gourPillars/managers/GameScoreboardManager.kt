@@ -11,8 +11,8 @@ import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
 import org.bukkit.scoreboard.Scoreboard
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.managers.arena.Arena
-import org.gourmet.gourPillars.managers.arena.State
+import org.gourmet.gourPillars.managers.game.arena.Arena
+import org.gourmet.gourPillars.managers.game.arena.State
 
 class GameScoreboardManager(private val arena: Arena) {
     private val scoreboards: MutableMap<Player, Scoreboard> = mutableMapOf()

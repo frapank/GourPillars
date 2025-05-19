@@ -2,8 +2,8 @@ package org.gourmet.gourPillars.commands
 
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.managers.arena.Arena
-import org.gourmet.gourPillars.managers.arena.State
+import org.gourmet.gourPillars.managers.game.arena.Arena
+import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 import revxrsal.commands.annotation.Command
