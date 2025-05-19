@@ -15,8 +15,7 @@ import revxrsal.commands.annotation.Subcommand
 object PartyCMD {
 
     private val partyManager = GourPillars.partyManager
-    private val invitedPlayers: MutableMap<Player, Player> = mutableMapOf() //Target, Owner
-    //private val prefix = "<bold><green>Party <bold><gray>|"
+    private val invitedPlayers: MutableMap<Player, Player> = mutableMapOf()
 
     @Subcommand()
     fun partyMain(player: Player){
@@ -44,7 +43,6 @@ object PartyCMD {
         //todo automatic party creation & test party members size limit (test)
         val party = partyManager.getPartyByPlayer(player) ?: run {
             player.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_IN_PARTY)
-            //player.sendMessage("$prefix <hover:show_text:\"<white>/party create\"><click:run_command:/party create><green><bold>CREA UN PARTY\"")
             return
         }
         if(player == target){
@@ -61,17 +59,13 @@ object PartyCMD {
         }
         invitedPlayers[target] = player
 
-        //target.sendMessage("$prefix<yellow>Sei stato invitato nel party da <white>${player.name}</white>, clicca per accettare</yellow>")
-        //target.sendMessage("<hover:show_text:\"<white>/party accept\"><click:run_command:/party accept><green><bold>ACCETTA")
         target.sendDynamicMessage(MessageData.PARTY_INVITE_RECEIVE, "{player}" to player.name)
-        //player.sendMessage("$prefix <yellow>Hai invitato <white>${target.name}</white> nel party</yellow>")
         player.sendDynamicMessage(MessageData.PARTY_INVITE, "{player}" to target.name)
 
         object : BukkitRunnable(){
             override fun run(){
 
                 if(invitedPlayers.contains(target)){
-                    //target.sendMessage("$prefix <red>L'invito al party e' scaduto".toMini())
                     target.sendDynamicMessage(MessageData.PARTY_ERRORS_INVITE_EXPIRED)
                     invitedPlayers.remove(target)
                 }
@@ -79,15 +73,6 @@ object PartyCMD {
             }
         }.runTaskLaterAsynchronously(GourPillars.instance, 20 * 20)
     }
-
-    //todo make a admin party add member for tests
-    //@Subcommand("add <target>")
-    //@CommandPermission("pillar.admin")
-    //fun addMember(player: Player, target: Player) {
-    //
-    //    partyManager.addMember(player, player)
-    //}
-
 
     @Subcommand("remove <target>")
     fun removeMember(player: Player, target: Player) {
@@ -111,19 +96,13 @@ object PartyCMD {
 
     @Subcommand("info", "list")
     fun partyInfo(player: Player) {
-        val mm = MiniMessage.miniMessage()
         val party = partyManager.getPartyByPlayer(player) ?: return
 
         if (partyManager.isInParty(player)) {
             val membersList = party.members.filter { it != party.partyAdmin }
                 .joinToString(" <gray>|</gray> ") { "<yellow>${it.name}</yellow>" }
 
-
-            //player.sendMessage("<gradient:#c061cb:#3584e4>✦━━━ INFO PARTY ━━━✦</gradient>".toMini())
-            //player.sendMessage("<gray>👑 Admin:</gray> <yellow>${party.partyAdmin.name}</yellow>".toMini())
             if(membersList.isNotEmpty()){
-                //player.sendMessage("<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>".toMini())
-                //player.sendMessage("<gray>👥 Membri:</gray> $membersList".toMini())
 
                 player.sendDynamicMessage(MessageData.PARTY_PARTY_INFO,
                     "{partyAdmin}" to party.partyAdmin.name,
@@ -132,10 +111,8 @@ object PartyCMD {
                 player.sendDynamicMessage(MessageData.PARTY_PARTY_INFO_NO_MEMBERS,
                     "{partyAdmin}" to party.partyAdmin.name)
             }
-            //player.sendMessage("<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>".toMini())
 
         } else {
-            //player.sendMessage(mm.deserialize("<red> Non sei in un party!"))
             player.sendDynamicMessage(MessageData.PARTY_ERRORS_PLAYER_NOT_IN_PARTY)
         }
 
@@ -143,26 +120,6 @@ object PartyCMD {
     }
 
     private fun sendCommandsPartyHelp(player: Player) {
-        val mm = MiniMessage.miniMessage()
-
-        val message = mm.deserialize("""
-        <gradient:#c061cb:#3584e4>━━━━━━━━━━━━━━━━━━━━━━━</gradient>
-        <bold><gradient:#00ff99:#00ccff>☘ Comandi Party ☘</gradient></bold>
-        
-        <gold>/party create</gold> <gray>- <yellow>Crea il party</yellow>
-        <gold>/party invite <player></gold> <gray>- <yellow>Invita un giocatore</yellow>
-        <gold>/party accept</gold> <gray>- <yellow>Accetta un invito</yellow>
-        <gold>/party leave</gold> <gray>- <yellow>Lascia il party</yellow>
-        <gold>/party disband</gold> <gray>- <yellow>Sciogli il party</yellow>
-        <gold>/party remove <player></gold> <gray>- <yellow>Rimuovi un membro</yellow>
-        <gold>/party promote <player></gold> <gray>- <yellow>Promuovi un admin</yellow>
-        <gold>/party info</gold> <gray>- <yellow>Info sul party</yellow>
-        
-        <gradient:#c061cb:#3584e4>━━━━━━━━━━━━━━━━━━━━━━━</gradient>
-        """.trimIndent()
-        )
-
-        //player.sendMessage(message)
         player.sendDynamicMessage(MessageData.PARTY_PARTY_COMMAND_HELP)
     }
 }
