@@ -1,24 +1,23 @@
 package org.gourmet.gourPillars.other
 
-import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 
 object Logger {
-    private val prefix: String = "&d[DreamKitPvP]: ";
+    private const val PREFIX: String = "<light_purple>[DreamKitPvP]</light_purple> "
 
     fun info(text: String?) {
-        sendText("&f" + text)
+        sendText("<white>$text</white>")
     }
 
     fun warning(text: String?) {
-        sendText("&c" + text)
+        sendText("<red>$text</red>")
     }
 
     fun watch(text: String?) {
-        sendText("&k" + text)
+        sendText("<obfuscated>$text</obfuscated>")
     }
 
     private fun sendText(text: String?) {
-        Bukkit.getConsoleSender().sendMessage((prefix + text).toMini())
+        Bukkit.getConsoleSender().sendMessage((PREFIX + text).toMini())
     }
 }
