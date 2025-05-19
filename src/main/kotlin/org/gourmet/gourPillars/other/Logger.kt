@@ -3,7 +3,7 @@ package org.gourmet.gourPillars.other
 import org.bukkit.Bukkit
 
 object Logger {
-    private const val PREFIX: String = "<light_purple>[DreamKitPvP]</light_purple> "
+    private const val PREFIX: String = "<light_purple>[GourPillars]</light_purple> "
 
     fun info(text: String?) {
         sendText("<white>$text</white>")
