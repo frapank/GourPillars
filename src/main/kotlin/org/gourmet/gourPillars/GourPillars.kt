@@ -90,10 +90,4 @@ class GourPillars : JavaPlugin() {
         PlaceHolderManager().register()
     }
 
-    // Lista
-    /*
-        - una
-        - due
-     */
-
 }
