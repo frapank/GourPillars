@@ -5,7 +5,7 @@ import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.managers.arena.Arena
+import org.gourmet.gourPillars.managers.game.arena.Arena
 
 class BorderHandler : GameHandler {
 

@@ -3,7 +3,7 @@ package org.gourmet.gourPillars.task.game.gametasks
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.managers.arena.Arena
+import org.gourmet.gourPillars.managers.game.arena.Arena
 
 class LavaHandler : GameHandler {
 

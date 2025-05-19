@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.data
+package org.gourmet.gourPillars.managers
 
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.other.Logger

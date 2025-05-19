@@ -3,7 +3,7 @@ package org.gourmet.gourPillars.managers
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.data.DatabaseManager
+import org.gourmet.gourPillars.managers.DatabaseManager
 import org.gourmet.gourPillars.other.Logger
 
 object LevelBarManager {

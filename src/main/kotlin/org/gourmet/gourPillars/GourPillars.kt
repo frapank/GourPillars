@@ -3,8 +3,8 @@ package org.gourmet.gourPillars
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.gourmet.gourPillars.commands.*
-import org.gourmet.gourPillars.data.DatabaseManager
-import org.gourmet.gourPillars.external.PlaceHolderManager
+import org.gourmet.gourPillars.managers.DatabaseManager
+import org.gourmet.gourPillars.managers.PlaceHolderManager
 import org.gourmet.gourPillars.listener.*
 import org.gourmet.gourPillars.listener.game.StopBreakStartingEvent
 import org.gourmet.gourPillars.listener.general.GuiClickEvent
@@ -16,9 +16,9 @@ import org.gourmet.gourPillars.listener.general.ChatViewEvent
 import org.gourmet.gourPillars.listener.general.DatabaseEvent
 import org.gourmet.gourPillars.listener.general.LevelEvent
 import org.gourmet.gourPillars.listener.lobby.JoinEvent
-import org.gourmet.gourPillars.managers.ArenaManager
+import org.gourmet.gourPillars.managers.game.ArenaManager
 import org.gourmet.gourPillars.managers.LobbyScoreboardManager
-import org.gourmet.gourPillars.managers.PartyManager
+import org.gourmet.gourPillars.managers.party.PartyManager
 import org.gourmet.gourPillars.managers.SpawnManager
 import org.gourmet.gourPillars.other.Logger
 import org.gourmet.gourPillars.other.messages.LanguageManager

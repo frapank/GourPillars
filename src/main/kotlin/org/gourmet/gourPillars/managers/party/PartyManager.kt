@@ -1,10 +1,9 @@
-package org.gourmet.gourPillars.managers
+package org.gourmet.gourPillars.managers.party
 
 import org.bukkit.entity.Player
+import org.gourmet.gourPillars.managers.party.PartyData
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
-import org.gourmet.gourPillars.other.miniMessage
-import org.gourmet.gourPillars.other.toMini
 
 class PartyManager {
 

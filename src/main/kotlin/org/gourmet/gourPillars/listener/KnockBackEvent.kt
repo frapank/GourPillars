@@ -6,7 +6,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.metadata.FixedMetadataValue
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.managers.arena.GameEvents
+import org.gourmet.gourPillars.managers.game.arena.GameEvents
 
 class KnockBackEvent : Listener{
 

@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.managers.arena
+package org.gourmet.gourPillars.managers.game.arena
 
 enum class State {
     STOPPED,
