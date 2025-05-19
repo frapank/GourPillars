@@ -35,7 +35,7 @@ class ArenaManager {
 
     fun isPlayerInArena(player: Player): Boolean{
         for((_, arena) in onlineArenas){
-            if(arena.waitingPlayer.contains(player)){
+            if(arena.inGamePlayer.contains(player)){
                 return true
             }
         }
@@ -119,8 +119,7 @@ class ArenaManager {
             }
 
             val arena = Arena(spawnsList, mainSpawn, slowFalling, spawnsList.size, minPlayer, -1, minHeight, regionLocOne, regionLocTwo, region, arenaName)
-            Bukkit.getLogger().info("Created new arena $arenaName")
-            Bukkit.getLogger().info("advanced: ${arena.spawnMap}")
+            Bukkit.getLogger().info("Loadednew arena $arenaName")
             onlineArenas[arenaName] = arena
         }
     }
