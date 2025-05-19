@@ -3,7 +3,7 @@ package org.gourmet.gourPillars
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.gourmet.gourPillars.commands.*
-import org.gourmet.gourPillars.data.JsonManager
+import org.gourmet.gourPillars.data.DatabaseManager
 import org.gourmet.gourPillars.external.PlaceHolderManager
 import org.gourmet.gourPillars.listener.*
 import org.gourmet.gourPillars.listener.BlockBreakListener
@@ -25,7 +25,7 @@ class GourPillars : JavaPlugin() {
         lateinit var arenaManager: ArenaManager
         lateinit var spawnManager: SpawnManager
         lateinit var partyManager: PartyManager
-        lateinit var jsonManager: JsonManager
+        lateinit var databaseManager: DatabaseManager
         lateinit var lobbyScoreboardManager: LobbyScoreboardManager
         lateinit var languageManager: LanguageManager
         var isEditing = false
@@ -38,7 +38,10 @@ class GourPillars : JavaPlugin() {
         languageManager.saveDefaultLanguageFile()
 
         Logger.info("GourPillars starting...")
-        jsonManager = JsonManager()
+        databaseManager = DatabaseManager()
+        databaseManager.setupDatabase()
+        databaseManager.initDatabase()
+
         partyManager = PartyManager()
         spawnManager = SpawnManager()
         ShowPlayerTask().runTaskTimer(this, 0L, 20L)
@@ -46,6 +49,7 @@ class GourPillars : JavaPlugin() {
 
         arenaManager = ArenaManager()
         Bukkit.getPluginManager().registerEvents(DeathListener(), this)
+        Bukkit.getPluginManager().registerEvents(DatabaseListeners(), this)
         Bukkit.getPluginManager().registerEvents(JoinListener(), this)
         Bukkit.getPluginManager().registerEvents(BlockBreakListener(), this)
         Bukkit.getPluginManager().registerEvents(LeaveListener(), this)
