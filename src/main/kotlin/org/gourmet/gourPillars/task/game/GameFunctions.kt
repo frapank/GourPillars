@@ -14,7 +14,7 @@ object GameFunctions {
     fun playVictoryEffects(winner: Player, arena: Arena) {
         val world = winner.world
 
-        arena.waitingPlayer.forEach { player ->
+        arena.inGamePlayer.forEach { player ->
             player.playSound(player.location, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f)
         }
 
