@@ -9,8 +9,6 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.data.PlayerData
-import org.gourmet.gourPillars.listener.KnockBackEvent
 import org.gourmet.gourPillars.managers.arena.Arena
 import org.gourmet.gourPillars.managers.arena.GameEvents
 import org.gourmet.gourPillars.managers.arena.State
@@ -27,10 +25,8 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     var running = false
     var secondsPassed = 300
     private var lastPlayer: Player? = null
-    private val jsonManager = GourPillars.Companion.jsonManager
     private var lavaLevel = arena.minHeight
     private var currentEventHandler: GameHandler? = null
-    private val prefix = "<bold><aqua>Game </bold><gray>|"
 
     override fun run(){
 
@@ -38,6 +34,10 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         running = true
         lavaLevel = arena.minHeight
         alivePlayer = mutableMapOf()
+        alivePlayer.forEach { (player, _) -> {
+            arena.playedPlayerNames.add(player.name) //Setup playedPlayersName
+        } }
+
         setupEvent()
         removeAllGlass()
         preparePlayer()
@@ -107,7 +107,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     }
 
     private fun updateScoreBoard(){
-        arena.waitingPlayer.forEach{player ->
+        arena.inGamePlayer.forEach{ player ->
             arena.scoreboardManager.setGameScoreboard(player)
         }
     }
@@ -121,13 +121,15 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     }
 
     private fun handleEndGame() {
+
         val winner = getWinner()
         if (winner != null) {
             arena.sendDynamicTitleToPlayerInGame(MessageData.ARENA_TITLE_END, MessageData.ARENA_SUBTITLE_END, "{winner}" to winner.name)
-            arena.waitingPlayer.forEach { messagePlayer ->
+            arena.inGamePlayer.forEach { messagePlayer ->
                 messagePlayer.sendDynamicMessage(MessageData.WIN_GAME, "{winner}" to winner.name)
             }
         }
+
         //Update the statistic only for the winner
         arena.nightVote.clear()
         arena.dayVote.clear()
@@ -135,56 +137,51 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         arena.lavaEvent.clear()
         arena.borderEvent.clear()
         arena.noEventVote.clear()
+
+
         if (winner != null) {
             winner.isInvulnerable = true
-            val winnerData = jsonManager.getPlayerData(winner) ?: PlayerData(winner.name, 0, 0, 0, 0, 0, 0, 0)
-            winnerData.wins += 1
-            winnerData.gamesPlayed += 1
-            jsonManager.setPlayerData(winner, winnerData)
-            jsonManager.savePlayerData()
-            jsonManager.addXP(winner, 300)
             GameFunctions.playVictoryEffects(winner, arena)
+            StatsUpdater.updateWins(winner) //Update wins
         }
+
+        arena.playedPlayerNames.forEach { playerName -> {
+            if(playerName != winner?.name){
+                StatsUpdater.updateDefeats(playerName)
+            }
+        } }
 
         currentEventHandler?.onStop(arena, winner)
 
-        //Update the defeat statistic for all players
-        arena.waitingPlayer.forEach { playersForData ->
-            val playerData = GourPillars.Companion.jsonManager.getPlayerData(playersForData) ?: PlayerData(
-                playersForData.name,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0
-            )
-            playerData.defeats = playerData.gamesPlayed - playerData.wins
-            GourPillars.Companion.jsonManager.setPlayerData(playersForData, playerData)
-            GourPillars.Companion.jsonManager.savePlayerData()
-        }
         //Arena reset
         object : BukkitRunnable(){
             override fun run(){
+
                 running = false
                 secondsPassed = 300
                 arena.gameState = State.STOPPED
-                arena.waitingPlayer.forEach { player ->
+
+                //Teleport all play
+                arena.inGamePlayer.forEach { player ->
                     GourPillars.Companion.spawnManager.teleportPlayerToSpawn(player)
                     GourPillars.Companion.lobbyScoreboardManager.setScoreboard(player)
                     player.inventory.clear()
                     player.health = 20.0
                     player.foodLevel = 20
                 }
+
+                //Restore map pointer
                 arena.spawnMap.forEach{ (location, _) ->
                     arena.spawnMap[location] = null
                 }
-                arena.waitingPlayer.clear()
+
+                arena.playedPlayerNames.clear()
+                arena.inGamePlayer.clear()
                 alivePlayer.clear()
 
                 cancel()
                 arena.resetArenaTask.run()
+
             }
         }.runTaskLater(plugin, 80L)
     }
@@ -198,7 +195,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     private fun preparePlayer(){
 
         //Reset kills
-        arena.waitingPlayer.forEach { player: Player ->
+        arena.inGamePlayer.forEach { player: Player ->
             alivePlayer[player] = 0
         }
 
@@ -216,6 +213,10 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     }
 
     private fun eliminationProcess(player: Player){
+
+        //TODO: Update death stats to player
+
+        //Remove player from arena
         val kills = alivePlayer[player]
         if(alivePlayer.size <= 1)
             lastPlayer = player
@@ -223,23 +224,13 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         player.gameMode = GameMode.SPECTATOR
         arena.reloadInGameScoreboard()
         player.teleport(arena.spawnMainLocation)
-        arena.waitingPlayer.forEach { playerSound ->
+
+        //Play death sound to all players
+        arena.inGamePlayer.forEach { playerSound ->
             playerSound.playSound(playerSound.location, Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 2f)
         }
-        val playerData = GourPillars.Companion.jsonManager.getPlayerData(player) ?: PlayerData(
-            player.name,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        )
-        playerData.defeats += 1
-        GourPillars.Companion.jsonManager.setPlayerData(player, playerData)
-        GourPillars.Companion.jsonManager.savePlayerData()
 
+        //Send end game message to player
         player.sendDynamicMessage(
             MessageData.END_GAME,
             "{time}" to getTimeFormatted(),
@@ -247,9 +238,10 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
             "{map}" to arena.name)
     }
 
+    //general elimination
     fun playerEliminated(player: Player){
         eliminationProcess(player)
-        arena.waitingPlayer.forEach { receiverPlayer ->
+        arena.inGamePlayer.forEach { receiverPlayer ->
             if(receiverPlayer != player)
                 receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED, "{player}" to player.name)
         }
@@ -259,7 +251,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     //fall damage death message
     fun playerEliminatedFall(player: Player){
         eliminationProcess(player)
-        arena.waitingPlayer.forEach { receiverPlayer ->
+        arena.inGamePlayer.forEach { receiverPlayer ->
             if(receiverPlayer != player)
                 receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED_FALL, "{player}" to player.name)
         }
@@ -268,21 +260,30 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
 
     //player kill by player death message
     fun playerEliminated(player: Player, killer: Player){
-        if(alivePlayer.size <= 1)
-            lastPlayer = player
+
+        //Update killer stats
+        StatsUpdater.updateKill(killer)
+
+        if(alivePlayer.size <= 1) lastPlayer = player
+
         alivePlayer.remove(player)
         player.gameMode = GameMode.SPECTATOR
-        arena.waitingPlayer.forEach { receiverPlayer ->
+
+        //Send eliminated message
+        arena.inGamePlayer.forEach { receiverPlayer ->
             if(receiverPlayer != player)
                 receiverPlayer.sendDynamicMessage(
                     MessageData.ARENA_PLAYER_ELIMINATED_KILL,
                     "{player}" to player.name,
                     "{killer}" to killer.name)
         }
+
+        //Update in game kills
         if(alivePlayer.contains(killer)){
             val oldKills = alivePlayer[killer]!! + 1
             alivePlayer[killer] = oldKills
         }
+
         arena.reloadInGameScoreboard()
 
     }
