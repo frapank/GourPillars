@@ -13,7 +13,7 @@ class CountDownTask(val arena: Arena) : BukkitRunnable(){
     override fun run() {
 
                 //Cancel if player is not enought
-                if(arena.waitingPlayer.size < arena.minPlayer){
+                if(arena.inGamePlayer.size < arena.minPlayer){
                     arena.gameState = State.WAITING
                     counter = 10
                     cancel()
@@ -25,7 +25,7 @@ class CountDownTask(val arena: Arena) : BukkitRunnable(){
                     //Messages and Effects
                     arena.sendTitleToPlayerInGame("&7Uccidi i tuoi avversari", "&8Ma non cadere...")
                     arena.sendDynamicTitleToPlayerInGame(MessageData.ARENA_TITLE_START, MessageData.ARENA_SUBTITLE_START)
-                    arena.waitingPlayer.forEach { player ->
+                    arena.inGamePlayer.forEach { player ->
                         player.playSound(player.location, Sound.ENTITY_WITHER_SPAWN, 0.8f, 2.0f)
                     }
 
@@ -42,7 +42,7 @@ class CountDownTask(val arena: Arena) : BukkitRunnable(){
                 val pitch = 2.0f + (counter * 0.1f)
 
                 //Playe countdown sounmd
-                arena.waitingPlayer.forEach { player ->
+                arena.inGamePlayer.forEach { player ->
                     player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_PLING, volume, pitch)
                 }
 
