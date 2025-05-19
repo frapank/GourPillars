@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.managers
+package org.gourmet.gourPillars.data
 
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.other.Logger
@@ -10,7 +10,7 @@ class DatabaseManager {
         "jdbc:mysql://localhost:3306/luckofpillars?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8"
     private val user: String = "root"
     private val pass: String? = "dream_db"
-    private val playersData = HashMap<Player, PlayerData>()
+    val playersData = HashMap<Player, PlayerData>()
     var isOnline = false
 
     fun setupDatabase() {
@@ -29,12 +29,11 @@ class DatabaseManager {
         val createStatisticsTableQuery = (
                 "CREATE TABLE IF NOT EXISTS statistics (" +
                         "name VARCHAR(255) NOT NULL PRIMARY KEY, " +
-                        "deaths INT DEFAULT 0, " +
                         "defeats INT DEFAULT 0, " +
-                        "kills DOUBLE DEFAULT 0.0, " +
+                        "kills INT DEFAULT 0, " +
                         "wins INT DEFAULT 0, " +
-                        "gameplayed INT DEFAULT 0, " +
                         "xp INT DEFAULT 0, " +
+                        "level INT DEFAULT 0, " +
                         "FOREIGN KEY(name) REFERENCES players(name) ON DELETE CASCADE" +
                         ")")
 
@@ -69,13 +68,13 @@ class DatabaseManager {
         if (pass == null) return
 
         val query =
-            "SELECT p.name, p.fragments, s.deaths, s.defeats, s.kills, s.wins, s.gameplayed, s.xp " +
+            "SELECT p.name, p.fragments, s.defeats, s.kills, s.wins, s.xp, s.level " +
                     "FROM players p LEFT JOIN statistics s ON p.name = s.name"
 
         try {
             DriverManager.getConnection(url, user, pass).use { conn ->
                 conn.createStatement().use { stmt ->
-                    stmt.executeQuery(query).use { rs ->
+                    stmt.executeQuery(query).use { _ ->
                         Logger.info("Database connection established")
                         isOnline = true
                     }
@@ -101,7 +100,6 @@ class DatabaseManager {
                     stmt2.setString(1, player.name)
                     stmt2.executeUpdate()
                 }
-                Logger.info("User and initial statistics created for ${player.name}")
             }
         } catch (e: SQLException) {
             Logger.warning("Database error adding user and stats: ${e.message}")
@@ -126,34 +124,31 @@ class DatabaseManager {
 
     fun updateStatistics(
         playerName: String,
-        deaths: Int,
         defeats: Int,
-        kills: Double,
+        kills: Int,
         wins: Int,
-        gameplayed: Int,
-        xp: Int
+        xp: Int,
+        level: Int
     ) {
         val query =
-            "INSERT INTO statistics (name, deaths, defeats, kills, wins, gameplayed, xp) VALUES (?, ?, ?, ?, ?, ?, ?) " +
-                    "ON DUPLICATE KEY UPDATE deaths = ?, defeats = ?, kills = ?, wins = ?, gameplayed = ?, xp = ?"
+            "INSERT INTO statistics (name, defeats, kills, wins, xp, level) VALUES (?, ?, ?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE defeats = ?, kills = ?, wins = ?, xp = ?, level = ?"
 
         try {
             DriverManager.getConnection(url, user, pass).use { conn ->
                 conn.prepareStatement(query).use { stmt ->
                     stmt.setString(1, playerName)
-                    stmt.setInt(2, deaths)
-                    stmt.setInt(3, defeats)
-                    stmt.setDouble(4, kills)
-                    stmt.setInt(5, wins)
-                    stmt.setInt(6, gameplayed)
-                    stmt.setInt(7, xp)
+                    stmt.setInt(2, defeats)
+                    stmt.setInt(3, kills)
+                    stmt.setInt(4, wins)
+                    stmt.setInt(5, xp)
+                    stmt.setInt(6, level)
 
-                    stmt.setInt(8, deaths)
-                    stmt.setInt(9, defeats)
-                    stmt.setDouble(10, kills)
-                    stmt.setInt(11, wins)
-                    stmt.setInt(12, gameplayed)
-                    stmt.setInt(13, xp)
+                    stmt.setInt(7, defeats)
+                    stmt.setInt(8, kills)
+                    stmt.setInt(9, wins)
+                    stmt.setInt(10, xp)
+                    stmt.setInt(11, level)
                     stmt.executeUpdate()
                 }
             }
@@ -163,7 +158,7 @@ class DatabaseManager {
     }
 
     fun getStatistics(playerName: String): PlayerStats? {
-        val query = "SELECT deaths, defeats, kills, wins, gameplayed, xp FROM statistics WHERE name = ? LIMIT 1"
+        val query = "SELECT defeats, kills, wins, xp, level FROM statistics WHERE name = ? LIMIT 1"
         try {
             DriverManager.getConnection(url, user, pass).use { conn ->
                 conn.prepareStatement(query).use { stmt ->
@@ -172,12 +167,11 @@ class DatabaseManager {
                         if (rs.next()) {
                             return PlayerStats(
                                 playerName,
-                                rs.getInt("deaths"),
                                 rs.getInt("defeats"),
-                                rs.getDouble("kills"),
+                                rs.getInt("kills"),
                                 rs.getInt("wins"),
-                                rs.getInt("gameplayed"),
-                                rs.getInt("xp")
+                                rs.getInt("xp"),
+                                rs.getInt("level")
                             )
                         }
                     }
@@ -203,21 +197,16 @@ class DatabaseManager {
         } catch (e: SQLException) {
             Logger.warning("Database problem, can't find user: ${e.message}")
         }
-        return -1
-    }
-
-    fun decreaseInfamyForAll(amount: Int) {
-        // No longer applicable in current stats model
+        return 0
     }
 
     class PlayerStats(
         val name: String,
-        var deaths: Int,
         var defeats: Int,
-        var kills: Double,
+        var kills: Int,
         var wins: Int,
-        var gameplayed: Int,
-        var xp: Int
+        var xp: Int,
+        var level: Int
     )
 
     class PlayerData(player: Player, databaseManager: DatabaseManager) {
