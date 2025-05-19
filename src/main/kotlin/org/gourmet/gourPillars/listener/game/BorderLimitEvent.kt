@@ -1,17 +1,15 @@
-package org.gourmet.gourPillars.listener
+package org.gourmet.gourPillars.listener.game
 
-import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
-import org.gourmet.gourPillars.other.toMini
 
-class PlaceBlockListener : Listener{
+class BorderLimitEvent : Listener {
 
-    private val arenaManager = GourPillars.arenaManager
+    private val arenaManager = GourPillars.Companion.arenaManager
 
     @EventHandler
     fun onBlockPlace(event: BlockPlaceEvent) {
@@ -21,7 +19,6 @@ class PlaceBlockListener : Listener{
 
         if (!arena.region.isInRegion(player.location)) {
             event.isCancelled = true
-            //player.sendMessage("<red>Limite raggiunto".toMini())
             player.sendDynamicMessage(MessageData.ARENA_ERRORS_LIMIT_REACHED)
         }
     }

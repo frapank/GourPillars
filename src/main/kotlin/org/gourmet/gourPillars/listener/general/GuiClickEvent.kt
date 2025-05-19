@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.listener
+package org.gourmet.gourPillars.listener.general
 
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
@@ -15,11 +15,10 @@ import org.gourmet.gourPillars.guis.VoteInventory
 import org.gourmet.gourPillars.managers.arena.State
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
-import org.gourmet.gourPillars.other.toMini
 
-class ClickItemEvent : Listener {
+class GuiClickEvent : Listener {
 
-    private val arenaManager = GourPillars.arenaManager
+    private val arenaManager = GourPillars.Companion.arenaManager
     private val prefix = "<bold><aqua>Game </bold><gray>|"
 
     @EventHandler
@@ -146,7 +145,7 @@ class ClickItemEvent : Listener {
         if (!item.hasItemMeta()) return false
 
         val meta = item.itemMeta ?: return false
-        val key = NamespacedKey(GourPillars.instance, tag)
+        val key = NamespacedKey(GourPillars.Companion.instance, tag)
         val hasTag = meta.persistentDataContainer.has(key, PersistentDataType.STRING)
 
         return hasTag
