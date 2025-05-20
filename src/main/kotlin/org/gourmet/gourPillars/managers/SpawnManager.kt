@@ -11,6 +11,7 @@ class SpawnManager {
     companion object{
         var spawn: Location? = null
     }
+
     private val config = GourPillars.instance.config
 
     init{
@@ -35,5 +36,10 @@ class SpawnManager {
         val pitch: Float = config.getDouble("spawn.pitch").toFloat() ?: return null
 
         return Location(world, x, y, z, yaw, pitch)
+    }
+
+    public fun getConfiguredWorld(): World? {
+        val worldName = config.getString("spawn.world") ?: return null
+        return Bukkit.getWorld(worldName)
     }
 }

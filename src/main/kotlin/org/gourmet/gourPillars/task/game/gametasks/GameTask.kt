@@ -168,6 +168,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
                     player.inventory.clear()
                     player.health = 20.0
                     player.foodLevel = 20
+                    Utils.giveLobbyItems(player)
                 }
 
                 //Restore map pointer
