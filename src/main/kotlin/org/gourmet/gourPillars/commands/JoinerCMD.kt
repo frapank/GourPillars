@@ -4,6 +4,7 @@ import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.State
+import org.gourmet.gourPillars.other.Utils
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 import revxrsal.commands.annotation.Command
@@ -152,6 +153,7 @@ object JoinerCMD {
         player.health = 20.0
         player.foodLevel = 20
         GourPillars.lobbyScoreboardManager.setScoreboard(player)
+        Utils.giveLobbyItems(player)
 
     }
 
