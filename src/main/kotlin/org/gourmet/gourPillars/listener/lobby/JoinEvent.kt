@@ -2,8 +2,10 @@ package org.gourmet.gourPillars.listener.lobby
 
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
@@ -26,6 +28,9 @@ class JoinEvent : Listener {
             }
         }.runTaskLater(GourPillars.instance, 1L)
 
+        event.player.health to 20
+        event.player.foodLevel to 20
+
         Utils.giveLobbyItems(event.player)
 
         object : BukkitRunnable(){
@@ -38,9 +43,11 @@ class JoinEvent : Listener {
 
     }
 
-
-
-
-
+    @EventHandler
+    fun onFoodChange(event: FoodLevelChangeEvent) {
+        if(event.entity !is Player) return
+        val player: Player = event.entity as Player
+        player.foodLevel to 20
+    }
 
 }

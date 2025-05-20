@@ -12,26 +12,27 @@ import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageEvent
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.commands.BuildCMD
 
 class WorldChangeEvent : Listener{
 
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {
-        if (isSpawnWorld(e.block.world)) {
+        if (isSpawnWorld(e.block.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
             e.isCancelled = true
         }
     }
 
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
-        if (isSpawnWorld(e.block.world)) {
+        if (isSpawnWorld(e.block.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
             e.isCancelled = true
         }
     }
 
     @EventHandler
     fun onSignChange(e: SignChangeEvent) {
-        if (isSpawnWorld(e.block.world)) {
+        if (isSpawnWorld(e.block.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
             e.isCancelled = true
         }
     }
@@ -41,7 +42,7 @@ class WorldChangeEvent : Listener{
         if (!isSpawnWorld(e.player.world)) return
 
         val block = e.clickedBlock ?: return
-        if (e.action.isLeftClick && PLANT_MATERIALS.contains(block.type)) {
+        if (e.action.isLeftClick && PLANT_MATERIALS.contains(block.type) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
             e.isCancelled = true
         }
     }

@@ -41,12 +41,13 @@ Global Stats:
 ---
 
 ## 🕹️ Commands & Permissions  
-| Command | Permission | Description |
-|---------|------------|-------------|
-| `/randomjoin` | - | Join random arena |
+| Command         | Permission | Description |
+|-----------------|------------|-------------|
+| `/randomjoin`   | - | Join random arena |
 | `/join <arena>` | - | Join an arena |
-| `/leave` | - | leave arena |
-| `/edit` | `pillars.admin` | arena configuration |
+| `/leave`        | - | leave arena |
+| `/edit`         | `gpillars.admim` | arena configuration |
+| `/build`        | `gpillars.build` | build session |
 
 ---
 
