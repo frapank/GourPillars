@@ -3,6 +3,7 @@ package org.gourmet.gourPillars.task.game.gametasks
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Sound
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
@@ -177,6 +178,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
                 }
 
                 arena.playedPlayerNames.clear()
+                arena.lastDamagerMap.clear()
                 arena.inGamePlayer.clear()
                 alivePlayer.clear()
 
@@ -243,8 +245,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     fun playerEliminated(player: Player){
         eliminationProcess(player)
         arena.inGamePlayer.forEach { receiverPlayer ->
-            if(receiverPlayer != player)
-                receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED, "{player}" to player.name)
+            receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED, "{player}" to player.name)
         }
 
     }
@@ -253,10 +254,55 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     fun playerEliminatedFall(player: Player){
         eliminationProcess(player)
         arena.inGamePlayer.forEach { receiverPlayer ->
-            if(receiverPlayer != player)
-                receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED_FALL, "{player}" to player.name)
+            receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED_FALL, "{player}" to player.name)
         }
 
+    }
+
+    //fall void fall death message
+    fun playerEliminatedVoid(player: Player){
+        eliminationProcess(player)
+        arena.inGamePlayer.forEach { receiverPlayer ->
+            receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED_VOID, "{player}" to player.name)
+        }
+
+    }
+
+    //player void kill by player death message
+    fun playerEliminatedVoid(player: Player, killer: Player) {
+
+        //Update killer stats
+        StatsUpdater.updateKill(killer)
+
+        if (alivePlayer.size <= 1) lastPlayer = player
+
+        alivePlayer.remove(player)
+        player.gameMode = GameMode.SPECTATOR
+
+        //Send eliminated message
+        arena.inGamePlayer.forEach { receiverPlayer ->
+            receiverPlayer.sendDynamicMessage(
+                MessageData.ARENA_PLAYER_ELIMINATED_VOID_ATTACK,
+                "{player}" to player.name,
+                "{killer}" to killer.name
+            )
+        }
+
+        //Update in game kills
+        if(alivePlayer.contains(killer)){
+            val oldKills = alivePlayer[killer]!! + 1
+            alivePlayer[killer] = oldKills
+        }
+    }
+
+    //fall mob kill death message
+    fun playerEliminatedByMob(player: Player, damager: Entity){
+        eliminationProcess(player)
+        arena.inGamePlayer.forEach { receiverPlayer ->
+
+            receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED_MOB, "{player}" to player.name,
+                "{killer}" to damager.name)
+        }
     }
 
     //player kill by player death message

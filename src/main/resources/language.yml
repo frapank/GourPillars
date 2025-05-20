@@ -28,6 +28,9 @@ arena:
   player-eliminated: "{prefix_game} <yellow><green>{player}</green> e' stato eliminato</yellow>"
   player-eliminated-fall: "{prefix_game} <yellow><green>{player}</green> e' caduto</yellow>"
   player-eliminated-kill: "{prefix_game} <yellow><green>{player}</green> e' stato eliminato da <green>{killer}</green></yellow>"
+  player-eliminated-void-attack: "{prefix_game} <yellow><green>{player}</green> e' stato mandato nel vuoto da <green>{killer}</green></yellow>"
+  player-eliminated-void: "{prefix_game} <yellow><green>{player}</green> e' caduto nel vuoto</yellow>"
+  player-eliminated-mob: "{prefix_game} <yellow><green>{player}</green> e' stato ucciso da <green>{killer}</green></yellow>"
   errors:
     already-in-game: "{prefix_game} <red>Sei gia in questa aren"
     arena-not-ready: "{prefix_game} <red>Arena non pronta"
