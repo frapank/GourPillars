@@ -17,6 +17,8 @@ import org.gourmet.gourPillars.other.toMini
 import org.gourmet.gourPillars.task.game.gametasks.GameTask
 import org.gourmet.gourPillars.task.ResetArenaTask
 import org.gourmet.gourPillars.task.CountDownTask
+import java.util.*
+import kotlin.collections.ArrayList
 
 class Arena(
     val spawnMap: MutableMap<Location, Player?>,
@@ -39,6 +41,7 @@ class Arena(
     val playedPlayerNames: MutableSet<String> = mutableSetOf() //general played ( Death, quitted, etc... ), used in databases
     var gameState: State = State.WAITING
     val spawnManager = GourPillars.spawnManager
+    val lastDamagerMap = mutableMapOf<UUID, UUID>()
     private val prefix = "<bold><aqua>Game </bold><gray>|"
 
     var gameEvent: GameEvents? = null

@@ -77,6 +77,7 @@ class GourPillars : JavaPlugin() {
             TestCMD,
             PartyCMD,
             EditCMD,
+            BuildCMD,
             StatsCMD
         )
 

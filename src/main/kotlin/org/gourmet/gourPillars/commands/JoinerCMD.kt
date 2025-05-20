@@ -13,7 +13,6 @@ object JoinerCMD {
 
     private val arenaManager = GourPillars.arenaManager
     private val partyManager = GourPillars.partyManager
-    private val prefix = "<bold><aqua>Game </bold><gray>|"
 
     @Command("join <name>")
     fun joinCommand(player: Player, name: String){

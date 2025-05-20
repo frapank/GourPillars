@@ -80,6 +80,9 @@ object MessageData {
     lateinit var ARENA_PLAYER_ELIMINATED: DynamicMessage
     lateinit var ARENA_PLAYER_ELIMINATED_FALL: DynamicMessage
     lateinit var ARENA_PLAYER_ELIMINATED_KILL: DynamicMessage
+    lateinit var ARENA_PLAYER_ELIMINATED_VOID_ATTACK: DynamicMessage
+    lateinit var ARENA_PLAYER_ELIMINATED_VOID: DynamicMessage
+    lateinit var ARENA_PLAYER_ELIMINATED_MOB: DynamicMessage
 
     lateinit var ARENA_TITLE_COUNTDOWN_OTHER: DynamicMessage
     lateinit var ARENA_TITLE_COUNTDOWN_5: DynamicMessage
@@ -166,6 +169,9 @@ object MessageData {
         ARENA_PLAYER_ELIMINATED = getMessage(config, "arena.player-eliminated")
         ARENA_PLAYER_ELIMINATED_FALL = getMessage(config, "arena.player-eliminated-fall")
         ARENA_PLAYER_ELIMINATED_KILL = getMessage(config, "arena.player-eliminated-kill")
+        ARENA_PLAYER_ELIMINATED_VOID_ATTACK = getMessage(config, "arena.player-eliminated-void-attack")
+        ARENA_PLAYER_ELIMINATED_VOID = getMessage(config, "arena.player-eliminated-void")
+        ARENA_PLAYER_ELIMINATED_MOB = getMessage(config, "arena.player-eliminated-mob")
 
         // Arena Titles
         ARENA_TITLE_START = getMessage(config, "arena.title.start-title")

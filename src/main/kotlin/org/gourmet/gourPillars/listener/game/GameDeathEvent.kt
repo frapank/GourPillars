@@ -1,21 +1,25 @@
 package org.gourmet.gourPillars.listener.game
 
 import org.bukkit.Bukkit
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.task.game.gametasks.GameTask
+import java.util.*
 
 @SuppressWarnings("deprecation")
 class GameDeathEvent : Listener {
 
-    private val arenaManager = GourPillars.Companion.arenaManager
+    private val arenaManager = GourPillars.arenaManager
 
+    //Quella del vuoto e' fatta in VoidKillEvent.kt
     @EventHandler
     fun onDeath(event: PlayerDeathEvent){
 
@@ -25,21 +29,48 @@ class GameDeathEvent : Listener {
         instantRespawn(player)
 
         val arena: Arena = arenaManager.getArenaByPlayer(player) ?: run {
-            GourPillars.Companion.spawnManager.teleportPlayerToSpawn(player)
+            GourPillars.spawnManager.teleportPlayerToSpawn(player)
             return
         }
 
         val gameRunnable: GameTask = arena.gameTask
 
         if(arena.gameState != State.INGAME) return
-        if(player.killer != null && player.killer is Player){
+
+        if(player.killer != null && player.killer is Player) {
+
+            //direct kill
             gameRunnable.playerEliminated(player, player.killer!!)
+
         } else if(event.entity.lastDamageCause?.cause == EntityDamageEvent.DamageCause.FALL) {
+
+            //fall damage
             gameRunnable.playerEliminatedFall(player)
+
         } else {
             gameRunnable.playerEliminated(player)
         }
 
+    }
+
+    //get damager and victim in map
+    @EventHandler
+    fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
+
+        val victim = event.entity
+        if(victim !is Player){
+            return
+        }
+
+        val arena: Arena = arenaManager.getArenaByPlayer(victim) ?: run {
+            GourPillars.spawnManager.teleportPlayerToSpawn(victim)
+            return
+        }
+
+        val damager = event.damager
+        if (damager is Player) {
+            arena.lastDamagerMap[victim.uniqueId] = damager.uniqueId
+        }
     }
 
     private fun instantRespawn(player: Player) {
