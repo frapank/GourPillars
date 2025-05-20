@@ -3,12 +3,15 @@ package org.gourmet.gourPillars.listener.lobby
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.World
+import org.bukkit.entity.ItemFrame
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockDropItemEvent
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.EquipmentSlot
@@ -59,6 +62,21 @@ class ItemLobbyEvent : Listener{
             e.isCancelled = true
         }
     }
+
+    @EventHandler
+    fun onItemFrameInteract(e: PlayerInteractEntityEvent) {
+        if (e.rightClicked is ItemFrame && isSpawnWorld(e.player.location.world)) {
+            e.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun onItemFrameDamage(e: EntityDamageByEntityEvent) {
+        if (e.entity is ItemFrame && e.damager is Player && isSpawnWorld(e.entity.location.world)) {
+            e.isCancelled = true
+        }
+    }
+
 
     private fun isSpawnWorld(eventWorld: World): Boolean {
         return GourPillars.spawnManager.getConfiguredWorld() == eventWorld
