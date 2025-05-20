@@ -4,13 +4,15 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.World
 import org.bukkit.block.Block
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 
 object Utils {
-
-    val config = GourPillars.instance.config
 
     fun setGlass(put: Boolean, location: Location) {
         val world: World = location.world ?: return
@@ -33,6 +35,29 @@ object Utils {
             }
         }
     }
+
+
+    fun giveLobbyItems(player: org.bukkit.entity.Player) {
+        val inv = player.inventory
+        inv.clear()
+
+        inv.setItem(0, createNamedCompass("<green>Modalità", null, Material.COMPASS))
+        inv.setItem(1, createNamedCompass("<aqua>Cosmetici", null, Material.EMERALD))
+        inv.setItem(4, createNamedCompass("<yellow>Random Join", "joinrandom", Material.NETHER_STAR))
+    }
+
+    private fun createNamedCompass(name: String, command: String?, material: Material): ItemStack {
+        val compass = ItemStack(material, 1)
+        val meta: ItemMeta = compass.itemMeta!!
+        meta.displayName(name.toMini())
+        if (command != null) {
+            val key = NamespacedKey(GourPillars.instance, "lobby_command")
+            meta.persistentDataContainer.set(key, PersistentDataType.STRING, command)
+        }
+        compass.itemMeta = meta
+        return compass
+    }
+
 }
 val miniMessage = MiniMessage.builder().build()
 fun String.toMini(): Component = miniMessage.deserialize(this)

@@ -15,7 +15,9 @@ import org.gourmet.gourPillars.listener.game.VoidKillEvent
 import org.gourmet.gourPillars.listener.general.ChatViewEvent
 import org.gourmet.gourPillars.listener.general.DatabaseEvent
 import org.gourmet.gourPillars.listener.general.LevelEvent
+import org.gourmet.gourPillars.listener.lobby.ItemLobbyEvent
 import org.gourmet.gourPillars.listener.lobby.JoinEvent
+import org.gourmet.gourPillars.listener.lobby.WorldChangeEvent
 import org.gourmet.gourPillars.managers.game.ArenaManager
 import org.gourmet.gourPillars.managers.LobbyScoreboardManager
 import org.gourmet.gourPillars.managers.party.PartyManager
@@ -57,6 +59,8 @@ class GourPillars : JavaPlugin() {
 
         arenaManager = ArenaManager()
         Bukkit.getPluginManager().registerEvents(GameDeathEvent(), this)
+        Bukkit.getPluginManager().registerEvents(ItemLobbyEvent(), this)
+        Bukkit.getPluginManager().registerEvents(WorldChangeEvent(), this)
         Bukkit.getPluginManager().registerEvents(DatabaseEvent(), this)
         Bukkit.getPluginManager().registerEvents(JoinEvent(), this)
         Bukkit.getPluginManager().registerEvents(StopBreakStartingEvent(), this)
