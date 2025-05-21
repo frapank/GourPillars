@@ -144,6 +144,11 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
             winner.isInvulnerable = true
             GameFunctions.playVictoryEffects(winner, arena)
             StatsUpdater.updateWins(winner) //Update wins
+            winner.sendDynamicMessage(
+                MessageData.END_GAME,
+                "{time}" to getTimeFormatted(),
+                "{kills}" to "best",
+                "{map}" to arena.name)
         }
 
         arena.playedPlayerNames.forEach { playerName -> {
@@ -167,6 +172,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
                     GourPillars.Companion.spawnManager.teleportPlayerToSpawn(player)
                     GourPillars.Companion.lobbyScoreboardManager.setScoreboard(player)
                     player.inventory.clear()
+                    player.fireTicks = 0
                     player.health = 20.0
                     player.foodLevel = 20
                     Utils.giveLobbyItems(player)
@@ -217,7 +223,6 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
 
     private fun eliminationProcess(player: Player){
 
-        //TODO: Update death stats to player
 
         //Remove player from arena
         val kills = alivePlayer[player]
@@ -272,12 +277,8 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     fun playerEliminatedVoid(player: Player, killer: Player) {
 
         //Update killer stats
+        eliminationProcess(player)
         StatsUpdater.updateKill(killer)
-
-        if (alivePlayer.size <= 1) lastPlayer = player
-
-        alivePlayer.remove(player)
-        player.gameMode = GameMode.SPECTATOR
 
         //Send eliminated message
         arena.inGamePlayer.forEach { receiverPlayer ->
@@ -293,13 +294,14 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
             val oldKills = alivePlayer[killer]!! + 1
             alivePlayer[killer] = oldKills
         }
+
+        arena.reloadInGameScoreboard()
     }
 
     //fall mob kill death message
     fun playerEliminatedByMob(player: Player, damager: Entity){
         eliminationProcess(player)
         arena.inGamePlayer.forEach { receiverPlayer ->
-
             receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED_MOB, "{player}" to player.name,
                 "{killer}" to damager.name)
         }
@@ -308,13 +310,8 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     //player kill by player death message
     fun playerEliminated(player: Player, killer: Player){
 
-        //Update killer stats
+        eliminationProcess(player)
         StatsUpdater.updateKill(killer)
-
-        if(alivePlayer.size <= 1) lastPlayer = player
-
-        alivePlayer.remove(player)
-        player.gameMode = GameMode.SPECTATOR
 
         //Send eliminated message
         arena.inGamePlayer.forEach { receiverPlayer ->
