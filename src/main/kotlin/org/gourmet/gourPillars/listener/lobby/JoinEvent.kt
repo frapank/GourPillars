@@ -27,6 +27,7 @@ class JoinEvent : Listener {
 
         event.player.health = 20.0
         event.player.foodLevel = 20
+        event.joinMessage = ""
 
         Utils.giveLobbyItems(event.player)
 
@@ -45,7 +46,7 @@ class JoinEvent : Listener {
         if(event.entity !is Player) return
         val player: Player = event.entity as Player
         if(!isSpawnWorld(player.world)) return
-        player.foodLevel = 20
+        event.foodLevel = 20
     }
 
     private fun isSpawnWorld(eventWorld: World): Boolean {
@@ -57,6 +58,7 @@ class JoinEvent : Listener {
         if(BuildCMD.buildSessionPlayers.contains(event.player)) {
             BuildCMD.buildSessionPlayers.remove(event.player)
         }
+        event.quitMessage = ""
     }
 
 }
