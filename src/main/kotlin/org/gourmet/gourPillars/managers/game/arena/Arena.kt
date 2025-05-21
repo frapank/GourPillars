@@ -6,6 +6,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.commands.BuildCMD
 import org.gourmet.gourPillars.managers.GameScoreboardManager
 import org.gourmet.gourPillars.other.Region
 import org.gourmet.gourPillars.other.Utils
@@ -69,6 +70,7 @@ class Arena(
         }
 
         if(inGamePlayer.size < maxPlayer){
+            BuildCMD.buildSessionPlayers.remove(player)
             inGamePlayer.add(player)
             scoreboardManager.setWaitingBoard(player)
             reloadWaitingScoreboard()

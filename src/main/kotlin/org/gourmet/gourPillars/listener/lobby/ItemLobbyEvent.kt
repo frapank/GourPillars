@@ -1,6 +1,5 @@
 package org.gourmet.gourPillars.listener.lobby
 
-import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.World
 import org.bukkit.entity.ItemFrame
@@ -65,14 +64,14 @@ class ItemLobbyEvent : Listener{
 
     @EventHandler
     fun onItemFrameInteract(e: PlayerInteractEntityEvent) {
-        if (e.rightClicked is ItemFrame && isSpawnWorld(e.player.location.world)) {
+        if (e.rightClicked is ItemFrame && isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
             e.isCancelled = true
         }
     }
 
     @EventHandler
     fun onItemFrameDamage(e: EntityDamageByEntityEvent) {
-        if (e.entity is ItemFrame && e.damager is Player && isSpawnWorld(e.entity.location.world)) {
+        if (e.entity is ItemFrame && e.damager is Player && isSpawnWorld(e.entity.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.damager as Player))) {
             e.isCancelled = true
         }
     }
