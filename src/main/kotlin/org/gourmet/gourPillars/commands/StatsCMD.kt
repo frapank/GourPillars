@@ -5,6 +5,7 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 import revxrsal.commands.annotation.Command
+import revxrsal.commands.bukkit.annotation.CommandPermission
 
 object StatsCMD {
 
@@ -30,6 +31,7 @@ object StatsCMD {
     }
 
     @Command("stats <target>")
+    @CommandPermission("gpillars.stats.other")
     fun statsCommand(player: Player, target: Player){
         val playerData = databaseManager.playersData.get(player)
         val kills = playerData?.stats?.kills ?: "error"

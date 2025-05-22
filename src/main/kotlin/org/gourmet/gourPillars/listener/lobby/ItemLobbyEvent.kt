@@ -3,6 +3,7 @@ package org.gourmet.gourPillars.listener.lobby
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.World
+import org.bukkit.block.Sign
 import org.bukkit.entity.GlowItemFrame
 import org.bukkit.entity.ItemFrame
 import org.bukkit.entity.Painting
@@ -15,14 +16,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.hanging.HangingBreakByEntityEvent
 import org.bukkit.event.hanging.HangingPlaceEvent
 import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerInteractEntityEvent
-import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerSwapHandItemsEvent
+import org.bukkit.event.player.*
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.commands.BuildCMD
+
 
 class ItemLobbyEvent : Listener{
 
@@ -43,6 +42,14 @@ class ItemLobbyEvent : Listener{
         val block = e.clickedBlock ?: return
 
         val type = block.type
+        val state = block.state
+
+        if (state is Sign) {
+            if (!BuildCMD.buildSessionPlayers.contains(e.player)) {
+                e.isCancelled = true
+            }
+        }
+
 
         //incomplete - Pot interaction
         if (type == Material.FLOWER_POT || type.name.startsWith("POTTED_")) {
@@ -127,6 +134,11 @@ class ItemLobbyEvent : Listener{
         if ((entity is ItemFrame || entity is Painting || entity is GlowItemFrame) && isSpawnWorld(event.player!!.location.world) && !BuildCMD.buildSessionPlayers.contains(event.player)) {
             event.isCancelled = true
         }
+    }
+
+    @EventHandler
+    fun onSleep(event: PlayerBedEnterEvent) {
+        event.isCancelled = true
     }
 
 
