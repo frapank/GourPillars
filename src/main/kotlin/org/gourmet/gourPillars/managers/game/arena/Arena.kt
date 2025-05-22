@@ -148,6 +148,10 @@ class Arena(
         nightVote.remove(player)
         inGamePlayer.remove(player)
 
+        //clear player
+        player.activePotionEffects.clear()
+        player.fireTicks = 0
+
         //Customization
         player.sendTitle("", "")
         player.sendDynamicMessage(MessageData.ARENA_LEAVE)

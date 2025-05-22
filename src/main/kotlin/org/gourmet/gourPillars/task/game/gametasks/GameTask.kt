@@ -173,6 +173,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
                     GourPillars.Companion.lobbyScoreboardManager.setScoreboard(player)
                     player.inventory.clear()
                     player.fireTicks = 0
+                    player.clearActivePotionEffects()
                     player.health = 20.0
                     player.foodLevel = 20
                     Utils.giveLobbyItems(player)
@@ -216,6 +217,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
             player.inventory.clear()
             player.gameMode = GameMode.SURVIVAL
             player.health = 20.0
+            player.foodLevel = 20
             player.closeInventory()
             arena.scoreboardManager.setGameScoreboard(player)
         }
