@@ -225,6 +225,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
 
     private fun eliminationProcess(player: Player){
 
+        if(arena.gameState == State.STOPPED) return
 
         //Remove player from arena
         val kills = alivePlayer[player]

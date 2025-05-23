@@ -123,6 +123,19 @@ object MessageData {
     lateinit var GUI_NIGHT_VOTE_NAME: Component
     lateinit var GUI_NIGHT_VOTE_LORE: Component
 
+    lateinit var GUI_STATS_TITLE: Component
+    lateinit var GUI_STATS_FILLER_NAME: Component
+    lateinit var GUI_STATS_WINS_NAME: Component
+    lateinit var GUI_STATS_WINS_LORE: Component
+    lateinit var GUI_STATS_KILLS_NAME: Component
+    lateinit var GUI_STATS_KILLS_LORE: Component
+    lateinit var GUI_STATS_DEFEATS_NAME: Component
+    lateinit var GUI_STATS_DEFEATS_LORE: Component
+    lateinit var GUI_STATS_GAMESPLAYED_NAME: Component
+    lateinit var GUI_STATS_GAMESPLAYED_LORE: Component
+    lateinit var GUI_STATS_WINSTREAK_NAME: Component
+    lateinit var GUI_STATS_WINSTREAK_LORE: Component
+
     // Items
     lateinit var WAITING_ITEMS_VOTE_NAME: Component
     lateinit var WAITING_ITEMS_VOTE_LORE: Component
@@ -245,6 +258,19 @@ object MessageData {
         GUI_DAY_VOTE_LORE = getMessageComponent(config, "gui.vote.day-vote-lore")
         GUI_NIGHT_VOTE_NAME = getMessageComponent(config, "gui.vote.night-vote-name")
         GUI_NIGHT_VOTE_LORE = getMessageComponent(config, "gui.vote.night-vote-lore")
+
+        GUI_STATS_TITLE = getMessageComponent(config, "gui.stats.title")
+        GUI_STATS_FILLER_NAME = getMessageComponent(config, "gui.stats.item-filler-name")
+        GUI_STATS_WINS_NAME = getMessageComponent(config, "gui.stats.wins-name")
+        GUI_STATS_WINS_LORE = getMessageComponent(config, "gui.stats.wins-lore")
+        GUI_STATS_KILLS_NAME = getMessageComponent(config, "gui.stats.kills-name")
+        GUI_STATS_KILLS_LORE = getMessageComponent(config, "gui.stats.kills-lore")
+        GUI_STATS_DEFEATS_NAME = getMessageComponent(config, "gui.stats.defeats-name")
+        GUI_STATS_DEFEATS_LORE = getMessageComponent(config, "gui.stats.defeats-lore")
+        GUI_STATS_GAMESPLAYED_NAME = getMessageComponent(config, "gui.stats.gamesplayed-name")
+        GUI_STATS_GAMESPLAYED_LORE = getMessageComponent(config, "gui.stats.gamesplayed-lore")
+        GUI_STATS_WINSTREAK_NAME = getMessageComponent(config, "gui.stats.winstreak-name")
+        GUI_STATS_WINSTREAK_LORE = getMessageComponent(config, "gui.stats.winstreak-lore")
 
         // Items
         WAITING_ITEMS_VOTE_NAME = getMessageComponent(config, "items.waiting.vote-name")
