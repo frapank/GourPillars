@@ -91,7 +91,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
             GameEvents.KNOCKBACK -> null
         }
 
-        arena.sendMessageToPlayerInGame("<gray>Evento: <yellow>$winningEvent")
+        //arena.sendMessageToPlayerInGame("<gray>Evento: <yellow>$winningEvent")
 
     }
 
