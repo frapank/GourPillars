@@ -146,6 +146,20 @@ gui:
     night-vote-name: "<yellow>Night event"
     night-vote-lore: "<gray>Una partita notturna!"
 
+  stats:
+    title: "<light_purple>Vota 🌟"
+    item-filler-name: "<gray>────</gray>"
+    wins-name: "<gray>🏆 Vittorie</gray> "
+    wins-lore: "<yellow>{wins}</yellow>"
+    kills-name: "<gray>🏹 Uccisioni</gray>"
+    kills-lore: "<yellow>{kills}</yellow>"
+    defeats-name: "<gray>⚔ Sconfitte<gray>"
+    defeats-lore: "<yellow>{defeats}</yellow>"
+    gamesplayed-name: "<gray>🎮 Partite giocate</gray>"
+    gamesplayed-lore: "<yellow>{gamesPlayed}</yellow>"
+    winstreak-name: "<gray>🔥 WinStreak</gray>"
+    winstreak-lore: "<yellow>{winStreak}</yellow>"
+
 stats:
   stats-user:
     - "<gradient:#c061cb:#3584e4>✦━━━━━ Stats ━━━━━✦</gradient>"
