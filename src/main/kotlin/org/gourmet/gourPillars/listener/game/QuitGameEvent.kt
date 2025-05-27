@@ -39,7 +39,7 @@ class QuitGameEvent : Listener {
                 gameRunnable.playerEliminated(player)
             }
 
-            gameRunnable.alivePlayer.forEach{(member, _)->
+            arena.inGamePlayer.forEach{member ->
                 member.sendDynamicMessage(MessageData.ARENA_PLAYER_LEFT, "{player}" to player.name)
             }
 

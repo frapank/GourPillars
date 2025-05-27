@@ -22,7 +22,8 @@ import kotlin.collections.forEach
 
 class GameTask(private val arena: Arena, private val plugin: JavaPlugin): BukkitRunnable(){
 
-    lateinit var alivePlayer: MutableMap<Player, Int>
+    lateinit var alivePlayer: MutableSet<Player>
+    lateinit var playerKills: MutableMap<Player, Int>
     var running = false
     var secondsPassed = 300
     private var lastPlayer: Player? = null
@@ -34,14 +35,16 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         //Init game
         running = true
         lavaLevel = arena.minHeight
-        alivePlayer = mutableMapOf()
-        alivePlayer.forEach { (player, _) -> {
+        alivePlayer = mutableSetOf()
+        playerKills = mutableMapOf()
+        preparePlayer()
+
+        alivePlayer.forEach { player -> {
             arena.playedPlayerNames.add(player.name) //Setup playedPlayersName
         } }
 
         setupEvent()
         removeAllGlass()
-        preparePlayer()
         setTimeByVote()
         GameRandom.startRandomItemTask(alivePlayer, running)
 
@@ -114,10 +117,10 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     }
 
     private fun getWinner(): Player?{
-        return when(alivePlayer.size){
+        return when(playerKills.size){
             0 -> lastPlayer
-            1 -> alivePlayer.keys.first()
-            else -> alivePlayer.maxByOrNull { it.value }?.key
+            1 -> playerKills.keys.first()
+            else -> playerKills.maxByOrNull { it.value }?.key
         }
     }
 
@@ -147,7 +150,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
             winner.sendDynamicMessage(
                 MessageData.END_GAME,
                 "{time}" to getTimeFormatted(),
-                "{kills}" to "best",
+                "{kills}" to playerKills[winner].toString(),
                 "{map}" to arena.name)
         }
 
@@ -206,12 +209,13 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
 
         //Reset kills
         arena.inGamePlayer.forEach { player: Player ->
-            alivePlayer[player] = 0
+            alivePlayer.add(player)
+            playerKills[player] = 0
         }
 
         //Reset player foot, level, health and apply slow falling level
         val effect = PotionEffect(PotionEffectType.SLOW_FALLING, arena.slowFallingTime * 20, 0)
-        alivePlayer.forEach{(player, _) ->
+        alivePlayer.forEach{player ->
             player.isInvulnerable = false
             player.addPotionEffect(effect)
             player.inventory.clear()
@@ -225,10 +229,9 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
 
     private fun eliminationProcess(player: Player){
 
-
         //Remove player from arena
-        val kills = alivePlayer[player]
-        if(alivePlayer.size <= 1)
+        val kills = playerKills[player]
+        if(playerKills.size <= 1)
             lastPlayer = player
         alivePlayer.remove(player)
         player.gameMode = GameMode.SPECTATOR
@@ -241,11 +244,15 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         }
 
         //Send end game message to player
-        player.sendDynamicMessage(
-            MessageData.END_GAME,
-            "{time}" to getTimeFormatted(),
-            "{kills}" to kills.toString(),
-            "{map}" to arena.name)
+        if(alivePlayer.size > 1){
+            player.sendDynamicMessage(
+                MessageData.END_GAME,
+                "{time}" to getTimeFormatted(),
+                "{kills}" to kills.toString(),
+                "{map}" to arena.name)
+        }
+
+
     }
 
     //general elimination
@@ -293,8 +300,8 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
 
         //Update in game kills
         if(alivePlayer.contains(killer)){
-            val oldKills = alivePlayer[killer]!! + 1
-            alivePlayer[killer] = oldKills
+            val oldKills = playerKills[killer]!! + 1
+            playerKills[killer] = oldKills
         }
 
         arena.reloadInGameScoreboard()
@@ -326,8 +333,8 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
 
         //Update in game kills
         if(alivePlayer.contains(killer)){
-            val oldKills = alivePlayer[killer]!! + 1
-            alivePlayer[killer] = oldKills
+            val oldKills = playerKills[killer]!! + 1
+            playerKills[killer] = oldKills
         }
 
         arena.reloadInGameScoreboard()

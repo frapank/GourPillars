@@ -11,7 +11,7 @@ import org.gourmet.gourPillars.GourPillars
 
 object GameRandom {
 
-    fun startRandomItemTask(alivePlayer: MutableMap<Player, Int>, running: Boolean) {
+    fun startRandomItemTask(alivePlayer: MutableSet<Player>, running: Boolean) {
         object : BukkitRunnable() {
             override fun run() {
                 if (!running) {
@@ -19,7 +19,7 @@ object GameRandom {
                     return
                 }
 
-                alivePlayer.forEach { (player, _ )->
+                alivePlayer.forEach { player ->
                     giveRandomItem(player)
                 }
             }
