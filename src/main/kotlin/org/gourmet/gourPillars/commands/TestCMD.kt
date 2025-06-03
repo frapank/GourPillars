@@ -14,7 +14,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission
 object TestCMD {
 
     private val zipManager = ZipManager()
-    private val arenaManager = GourPillars.arenaManager
 
 
     @Subcommand("backup")
