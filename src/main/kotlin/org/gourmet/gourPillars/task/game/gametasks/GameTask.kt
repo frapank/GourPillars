@@ -39,9 +39,10 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         playerKills = mutableMapOf()
         preparePlayer()
 
-        alivePlayer.forEach { player -> {
-            arena.playedPlayerNames.add(player.name) //Setup playedPlayersName
-        } }
+        alivePlayer.forEach { player ->
+            arena.playedPlayerNames.add(player.name)
+            StatsUpdater.updateGamesPlayed(player)
+        }
 
         setupEvent()
         removeAllGlass()
@@ -116,13 +117,17 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         }
     }
 
-    private fun getWinner(): Player?{
-        return when(playerKills.size){
-            0 -> lastPlayer
-            1 -> playerKills.keys.first()
-            else -> playerKills.maxByOrNull { it.value }?.key
+    private fun getWinner(): Player? {
+
+        val aliveAndWithKills = playerKills.filter { (player, _) -> alivePlayer.contains(player) }
+
+        return when {
+            alivePlayer.size == 1 -> alivePlayer.first()
+            aliveAndWithKills.isNotEmpty() -> aliveAndWithKills.maxByOrNull { it.value }?.key
+            else -> alivePlayer.firstOrNull()
         }
     }
+
 
     private fun handleEndGame() {
 
@@ -147,6 +152,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
             winner.isInvulnerable = true
             GameFunctions.playVictoryEffects(winner, arena)
             StatsUpdater.updateWins(winner) //Update wins
+            StatsUpdater.incrementStreak(winner)
             winner.sendDynamicMessage(
                 MessageData.END_GAME,
                 "{time}" to getTimeFormatted(),
@@ -287,6 +293,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
 
         //Update killer stats
         eliminationProcess(player)
+        StatsUpdater.looseStreak(player)
         StatsUpdater.updateKill(killer)
 
         //Send eliminated message
@@ -321,6 +328,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
 
         eliminationProcess(player)
         StatsUpdater.updateKill(killer)
+        StatsUpdater.looseStreak(player)
 
         //Send eliminated message
         arena.inGamePlayer.forEach { receiverPlayer ->

@@ -19,6 +19,9 @@ object StatsCMD {
         val defeats = playerData?.stats?.defeats ?: "error"
         val xp = playerData?.stats?.xp ?: "error"
         val level = playerData?.stats?.level ?: "error"
+        val winStreak = playerData?.stats?.currentWinStreak ?: "error"
+        val bestWinStreak = playerData?.stats?.bestWinStreak ?: "error"
+        val gamePlayed = playerData?.stats?.playedGame ?: "error"
 
         player.sendDynamicMessage(MessageData.STATS_USER,
             "{player}" to player.name,
@@ -26,7 +29,10 @@ object StatsCMD {
             "{kills}" to kills.toString(),
             "{wins}" to wins.toString(),
             "{xp}" to xp.toString(),
-            "{level}" to level.toString()
+            "{level}" to level.toString(),
+            "{winStreak}" to winStreak.toString(),
+            "{bestWinStreak}" to bestWinStreak.toString(),
+            "{gamesPlayed}" to gamePlayed.toString()
         )
     }
 
@@ -39,6 +45,9 @@ object StatsCMD {
         val defeats = playerData?.stats?.defeats ?: "error"
         val xp = playerData?.stats?.xp ?: "error"
         val level = playerData?.stats?.level ?: "error"
+        val winStreak = playerData?.stats?.currentWinStreak ?: "error"
+        val bestWinStreak = playerData?.stats?.bestWinStreak ?: "error"
+        val gamePlayed = playerData?.stats?.playedGame ?: "error"
 
         player.sendDynamicMessage(MessageData.STATS_TARGET,
             "{player}" to player.name,
@@ -46,7 +55,10 @@ object StatsCMD {
             "{kills}" to kills.toString(),
             "{wins}" to wins.toString(),
             "{xp}" to xp.toString(),
-            "{level}" to level.toString()
+            "{level}" to level.toString(),
+            "{winStreak}" to winStreak.toString(),
+            "{bestWinStreak}" to bestWinStreak.toString(),
+            "{gamesPlayed}" to gamePlayed.toString()
         )
 
 
