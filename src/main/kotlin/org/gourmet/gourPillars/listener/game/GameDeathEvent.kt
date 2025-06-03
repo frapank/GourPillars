@@ -63,7 +63,6 @@ class GameDeathEvent : Listener {
         }
 
         val arena: Arena = arenaManager.getArenaByPlayer(victim) ?: run {
-            GourPillars.spawnManager.teleportPlayerToSpawn(victim)
             return
         }
 
