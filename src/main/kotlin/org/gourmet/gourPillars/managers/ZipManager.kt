@@ -3,6 +3,7 @@ import org.bukkit.Bukkit
 import org.bukkit.WorldCreator
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.other.Logger
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -20,7 +21,7 @@ class ZipManager {
         val worldFolder = File(Bukkit.getWorldContainer(), worldName)
 
         if (!backupFile.exists()) {
-            Bukkit.getLogger().warning("Nessun backup trovato per $worldName!")
+            Logger.warning("Nessun backup trovato per $worldName!")
             return
         }
 
@@ -63,19 +64,19 @@ class ZipManager {
                 newWorld?.isAutoSave = false
                 newWorld?.save()
 
-                Bukkit.getLogger().info("Backup di $worldName caricato!")
+                Logger.info("Backup di $worldName caricato!")
             }
         }.runTaskLater(GourPillars.instance, 80L)
 
         if (!File(worldFolder, "level.dat").exists()) {
-            Bukkit.getLogger().warning("Attenzione: level.dat mancante! Il mondo potrebbe non caricarsi correttamente.")
+            Logger.warning("Attenzione: level.dat mancante! Il mondo potrebbe non caricarsi correttamente.")
         }
     }
 
     fun saveBackup(worldName: String) {
         val worldFolder = File(Bukkit.getWorldContainer(), worldName)
         if (!worldFolder.exists()) {
-            Bukkit.getLogger().warning("Il mondo $worldName non esiste!")
+            Logger.warning("Il mondo $worldName non esiste!")
             return
         }
 
@@ -94,6 +95,6 @@ class ZipManager {
             }
         }
 
-        Bukkit.getLogger().info("Backup di $worldName salvato in ${backupFile.absolutePath}")
+        Logger.info("Backup di $worldName salvato in ${backupFile.absolutePath}")
     }
 }
