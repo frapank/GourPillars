@@ -10,13 +10,10 @@ import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
 import org.bukkit.scoreboard.Scoreboard
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.other.messages.MessageData
 
 class LobbyScoreboardManager() {
     private val scoreboards: MutableMap<Player, Scoreboard> = mutableMapOf()
-    private val plugin = GourPillars.instance
     private val miniMessage = MiniMessage.miniMessage()
-    private val config: FileConfiguration = plugin.config
     private lateinit var langCfg: FileConfiguration
 
     fun setScoreboard(player: Player) {
@@ -50,8 +47,4 @@ class LobbyScoreboardManager() {
         }
     }
 
-    fun removeScoreboard(player: Player) {
-        player.scoreboard = Bukkit.getScoreboardManager().newScoreboard
-        scoreboards.remove(player)
-    }
 }
