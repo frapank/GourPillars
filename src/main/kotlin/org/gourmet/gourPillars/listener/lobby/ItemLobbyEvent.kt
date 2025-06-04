@@ -21,9 +21,12 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.commands.BuildCMD
+import org.gourmet.gourPillars.managers.game.arena.State
 
 
 class ItemLobbyEvent : Listener{
+
+    private val arenaManager = GourPillars.arenaManager
 
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
@@ -92,6 +95,13 @@ class ItemLobbyEvent : Listener{
         if (isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
             e.isCancelled = true
         }
+
+        val arena = arenaManager.getArenaByPlayer(e.player)
+
+        if(arena?.gameState != State.INGAME) {
+            e.isCancelled = true
+        }
+
     }
 
     @EventHandler
