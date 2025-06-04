@@ -1,6 +1,5 @@
 package org.gourmet.gourPillars.task.game.gametasks
 
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.other.Logger
@@ -35,7 +34,6 @@ object StatsUpdater {
         // Aggiorna il kill count in database
         databaseManager.updateStatistics(
             dbStats.name,
-            dbStats.defeats,
             dbStats.kills + 1,
             dbStats.wins,
             dbStats.xp,
@@ -51,29 +49,6 @@ object StatsUpdater {
         localStats.kills++
     }
 
-    fun updateDefeats(playerName: String) {
-        val (dbStats, dbOk) = fetchDatabaseStats(playerName)
-        if (!dbOk || dbStats == null) return
-
-        // Aggiorna il defeat count in database
-        databaseManager.updateStatistics(
-            dbStats.name,
-            dbStats.defeats + 1,
-            dbStats.kills,
-            dbStats.wins,
-            dbStats.xp,
-            dbStats.level,
-            dbStats.playedGame,
-            dbStats.bestWinStreak,
-            dbStats.currentWinStreak
-        )
-
-        // Aggiorna il defeat count in locale (se online)
-        val player: Player = Bukkit.getPlayer(playerName) ?: return
-        val (localStats, localOk) = fetchLocalStats(player)
-        if (!localOk || localStats == null) return
-        localStats.defeats++
-    }
 
     fun updateWins(player: Player) {
         val (dbStats, dbOk) = fetchDatabaseStats(player.name)
@@ -82,7 +57,6 @@ object StatsUpdater {
         // Aggiorna il win count in database
         databaseManager.updateStatistics(
             dbStats.name,
-            dbStats.defeats,
             dbStats.kills,
             dbStats.wins + 1,
             dbStats.xp,
@@ -105,7 +79,6 @@ object StatsUpdater {
         // Incrementa playedGame in database
         databaseManager.updateStatistics(
             dbStats.name,
-            dbStats.defeats,
             dbStats.kills,
             dbStats.wins,
             dbStats.xp,
@@ -131,7 +104,6 @@ object StatsUpdater {
         // Aggiorna streak in database
         databaseManager.updateStatistics(
             dbStats.name,
-            dbStats.defeats,
             dbStats.kills,
             dbStats.wins,
             dbStats.xp,
@@ -158,7 +130,6 @@ object StatsUpdater {
         // Aggiorna streak in database
         databaseManager.updateStatistics(
             dbStats.name,
-            dbStats.defeats,
             dbStats.kills,
             dbStats.wins,
             dbStats.xp,

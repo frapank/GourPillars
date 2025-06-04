@@ -57,7 +57,13 @@ class PlaceHolderManager : PlaceholderExpansion() {
             return playerData?.stats?.wins.toString() ?: "-1"
         }
         if (params.equals("defeats", ignoreCase = true)) {
-            return playerData?.stats?.defeats.toString() ?: "-1"
+            val stats = playerData?.stats
+
+            return if (stats != null) {
+                (stats.playedGame - stats.wins).toString()
+            } else {
+                "0"
+            }
         }
         if (params.equals("xp", ignoreCase = true)) {
             return playerData?.stats?.xp.toString() ?: "-1"
