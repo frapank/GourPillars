@@ -39,7 +39,7 @@ object StatsCMD {
     @Command("stats <target>")
     @CommandPermission("gpillars.stats.other")
     fun statsCommand(player: Player, target: Player){
-        val playerData = databaseManager.playersData.get(player)
+        val playerData = databaseManager.playersData.get(target)
         val kills = playerData?.stats?.kills ?: "error"
         val wins = playerData?.stats?.wins ?: "error"
         val defeats = playerData?.stats?.defeats ?: "error"
@@ -50,7 +50,7 @@ object StatsCMD {
         val gamePlayed = playerData?.stats?.playedGame ?: "error"
 
         player.sendDynamicMessage(MessageData.STATS_TARGET,
-            "{player}" to player.name,
+            "{player}" to target.name,
             "{defeats}" to defeats.toString(),
             "{kills}" to kills.toString(),
             "{wins}" to wins.toString(),
