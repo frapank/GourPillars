@@ -160,12 +160,6 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
                 "{map}" to arena.name)
         }
 
-        arena.playedPlayerNames.forEach { playerName -> {
-            if(playerName != winner?.name){
-                StatsUpdater.updateDefeats(playerName)
-            }
-        } }
-
         currentEventHandler?.onStop(arena, winner)
 
         //Arena reset
