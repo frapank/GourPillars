@@ -30,7 +30,6 @@ class DatabaseManager {
         val createStatisticsTableQuery = (
                 "CREATE TABLE IF NOT EXISTS statistics (" +
                         "name VARCHAR(255) NOT NULL PRIMARY KEY, " +
-                        "defeats INT DEFAULT 0, " +
                         "kills INT DEFAULT 0, " +
                         "wins INT DEFAULT 0, " +
                         "xp INT DEFAULT 0, " +
@@ -42,7 +41,6 @@ class DatabaseManager {
                         ")"
                 )
 
-        // Query per aggiungere le nuove colonne se la tabella esiste già
         val alterAddPlayedGame =
             "ALTER TABLE statistics ADD COLUMN IF NOT EXISTS playedGame INT DEFAULT 0"
         val alterAddBestWinStreak =
@@ -66,11 +64,8 @@ class DatabaseManager {
         try {
             DriverManager.getConnection(url, user, pass).use { conn ->
                 conn.createStatement().use { stmt ->
-                    // Creazione tabella players
                     stmt.executeUpdate(createPlayerTableQuery)
-                    // Creazione tabella statistics, se non esiste
                     stmt.executeUpdate(createStatisticsTableQuery)
-                    // Aggiunta colonne nuove se mancanti
                     stmt.executeUpdate(alterAddPlayedGame)
                     stmt.executeUpdate(alterAddBestWinStreak)
                     stmt.executeUpdate(alterAddCurrentWinStreak)
@@ -87,7 +82,7 @@ class DatabaseManager {
         if (pass == null) return
 
         val query =
-            "SELECT p.name, p.fragments, s.defeats, s.kills, s.wins, s.xp, s.level, s.playedGame, s.bestWinStreak, s.currentWinStreak " +
+            "SELECT p.name, p.fragments, s.kills, s.wins, s.xp, s.level, s.playedGame, s.bestWinStreak, s.currentWinStreak " +
                     "FROM players p LEFT JOIN statistics s ON p.name = s.name"
 
         try {
@@ -143,7 +138,6 @@ class DatabaseManager {
 
     fun updateStatistics(
         playerName: String,
-        defeats: Int,
         kills: Int,
         wins: Int,
         xp: Int,
@@ -153,32 +147,30 @@ class DatabaseManager {
         currentWinStreak: Int
     ) {
         val query =
-            "INSERT INTO statistics (name, defeats, kills, wins, xp, level, playedGame, bestWinStreak, currentWinStreak) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) " +
-                    "ON DUPLICATE KEY UPDATE defeats = ?, kills = ?, wins = ?, xp = ?, level = ?, " +
+            "INSERT INTO statistics (name, kills, wins, xp, level, playedGame, bestWinStreak, currentWinStreak) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE kills = ?, wins = ?, xp = ?, level = ?, " +
                     "playedGame = ?, bestWinStreak = ?, currentWinStreak = ?"
 
         try {
             DriverManager.getConnection(url, user, pass).use { conn ->
                 conn.prepareStatement(query).use { stmt ->
                     stmt.setString(1, playerName)
-                    stmt.setInt(2, defeats)
-                    stmt.setInt(3, kills)
-                    stmt.setInt(4, wins)
-                    stmt.setInt(5, xp)
-                    stmt.setInt(6, level)
-                    stmt.setInt(7, playedGame)
-                    stmt.setInt(8, bestWinStreak)
-                    stmt.setInt(9, currentWinStreak)
+                    stmt.setInt(2, kills)
+                    stmt.setInt(3, wins)
+                    stmt.setInt(4, xp)
+                    stmt.setInt(5, level)
+                    stmt.setInt(6, playedGame)
+                    stmt.setInt(7, bestWinStreak)
+                    stmt.setInt(8, currentWinStreak)
 
-                    stmt.setInt(10, defeats)
-                    stmt.setInt(11, kills)
-                    stmt.setInt(12, wins)
-                    stmt.setInt(13, xp)
-                    stmt.setInt(14, level)
-                    stmt.setInt(15, playedGame)
-                    stmt.setInt(16, bestWinStreak)
-                    stmt.setInt(17, currentWinStreak)
+                    stmt.setInt(9, kills)
+                    stmt.setInt(10, wins)
+                    stmt.setInt(11, xp)
+                    stmt.setInt(12, level)
+                    stmt.setInt(13, playedGame)
+                    stmt.setInt(14, bestWinStreak)
+                    stmt.setInt(15, currentWinStreak)
                     stmt.executeUpdate()
                 }
             }
@@ -188,7 +180,7 @@ class DatabaseManager {
     }
 
     fun getStatistics(playerName: String): PlayerStats? {
-        val query = "SELECT defeats, kills, wins, xp, level, playedGame, bestWinStreak, currentWinStreak " +
+        val query = "SELECT kills, wins, xp, level, playedGame, bestWinStreak, currentWinStreak " +
                 "FROM statistics WHERE name = ? LIMIT 1"
         try {
             DriverManager.getConnection(url, user, pass).use { conn ->
@@ -198,7 +190,6 @@ class DatabaseManager {
                         if (rs.next()) {
                             return PlayerStats(
                                 playerName,
-                                rs.getInt("defeats"),
                                 rs.getInt("kills"),
                                 rs.getInt("wins"),
                                 rs.getInt("xp"),
@@ -236,7 +227,6 @@ class DatabaseManager {
 
     class PlayerStats(
         val name: String,
-        var defeats: Int,
         var kills: Int,
         var wins: Int,
         var xp: Int,

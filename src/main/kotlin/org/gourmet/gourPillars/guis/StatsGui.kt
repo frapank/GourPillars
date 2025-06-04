@@ -93,7 +93,6 @@ object StatsGui {
     }
 
     private fun createHeadItem2(base64: String, name: Component, lore: Component, tag: String): ItemStack {
-        val mm = MiniMessage.miniMessage()
         val item = ItemStack(Material.PLAYER_HEAD, 1)
         val meta = item.itemMeta as SkullMeta
 

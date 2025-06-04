@@ -14,14 +14,14 @@ object StatsCMD {
     @Command("stats")
     fun statsCommand(player: Player){
         val playerData = databaseManager.playersData.get(player)
-        val kills = playerData?.stats?.kills ?: "error"
-        val wins = playerData?.stats?.wins ?: "error"
-        val defeats = playerData?.stats?.defeats ?: "error"
-        val xp = playerData?.stats?.xp ?: "error"
-        val level = playerData?.stats?.level ?: "error"
-        val winStreak = playerData?.stats?.currentWinStreak ?: "error"
-        val bestWinStreak = playerData?.stats?.bestWinStreak ?: "error"
-        val gamePlayed = playerData?.stats?.playedGame ?: "error"
+        val kills = playerData?.stats?.kills ?: 0
+        val wins = playerData?.stats?.wins ?: 0
+        val xp = playerData?.stats?.xp ?: 0
+        val level = playerData?.stats?.level ?: 0
+        val winStreak = playerData?.stats?.currentWinStreak ?: 0
+        val bestWinStreak = playerData?.stats?.bestWinStreak ?: 0
+        val gamePlayed = playerData?.stats?.playedGame ?: 0
+        val defeats = gamePlayed - wins
 
         player.sendDynamicMessage(MessageData.STATS_USER,
             "{player}" to player.name,
@@ -40,14 +40,14 @@ object StatsCMD {
     @CommandPermission("gpillars.stats.other")
     fun statsCommand(player: Player, target: Player){
         val playerData = databaseManager.playersData.get(target)
-        val kills = playerData?.stats?.kills ?: "error"
-        val wins = playerData?.stats?.wins ?: "error"
-        val defeats = playerData?.stats?.defeats ?: "error"
-        val xp = playerData?.stats?.xp ?: "error"
-        val level = playerData?.stats?.level ?: "error"
-        val winStreak = playerData?.stats?.currentWinStreak ?: "error"
-        val bestWinStreak = playerData?.stats?.bestWinStreak ?: "error"
-        val gamePlayed = playerData?.stats?.playedGame ?: "error"
+        val kills = playerData?.stats?.kills ?: 0
+        val wins = playerData?.stats?.wins ?: 0
+        val xp = playerData?.stats?.xp ?: 0
+        val level = playerData?.stats?.level ?: 0
+        val winStreak = playerData?.stats?.currentWinStreak ?: 0
+        val bestWinStreak = playerData?.stats?.bestWinStreak ?: 0
+        val gamePlayed = playerData?.stats?.playedGame ?: 0
+        val defeats = gamePlayed - wins
 
         player.sendDynamicMessage(MessageData.STATS_TARGET,
             "{player}" to target.name,
