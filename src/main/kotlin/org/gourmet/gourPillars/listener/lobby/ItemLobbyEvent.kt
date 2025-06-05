@@ -98,7 +98,7 @@ class ItemLobbyEvent : Listener{
 
         val arena = arenaManager.getArenaByPlayer(e.player)
 
-        if(arena?.gameState != State.INGAME) {
+        if(arena?.gameState == State.INGAME || arena?.gameState == State.STARTING) {
             e.isCancelled = true
         }
 
