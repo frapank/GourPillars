@@ -19,7 +19,6 @@ import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 class GuiClickEvent : Listener {
 
     private val arenaManager = GourPillars.Companion.arenaManager
-    private val prefix = "<bold><aqua>Game </bold><gray>|"
 
     @EventHandler
     fun onPlayerInteract(event: PlayerInteractEvent) {
