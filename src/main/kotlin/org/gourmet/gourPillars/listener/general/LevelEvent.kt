@@ -10,10 +10,7 @@ class LevelEvent : Listener {
 
     private val databaseManager = GourPillars.Companion.databaseManager
 
-    /*
-        This will set the xp bar with
-        the actual game level
-     */
+    //This will set the xp bar with the actual game level
     @EventHandler
     fun onXpGive(event: PlayerExpChangeEvent){
         try {
