@@ -54,10 +54,10 @@ class GourPillars : JavaPlugin() {
 
         partyManager = PartyManager()
         spawnManager = SpawnManager()
-        ShowPlayerTask().runTaskTimer(this, 0L, 20L)
-
-
         arenaManager = ArenaManager()
+        ShowPlayerTask().runTaskTimer(this, 100L, 20L)
+
+
         Bukkit.getPluginManager().registerEvents(GameDeathEvent(), this)
         Bukkit.getPluginManager().registerEvents(ItemLobbyEvent(), this)
         Bukkit.getPluginManager().registerEvents(WorldChangeEvent(), this)
