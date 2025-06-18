@@ -1,5 +1,6 @@
 package org.gourmet.gourPillars.task.game.gametasks
 
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.other.Logger
@@ -28,121 +29,132 @@ object StatsUpdater {
     }
 
     fun updateKill(player: Player) {
-        val (dbStats, dbOk) = fetchDatabaseStats(player.name)
-        if (!dbOk || dbStats == null) return
+        Bukkit.getScheduler().runTaskAsynchronously(GourPillars.instance, Runnable {
+            val (dbStats, dbOk) = fetchDatabaseStats(player.name)
+            if (!dbOk || dbStats == null) return@Runnable
 
-        // Aggiorna il kill count in database
-        databaseManager.updateStatistics(
-            dbStats.name,
-            dbStats.kills + 1,
-            dbStats.wins,
-            dbStats.xp,
-            dbStats.level,
-            dbStats.playedGame,
-            dbStats.bestWinStreak,
-            dbStats.currentWinStreak
-        )
+            // Aggiorna il kill count in database
+            databaseManager.updateStatistics(
+                dbStats.name,
+                dbStats.kills + 1,
+                dbStats.wins,
+                dbStats.xp,
+                dbStats.level,
+                dbStats.playedGame,
+                dbStats.bestWinStreak,
+                dbStats.currentWinStreak
+            )
 
-        // Aggiorna il kill count in locale
-        val (localStats, localOk) = fetchLocalStats(player)
-        if (!localOk || localStats == null) return
-        localStats.kills++
+            // Aggiorna il kill count in locale
+            val (localStats, localOk) = fetchLocalStats(player)
+            if (!localOk || localStats == null) return@Runnable
+            localStats.kills++
+        })
     }
 
 
     fun updateWins(player: Player) {
-        val (dbStats, dbOk) = fetchDatabaseStats(player.name)
-        if (!dbOk || dbStats == null) return
+        Bukkit.getScheduler().runTaskAsynchronously(GourPillars.instance, Runnable {
+            val (dbStats, dbOk) = fetchDatabaseStats(player.name)
+            if (!dbOk || dbStats == null) return@Runnable
 
-        // Aggiorna il win count in database
-        databaseManager.updateStatistics(
-            dbStats.name,
-            dbStats.kills,
-            dbStats.wins + 1,
-            dbStats.xp,
-            dbStats.level,
-            dbStats.playedGame,
-            dbStats.bestWinStreak,
-            dbStats.currentWinStreak
-        )
+            // Aggiorna il win count in database
+            databaseManager.updateStatistics(
+                dbStats.name,
+                dbStats.kills,
+                dbStats.wins + 1,
+                dbStats.xp,
+                dbStats.level,
+                dbStats.playedGame,
+                dbStats.bestWinStreak,
+                dbStats.currentWinStreak
+            )
 
-        // Aggiorna il win count in locale
-        val (localStats, localOk) = fetchLocalStats(player)
-        if (!localOk || localStats == null) return
-        localStats.wins++
+            // Aggiorna il win count in locale
+            val (localStats, localOk) = fetchLocalStats(player)
+            if (!localOk || localStats == null) return@Runnable
+            localStats.wins++
+        })
     }
 
     fun updateGamesPlayed(player: Player) {
-        val (dbStats, dbOk) = fetchDatabaseStats(player.name)
-        if (!dbOk || dbStats == null) return
+        Bukkit.getScheduler().runTaskAsynchronously(GourPillars.instance, Runnable {
+            val (dbStats, dbOk) = fetchDatabaseStats(player.name)
+            if (!dbOk || dbStats == null) return@Runnable
 
-        // Incrementa playedGame in database
-        databaseManager.updateStatistics(
-            dbStats.name,
-            dbStats.kills,
-            dbStats.wins,
-            dbStats.xp,
-            dbStats.level,
-            dbStats.playedGame + 1,
-            dbStats.bestWinStreak,
-            dbStats.currentWinStreak
-        )
+            // Incrementa playedGame in database
+            databaseManager.updateStatistics(
+                dbStats.name,
+                dbStats.kills,
+                dbStats.wins,
+                dbStats.xp,
+                dbStats.level,
+                dbStats.playedGame + 1,
+                dbStats.bestWinStreak,
+                dbStats.currentWinStreak
+            )
 
-        // Incrementa playedGame in locale
-        val (localStats, localOk) = fetchLocalStats(player)
-        if (!localOk || localStats == null) return
-        localStats.playedGame++
+            // Incrementa playedGame in locale
+            val (localStats, localOk) = fetchLocalStats(player)
+            if (!localOk || localStats == null) return@Runnable
+            localStats.playedGame++
+        })
     }
 
     fun incrementStreak(player: Player) {
-        val (dbStats, dbOk) = fetchDatabaseStats(player.name)
-        if (!dbOk || dbStats == null) return
+        Bukkit.getScheduler().runTaskAsynchronously(GourPillars.instance, Runnable {
+            val (dbStats, dbOk) = fetchDatabaseStats(player.name)
+            if (!dbOk || dbStats == null) return@Runnable
 
-        val newCurrent = dbStats.currentWinStreak + 1
-        val newBest = if (newCurrent > dbStats.bestWinStreak) newCurrent else dbStats.bestWinStreak
+            val newCurrent = dbStats.currentWinStreak + 1
+            val newBest = if (newCurrent > dbStats.bestWinStreak) newCurrent else dbStats.bestWinStreak
 
-        // Aggiorna streak in database
-        databaseManager.updateStatistics(
-            dbStats.name,
-            dbStats.kills,
-            dbStats.wins,
-            dbStats.xp,
-            dbStats.level,
-            dbStats.playedGame,
-            newBest,
-            newCurrent
-        )
+            // Aggiorna streak in database
+            databaseManager.updateStatistics(
+                dbStats.name,
+                dbStats.kills,
+                dbStats.wins,
+                dbStats.xp,
+                dbStats.level,
+                dbStats.playedGame,
+                newBest,
+                newCurrent
+            )
 
-        // Aggiorna streak in locale
-        val (localStats, localOk) = fetchLocalStats(player)
-        if (!localOk || localStats == null) return
-        localStats.currentWinStreak = newCurrent
-        localStats.bestWinStreak = newBest
+            // Aggiorna streak in locale
+            val (localStats, localOk) = fetchLocalStats(player)
+            if (!localOk || localStats == null) return@Runnable
+            localStats.currentWinStreak = newCurrent
+            localStats.bestWinStreak = newBest
+        })
     }
 
     fun looseStreak(player: Player) {
-        val (dbStats, dbOk) = fetchDatabaseStats(player.name)
-        if (!dbOk || dbStats == null) return
+        Bukkit.getScheduler().runTaskAsynchronously(GourPillars.instance, Runnable {
+            val (dbStats, dbOk) = fetchDatabaseStats(player.name)
+            if (!dbOk || dbStats == null) return@Runnable
 
-        val newBest = if (dbStats.currentWinStreak > dbStats.bestWinStreak) dbStats.currentWinStreak else dbStats.bestWinStreak
-        val newCurrent = 0
+            val newBest =
+                if (dbStats.currentWinStreak > dbStats.bestWinStreak) dbStats.currentWinStreak else dbStats.bestWinStreak
+            val newCurrent = 0
 
-        // Aggiorna streak in database
-        databaseManager.updateStatistics(
-            dbStats.name,
-            dbStats.kills,
-            dbStats.wins,
-            dbStats.xp,
-            dbStats.level,
-            dbStats.playedGame,
-            newBest,
-            newCurrent
-        )
+            // Aggiorna streak in database
+            databaseManager.updateStatistics(
+                dbStats.name,
+                dbStats.kills,
+                dbStats.wins,
+                dbStats.xp,
+                dbStats.level,
+                dbStats.playedGame,
+                newBest,
+                newCurrent
+            )
 
-        // Aggiorna streak in locale
-        val (localStats, localOk) = fetchLocalStats(player)
-        if (!localOk || localStats == null) return
-        localStats.bestWinStreak = newBest
-        localStats.currentWinStreak = newCurrent
+            // Aggiorna streak in locale
+            val (localStats, localOk) = fetchLocalStats(player)
+            if (!localOk || localStats == null) return@Runnable
+            localStats.bestWinStreak = newBest
+            localStats.currentWinStreak = newCurrent
+        })
     }
 }
