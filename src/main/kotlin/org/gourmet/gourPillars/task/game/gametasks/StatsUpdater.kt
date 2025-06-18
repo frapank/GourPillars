@@ -4,12 +4,13 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.other.Logger
+import org.gourmet.gourPillars.managers.DatabaseManager.PlayerStats
 
 object StatsUpdater {
 
     private val databaseManager = GourPillars.databaseManager
 
-    private fun fetchDatabaseStats(playerName: String): Pair<org.gourmet.gourPillars.managers.DatabaseManager.PlayerStats?, Boolean> {
+    private fun fetchDatabaseStats(playerName: String): Pair<PlayerStats?, Boolean> {
         if (!databaseManager.isOnline) return Pair(null, false)
         val stats = databaseManager.getStatistics(playerName)
         if (stats == null) {
@@ -19,10 +20,10 @@ object StatsUpdater {
         return Pair(stats, true)
     }
 
-    private fun fetchLocalStats(player: Player): Pair<org.gourmet.gourPillars.managers.DatabaseManager.PlayerStats?, Boolean> {
-        val localStats = databaseManager.playersData[player]?.stats
+    private fun fetchLocalStats(player: Player): Pair<PlayerStats?, Boolean> {
+        val localStats = databaseManager.playersStats[player]
         if (localStats == null) {
-            Logger.warning("Can't fetch local stats, ${player.name} is not in the local database")
+            Logger.warning("Can't fetch local stats, ${player.name} is not in the local cache")
             return Pair(null, false)
         }
         return Pair(localStats, true)
@@ -48,10 +49,9 @@ object StatsUpdater {
             // Aggiorna il kill count in locale
             val (localStats, localOk) = fetchLocalStats(player)
             if (!localOk || localStats == null) return@Runnable
-            localStats.kills++
+            localStats.kills = localStats.kills + 1
         })
     }
-
 
     fun updateWins(player: Player) {
         Bukkit.getScheduler().runTaskAsynchronously(GourPillars.instance, Runnable {
@@ -73,7 +73,7 @@ object StatsUpdater {
             // Aggiorna il win count in locale
             val (localStats, localOk) = fetchLocalStats(player)
             if (!localOk || localStats == null) return@Runnable
-            localStats.wins++
+            localStats.wins = localStats.wins + 1
         })
     }
 
@@ -97,7 +97,7 @@ object StatsUpdater {
             // Incrementa playedGame in locale
             val (localStats, localOk) = fetchLocalStats(player)
             if (!localOk || localStats == null) return@Runnable
-            localStats.playedGame++
+            localStats.playedGame = localStats.playedGame + 1
         })
     }
 
@@ -107,7 +107,7 @@ object StatsUpdater {
             if (!dbOk || dbStats == null) return@Runnable
 
             val newCurrent = dbStats.currentWinStreak + 1
-            val newBest = if (newCurrent > dbStats.bestWinStreak) newCurrent else dbStats.bestWinStreak
+            val newBest = maxOf(newCurrent, dbStats.bestWinStreak)
 
             // Aggiorna streak in database
             databaseManager.updateStatistics(
@@ -134,8 +134,7 @@ object StatsUpdater {
             val (dbStats, dbOk) = fetchDatabaseStats(player.name)
             if (!dbOk || dbStats == null) return@Runnable
 
-            val newBest =
-                if (dbStats.currentWinStreak > dbStats.bestWinStreak) dbStats.currentWinStreak else dbStats.bestWinStreak
+            val newBest = maxOf(dbStats.currentWinStreak, dbStats.bestWinStreak)
             val newCurrent = 0
 
             // Aggiorna streak in database
