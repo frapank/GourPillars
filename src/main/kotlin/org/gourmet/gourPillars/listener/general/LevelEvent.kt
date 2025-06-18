@@ -5,21 +5,24 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerExpChangeEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.other.Logger
+import org.gourmet.gourPillars.managers.DatabaseManager.PlayerStats
 
 class LevelEvent : Listener {
 
-    private val databaseManager = GourPillars.Companion.databaseManager
+    private val databaseManager = GourPillars.databaseManager
 
-    //This will set the xp bar with the actual game level
     @EventHandler
-    fun onXpGive(event: PlayerExpChangeEvent){
+    fun onXpGive(event: PlayerExpChangeEvent) {
         try {
             val player = event.player
-            val playerData = databaseManager.playersData.get(player)
-
-            event.amount = playerData?.stats?.level!!
-        } catch (e: Exception){
-            Logger.warning("Error in onXpGive ${e.message}")
+            val stats: PlayerStats? = databaseManager.playersStats[player]
+            if (stats == null) {
+                Logger.warning("Can't fetch level, \${player.name} not in cache")
+                return
+            }
+            event.amount = stats.level
+        } catch (e: Exception) {
+            Logger.warning("Error in onXpGive: \${e.message}")
         }
     }
 }
