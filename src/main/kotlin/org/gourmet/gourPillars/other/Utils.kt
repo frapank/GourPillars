@@ -41,9 +41,9 @@ object Utils {
         val inv = player.inventory
         inv.clear()
 
-        inv.setItem(0, createNamedCompass("<green>ᴍᴏᴅᴀʟɪᴛᴀ", null, Material.COMPASS))
-        inv.setItem(1, createNamedCompass("<aqua>ᴄᴏѕᴍᴇᴛɪᴄɪ", null, Material.EMERALD))
-        inv.setItem(4, createNamedCompass("<yellow>ᴘᴀʀᴛɪᴛᴀ ᴄᴀѕᴜᴀʟᴇ", "joinrandom", Material.NETHER_STAR))
+        inv.setItem(4, createNamedCompass("<gold>✩ <white><bold>ѕᴇʟᴇᴛᴛᴏʀᴇ ʟᴏʙʙʏ <gold>✩", "selettore", Material.COMPASS))
+        inv.setItem(6, createNamedCompass("<gold>✩ <white><bold>ᴄᴏѕᴍᴇᴛɪᴄɪ <gold>✩", null, Material.EMERALD))
+        inv.setItem(2, createNamedCompass("<gold>✩ <white><bold>ᴘᴀʀᴛɪᴛᴀ ᴄᴀѕᴜᴀʟᴇ <gold>✩", "joinrandom", Material.NETHER_STAR))
     }
 
     private fun createNamedCompass(name: String, command: String?, material: Material): ItemStack {
