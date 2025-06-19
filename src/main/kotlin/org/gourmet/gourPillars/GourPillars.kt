@@ -49,8 +49,6 @@ class GourPillars : JavaPlugin() {
 
         Logger.info("GourPillars starting...")
         databaseManager = DatabaseManager()
-        databaseManager.setupDatabase()
-        databaseManager.initDatabase()
 
         partyManager = PartyManager()
         spawnManager = SpawnManager()
