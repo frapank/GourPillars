@@ -30,7 +30,7 @@ class DatabaseManager {
                 kills INT DEFAULT 0,
                 wins INT DEFAULT 0,
                 xp INT DEFAULT 0,
-                level INT DEFAULT 0,
+                level INT DEFAULT 1,
                 playedGame INT DEFAULT 0,
                 bestWinStreak INT DEFAULT 0,
                 currentWinStreak INT DEFAULT 0
