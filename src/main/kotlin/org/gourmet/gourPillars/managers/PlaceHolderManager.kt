@@ -26,6 +26,7 @@ class PlaceHolderManager : PlaceholderExpansion() {
 
         return when (params.lowercase()) {
             "minplayers" -> arenaManager.getArenaByPlayer(gamePlayer)?.minPlayer?.toString() ?: "no-arena"
+            "maxplayers" -> arenaManager.getArenaByPlayer(gamePlayer)?.maxPlayer?.toString() ?: "no-arena"
             "waitingplayers" -> arenaManager.getArenaByPlayer(gamePlayer)?.inGamePlayer?.size?.toString() ?: "no-arena"
             "arenaname" -> arenaManager.getArenaByPlayer(gamePlayer)?.name ?: "no-arena"
             "aliveplayers" -> arenaManager.getArenaByPlayer(gamePlayer)?.gameTask?.alivePlayer?.size?.toString() ?: "no-arena"
