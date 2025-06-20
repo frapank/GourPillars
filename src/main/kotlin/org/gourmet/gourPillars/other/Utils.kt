@@ -41,7 +41,7 @@ object Utils {
         val inv = player.inventory
         inv.clear()
 
-        inv.setItem(4, createNamedCompass("<gold>✩ <white><bold>ѕᴇʟᴇᴛᴛᴏʀᴇ ʟᴏʙʙʏ <gold>✩", "dm open serverselector", Material.COMPASS))
+        inv.setItem(4, createNamedCompass("<gold>✩ <white><bold>ѕᴇʟᴇᴛᴛᴏʀᴇ ᴍᴏᴅᴀʟɪᴛᴀ' <gold>✩", "dm open serverselector", Material.COMPASS))
         inv.setItem(6, createNamedCompass("<gold>✩ <white><bold>ᴄᴏѕᴍᴇᴛɪᴄɪ <gold>✩", null, Material.EMERALD))
         inv.setItem(2, createNamedCompass("<gold>✩ <white><bold>ᴘᴀʀᴛɪᴛᴀ ᴄᴀѕᴜᴀʟᴇ <gold>✩", "joinrandom", Material.NETHER_STAR))
     }
