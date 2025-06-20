@@ -18,6 +18,7 @@
 ``` 
 Arena Info:
 %pillars_minplayers%     - Minimum players to start
+%pillars_maxplayers%     - Max players in arena
 %pillars_waitingplayers% - Players in lobby
 %pillars_arenaname%      - Current arena name
 %pillars_aliveplayers%   - Remaining players
