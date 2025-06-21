@@ -1,8 +1,10 @@
 package org.gourmet.gourPillars.managers
 
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.other.Logger
-import java.sql.DriverManager
 import java.sql.SQLException
 
 class DatabaseManager {
@@ -11,11 +13,26 @@ class DatabaseManager {
     private val user: String = "root"
     private val pass: String = "dream_db"
 
+    private lateinit var dataSource: HikariDataSource
+
     val playersStats = HashMap<Player, PlayerStats>()
     var isOnline = false
 
     init {
         checkAndCreateDatabase()
+    }
+
+    private fun createHikariDataSource(jdbcUrl: String): HikariDataSource {
+
+        val config = HikariConfig()
+        config.jdbcUrl = jdbcUrl
+        config.username = user
+        config.password = pass
+        config.addDataSourceProperty("cachePrepStmts", "true")
+        config.addDataSourceProperty("prepStmtCacheSize", "250")
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
+        config.maximumPoolSize = 10
+        return HikariDataSource(config)
     }
 
     private fun checkAndCreateDatabase() {
@@ -37,23 +54,24 @@ class DatabaseManager {
             )
         """.trimIndent()
 
-        // Creazione/controllo database
         try {
-            DriverManager.getConnection(baseUrl, user, pass).use { conn ->
+            val tempDataSource = createHikariDataSource(baseUrl)
+            tempDataSource.connection.use { conn ->
                 conn.createStatement().use { stmt ->
                     stmt.executeUpdate(databaseCreateQuery)
                     Logger.info("Database 'dream' creato/verificato con successo")
                 }
             }
+            tempDataSource.close()
         } catch (e: SQLException) {
             Logger.warning("Errore nella creazione del database: ${e.message}")
             isOnline = false
             return
         }
 
-        // Creazione/controllo tabella pillars_stats
         try {
-            DriverManager.getConnection(url, user, pass).use { conn ->
+            dataSource = createHikariDataSource(url)
+            dataSource.connection.use { conn ->
                 conn.createStatement().use { stmt ->
                     stmt.executeUpdate(createTableQuery)
                     Logger.info("Tabella 'pillars_stats' creata/verificata con successo")
@@ -69,7 +87,7 @@ class DatabaseManager {
     fun createUser(player: Player) {
         val insertQuery = "INSERT IGNORE INTO pillars_stats (name) VALUES (?)"
         try {
-            DriverManager.getConnection(url, user, pass).use { conn ->
+            dataSource.connection.use { conn ->
                 conn.prepareStatement(insertQuery).use { stmt ->
                     stmt.setString(1, player.name)
                     stmt.executeUpdate()
@@ -99,7 +117,7 @@ class DatabaseManager {
         """.trimIndent()
 
         try {
-            DriverManager.getConnection(url, user, pass).use { conn ->
+            dataSource.connection.use { conn ->
                 conn.prepareStatement(query).use { stmt ->
                     stmt.setString(1, playerName)
                     stmt.setInt(2, kills)
@@ -129,7 +147,7 @@ class DatabaseManager {
     fun getStatistics(playerName: String): PlayerStats? {
         val query = "SELECT kills, wins, xp, level, playedGame, bestWinStreak, currentWinStreak FROM pillars_stats WHERE name = ? LIMIT 1"
         try {
-            DriverManager.getConnection(url, user, pass).use { conn ->
+            dataSource.connection.use { conn ->
                 conn.prepareStatement(query).use { stmt ->
                     stmt.setString(1, playerName)
                     stmt.executeQuery().use { rs ->
