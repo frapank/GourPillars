@@ -21,6 +21,7 @@ repositories {
 dependencies {
     paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
+    implementation("com.zaxxer:HikariCP:6.3.0")
     implementation("io.github.revxrsal:lamp.common:4.0.0-beta.19")
     implementation("io.github.revxrsal:lamp.bukkit:4.0.0-beta.19")
     implementation("io.github.revxrsal:lamp.brigadier:4.0.0-beta.19")
