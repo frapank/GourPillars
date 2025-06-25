@@ -38,6 +38,7 @@ Arenas:
   bella:
     max-height: 200
     min-height: 80
+    private-arena: false
     min-players: 1
     world: "world"
     slow-falling-time: 1
