@@ -24,6 +24,7 @@ import kotlin.collections.ArrayList
 class Arena(
     val spawnMap: MutableMap<Location, Player?>,
     val spawnMainLocation: Location,
+    val isPrivate: Boolean,
     val slowFallingTime: Int,
     val maxPlayer: Int,
     val minPlayer: Int,
@@ -43,7 +44,6 @@ class Arena(
     var gameState: State = State.WAITING
     val spawnManager = GourPillars.spawnManager
     val lastDamagerMap = mutableMapOf<UUID, UUID>()
-    private val prefix = "<bold><aqua>Game </bold><gray>|"
 
     var gameEvent: GameEvents? = null
     val noEventVote: ArrayList<Player> = ArrayList()
@@ -59,6 +59,10 @@ class Arena(
 
     /* Utils */
     fun addPlayer(player: Player){
+        if(isPrivate) {
+
+            return
+        }
         if(inGamePlayer.contains(player)){
             player.sendDynamicMessage(MessageData.ARENA_ERRORS_ALREADY_IN_GAME)
             return

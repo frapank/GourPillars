@@ -65,6 +65,7 @@ class ArenaManager {
             //Basic info
             val arenaWorld = Bukkit.getWorld(current_config.getString("basic.world") ?: "world")
             val arenaName = current_config.getString("basic.name") ?: "error_arena_game"
+            val isPrivateArena = current_config.getBoolean("basic.private-arena")
             val minHeight = current_config.getInt("basic.min-height")
             val minPlayer = current_config.getInt("basic.min-players") ?: 2
             val slowFalling = current_config.getInt("basic.slow-falling") ?: 2
@@ -122,6 +123,7 @@ class ArenaManager {
             val arena = Arena(
                 spawnsList,
                 mainSpawn,
+                isPrivateArena,
                 slowFalling,
                 spawnsList.size,
                 minPlayer,
