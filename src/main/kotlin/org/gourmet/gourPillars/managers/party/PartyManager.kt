@@ -133,7 +133,18 @@ class PartyManager {
     }
 
     fun promote(owner: Player, target: Player): Boolean {
-        val party = getPartyByPlayer(owner) ?: return false
+        val party = getPartyByPlayer(owner) ?: run {
+            owner.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_IN_PARTY)
+            return false
+        }
+        if (party.partyAdmin != owner) {
+            owner.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_PARTY_ADMIN)
+            return false
+        }
+        if (!party.members.contains(target)) {
+            owner.sendDynamicMessage(MessageData.PARTY_ERRORS_TARGET_NOT_IN_PARTY, "{player}" to target.name)
+            return false
+        }
         party.partyAdmin = target
         target.sendDynamicMessage(MessageData.PARTY_PARTY_PROMOTE)
         party.members.forEach { member ->
