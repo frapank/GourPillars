@@ -78,7 +78,8 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
 
         val maxVotes = voteCounts.values.maxOrNull() ?: return
 
-        if (maxVotes < 2) {
+        //"No event" wins ties, and always blocks an event if it has fewer than 2 votes
+        if (maxVotes < 2 || arena.noEventVote.size >= maxVotes) {
             return
         }
 
