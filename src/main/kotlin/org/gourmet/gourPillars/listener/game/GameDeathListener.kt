@@ -15,11 +15,11 @@ import org.gourmet.gourPillars.task.game.gametasks.GameTask
 import java.util.*
 
 @SuppressWarnings("deprecation")
-class GameDeathEvent : Listener {
+class GameDeathListener : Listener {
 
     private val arenaManager = GourPillars.arenaManager
 
-    //Quella del vuoto e' fatta in VoidKillEvent.kt
+    //Quella del vuoto e' fatta in VoidKillListener.kt
     @EventHandler
     fun onDeath(event: PlayerDeathEvent) {
 

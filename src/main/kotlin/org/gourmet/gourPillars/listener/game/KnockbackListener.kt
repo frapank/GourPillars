@@ -1,4 +1,4 @@
-package org.gourmet.gourPillars.listener
+package org.gourmet.gourPillars.listener.game
 
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -8,7 +8,7 @@ import org.bukkit.metadata.FixedMetadataValue
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.GameEvents
 
-class KnockBackEvent : Listener {
+class KnockbackListener : Listener {
 
     val arenaManager = GourPillars.arenaManager
     private val knockbackMultiplier = GourPillars.instance.config.getDouble("game.knockback-multiplier", 2.0)

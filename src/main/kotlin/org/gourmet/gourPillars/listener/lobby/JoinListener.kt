@@ -13,7 +13,7 @@ import org.gourmet.gourPillars.commands.BuildCMD
 import org.gourmet.gourPillars.managers.LevelBarManager
 import org.gourmet.gourPillars.other.Utils
 
-class JoinEvent : Listener {
+class JoinListener : Listener {
 
 
     @EventHandler

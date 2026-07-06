@@ -10,7 +10,7 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.DatabaseManager.PlayerStats
 import org.gourmet.gourPillars.other.toMini
 
-class DatabaseEvent : Listener {
+class DatabaseListener : Listener {
 
     private val databaseManager = GourPillars.databaseManager
 

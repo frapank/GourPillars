@@ -12,7 +12,7 @@ import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 import org.gourmet.gourPillars.task.game.gametasks.GameTask
 
-class QuitGameEvent : Listener {
+class QuitGameListener : Listener {
 
     private val arenaManager: ArenaManager = GourPillars.arenaManager
     private val partyManager = GourPillars.partyManager

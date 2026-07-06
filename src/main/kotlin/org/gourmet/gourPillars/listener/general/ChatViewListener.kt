@@ -4,7 +4,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
 
-class ChatViewEvent : Listener {
+class ChatViewListener : Listener {
 
     /*
         This will show the messages only

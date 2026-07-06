@@ -7,7 +7,7 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.other.Logger
 import org.gourmet.gourPillars.managers.DatabaseManager.PlayerStats
 
-class LevelEvent : Listener {
+class LevelListener : Listener {
 
     private val databaseManager = GourPillars.databaseManager
 
