@@ -31,6 +31,7 @@ GourPillars is a Paper plugin implementing a "pillars" last-man-standing minigam
 | `/party`, `/p`              | -                 | Party management (see `/party help`)  |
 | `/edit`                    | `gpillars.admin`  | Arena editing session                 |
 | `/build`                   | `gpillars.build`  | Toggle a build session in the lobby   |
+| `/setspawn`                 | `gpillars.admin`  | Set the lobby spawn to your location  |
 
 `/party` subcommands: `create`, `invite <target>`, `accept`, `remove <target>`, `leave`, `disband`, `promote <target>`, `info`/`list`.
 
