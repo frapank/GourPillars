@@ -60,7 +60,7 @@ class Arena(
     /* Utils */
     fun addPlayer(player: Player) {
         if (isPrivate) {
-            player.sendMessage("non puoi entrare")
+            player.sendMessage("you can't join")
             return
         }
         if (inGamePlayer.contains(player)) {
