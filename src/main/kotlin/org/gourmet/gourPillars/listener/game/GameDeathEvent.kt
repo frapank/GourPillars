@@ -21,7 +21,7 @@ class GameDeathEvent : Listener {
 
     //Quella del vuoto e' fatta in VoidKillEvent.kt
     @EventHandler
-    fun onDeath(event: PlayerDeathEvent){
+    fun onDeath(event: PlayerDeathEvent) {
 
         val player: Player = event.player
 
@@ -35,14 +35,14 @@ class GameDeathEvent : Listener {
 
         val gameRunnable: GameTask = arena.gameTask
 
-        if(arena.gameState != State.INGAME) return
+        if (arena.gameState != State.INGAME) return
 
-        if(player.killer != null && player.killer is Player) {
+        if (player.killer != null && player.killer is Player) {
 
             //direct kill
             gameRunnable.playerEliminated(player, player.killer!!)
 
-        } else if(event.entity.lastDamageCause?.cause == EntityDamageEvent.DamageCause.FALL) {
+        } else if (event.entity.lastDamageCause?.cause == EntityDamageEvent.DamageCause.FALL) {
 
             //fall damage
             gameRunnable.playerEliminatedFall(player)
@@ -58,7 +58,7 @@ class GameDeathEvent : Listener {
     fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
 
         val victim = event.entity
-        if(victim !is Player){
+        if (victim !is Player) {
             return
         }
 
@@ -74,7 +74,7 @@ class GameDeathEvent : Listener {
 
     private fun instantRespawn(player: Player) {
 
-        Bukkit.getScheduler().runTaskLater(GourPillars.Companion.instance, Runnable {
+        Bukkit.getScheduler().runTaskLater(GourPillars.instance, Runnable {
             player.spigot().respawn()
         }, 1L)
 

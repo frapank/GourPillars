@@ -10,9 +10,9 @@ class LavaHandler : GameHandler {
     override fun onStart(arena: Arena) {
         val riseIntervalTicks = GourPillars.instance.config.getLong("game.lava-rise-interval-seconds", 4) * 20
         var lavaLevel = arena.minHeight
-        object : BukkitRunnable(){
+        object : BukkitRunnable() {
             override fun run() {
-                if(!arena.gameTask.running) cancel()
+                if (!arena.gameTask.running) cancel()
                 arena.region.replaceYLevelWithLava(lavaLevel)
                 lavaLevel++
 

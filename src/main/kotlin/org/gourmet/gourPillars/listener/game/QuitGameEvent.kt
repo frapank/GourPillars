@@ -14,32 +14,32 @@ import org.gourmet.gourPillars.task.game.gametasks.GameTask
 
 class QuitGameEvent : Listener {
 
-    private val arenaManager: ArenaManager = GourPillars.Companion.arenaManager
-    private val partyManager = GourPillars.Companion.partyManager
+    private val arenaManager: ArenaManager = GourPillars.arenaManager
+    private val partyManager = GourPillars.partyManager
 
     @EventHandler
-    fun quitListener(event: PlayerQuitEvent){
+    fun quitListener(event: PlayerQuitEvent) {
 
         val player: Player = event.player
         val arena: Arena = arenaManager.getArenaByPlayer(player) ?: return
         val gameRunnable: GameTask = arena.gameTask
 
-        if(partyManager.isInParty(player)) {
+        if (partyManager.isInParty(player)) {
             partyManager.leaveParty(player)
         }
 
         arena.removePlayer(player)
 
         //If player quit during the game, he will die and leave the party
-        if(arena.gameState == State.INGAME) {
-            if(partyManager.isInParty(player)) {
+        if (arena.gameState == State.INGAME) {
+            if (partyManager.isInParty(player)) {
                 partyManager.leaveParty(player)
                 gameRunnable.playerEliminated(player)
             } else {
                 gameRunnable.playerEliminated(player)
             }
 
-            arena.inGamePlayer.forEach{member ->
+            arena.inGamePlayer.forEach {member ->
                 member.sendDynamicMessage(MessageData.ARENA_PLAYER_LEFT, "{player}" to player.name)
             }
 

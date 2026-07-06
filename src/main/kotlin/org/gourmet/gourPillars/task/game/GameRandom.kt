@@ -26,7 +26,7 @@ object GameRandom {
                     giveRandomItem(player)
                 }
             }
-        }.runTaskTimer(GourPillars.Companion.instance, 0L, intervalTicks)
+        }.runTaskTimer(GourPillars.instance, 0L, intervalTicks)
     }
 
     fun giveRandomItem(player: Player) {

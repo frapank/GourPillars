@@ -11,8 +11,8 @@ class PartyManager {
     //private val prefix = "<bold><green>Party </bold><green>|"
     private val parties: MutableSet<PartyData> = mutableSetOf()
 
-    fun createParty(creator: Player){
-        if(isInParty(creator)){
+    fun createParty(creator: Player) {
+        if (isInParty(creator)) {
             creator.sendDynamicMessage(MessageData.PARTY_ERRORS_USER_ALREADY_IN_PARTY)
             return
         }
@@ -41,20 +41,20 @@ class PartyManager {
 
     }
 
-    fun addMember(owner: Player, target: Player){
+    fun addMember(owner: Player, target: Player) {
         val party = getPartyByPlayer(owner) ?: run {
             owner.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_IN_PARTY)
             return
         }
-        if(isInParty(target)){
+        if (isInParty(target)) {
             owner.sendDynamicMessage(MessageData.PARTY_ERRORS_USER_ALREADY_IN_PARTY)
             return
         }
-        if(party.partyAdmin != owner){
+        if (party.partyAdmin != owner) {
             owner.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_PARTY_ADMIN)
             return
         }
-        if(party.members.size >= 8) {
+        if (party.members.size >= 8) {
             owner.sendDynamicMessage(MessageData.PARTY_ERRORS_MAX_PARTY_MEMBER)
             return
         }
@@ -79,11 +79,11 @@ class PartyManager {
             owner.sendDynamicMessage(MessageData.PARTY_ERRORS_PLAYER_NOT_IN_PARTY)
             return false
         }
-        if(party.partyAdmin != owner){
+        if (party.partyAdmin != owner) {
             owner.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_PARTY_ADMIN)
             return false
         }
-        if(!party.members.contains(target)){
+        if (!party.members.contains(target)) {
             //owner.sendMessage("$prefix ${target.name} non e' nel party".toMini())
             owner.sendDynamicMessage(MessageData.PARTY_ERRORS_TARGET_NOT_IN_PARTY, "{player}" to target.name)
             return false
@@ -101,13 +101,13 @@ class PartyManager {
      * @param player the player that leaves the party
      *
      */
-    fun leaveParty(player: Player){
+    fun leaveParty(player: Player) {
         val party = getPartyByPlayer(player) ?: run {
             player.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_IN_PARTY)
             return
         }
-        if(player == party.partyAdmin){
-            if(party.members.size <= 1){
+        if (player == party.partyAdmin) {
+            if (party.members.size <= 1) {
                 parties.remove(party)
                 player.sendDynamicMessage(MessageData.PARTY_PARTY_DISBAND)
                 return
@@ -117,7 +117,7 @@ class PartyManager {
             party.partyAdmin = first
             first.sendDynamicMessage(MessageData.PARTY_PARTY_PROMOTE)
             party.members.forEach { member ->
-                if(member != first)
+                if (member != first)
                     //member.sendMessage("$prefix <green>${first.name} e' il nuovo owner del party!".toMini())
                     member.sendDynamicMessage(MessageData.PARTY_PARTY_PROMOTE_BROADCAST, "{player}" to first.name)
             }
@@ -137,7 +137,7 @@ class PartyManager {
         party.partyAdmin = target
         target.sendDynamicMessage(MessageData.PARTY_PARTY_PROMOTE)
         party.members.forEach { member ->
-            if(member != party.partyAdmin)
+            if (member != party.partyAdmin)
                 //member.sendMessage("$prefix <white>${target.name} <yellow>e' il nuovo owner del party!".toMini())
                 member.sendDynamicMessage(MessageData.PARTY_PARTY_PROMOTE_BROADCAST, "{player}" to target.name)
         }
@@ -153,9 +153,9 @@ class PartyManager {
         return partyData.partyAdmin == player
     }
 
-    fun isInParty(player: Player): Boolean{
-        for(party in parties){
-            if(party.members.contains(player)){
+    fun isInParty(player: Player): Boolean {
+        for (party in parties) {
+            if (party.members.contains(player)) {
                 return true
             }
         }
@@ -163,8 +163,8 @@ class PartyManager {
     }
 
     fun getPartyByPlayer(player: Player): PartyData? {
-        for(party in parties){
-            if(party.members.contains(player)){
+        for (party in parties) {
+            if (party.members.contains(player)) {
                 return party
             }
         }

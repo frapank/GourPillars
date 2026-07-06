@@ -8,18 +8,18 @@ import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 
 class SpawnManager {
-    companion object{
+    companion object {
         var spawn: Location? = null
     }
 
     private val config = GourPillars.instance.config
 
-    init{
+    init {
         spawn = loadSpawn()
     }
 
-    fun teleportPlayerToSpawn(player: Player){
-        if(spawn != null) {
+    fun teleportPlayerToSpawn(player: Player) {
+        if (spawn != null) {
             player.teleport(spawn!!)
             player.gameMode = GameMode.SURVIVAL
         } else {
@@ -27,18 +27,18 @@ class SpawnManager {
         }
     }
 
-    private fun loadSpawn(): Location?{
+    private fun loadSpawn(): Location? {
         val world: World = Bukkit.getWorld(config.getString("spawn.world").toString()) ?: return null
-        val x: Double = config.getDouble("spawn.x") ?: return null
-        val y: Double = config.getDouble("spawn.y") ?: return null
-        val z: Double = config.getDouble("spawn.z") ?: return null
-        val yaw: Float = config.getDouble("spawn.yaw").toFloat() ?: return null
-        val pitch: Float = config.getDouble("spawn.pitch").toFloat() ?: return null
+        val x: Double = config.getDouble("spawn.x")
+        val y: Double = config.getDouble("spawn.y")
+        val z: Double = config.getDouble("spawn.z")
+        val yaw: Float = config.getDouble("spawn.yaw").toFloat()
+        val pitch: Float = config.getDouble("spawn.pitch").toFloat()
 
         return Location(world, x, y, z, yaw, pitch)
     }
 
-    public fun getConfiguredWorld(): World? {
+    fun getConfiguredWorld(): World? {
         val worldName = config.getString("spawn.world") ?: return null
         return Bukkit.getWorld(worldName)
     }

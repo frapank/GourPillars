@@ -17,11 +17,11 @@ class JoinEvent : Listener {
 
 
     @EventHandler
-    fun joinEvent(event: PlayerJoinEvent){
+    fun joinEvent(event: PlayerJoinEvent) {
 
         object : BukkitRunnable() {
             override fun run() {
-                GourPillars.Companion.spawnManager.teleportPlayerToSpawn(event.player)
+                GourPillars.spawnManager.teleportPlayerToSpawn(event.player)
             }
         }.runTaskLater(GourPillars.instance, 1L)
 
@@ -31,11 +31,11 @@ class JoinEvent : Listener {
 
         Utils.giveLobbyItems(event.player)
 
-        object : BukkitRunnable(){
+        object : BukkitRunnable() {
             override fun run() {
-                GourPillars.Companion.lobbyScoreboardManager.setScoreboard(event.player)
+                GourPillars.lobbyScoreboardManager.setScoreboard(event.player)
             }
-        }.runTaskLater(GourPillars.Companion.instance, 20 * 1)
+        }.runTaskLater(GourPillars.instance, 20 * 1)
 
         LevelBarManager.updateLevelInBar(event.player)
 
@@ -43,9 +43,9 @@ class JoinEvent : Listener {
 
     @EventHandler
     fun onFoodChange(event: FoodLevelChangeEvent) {
-        if(event.entity !is Player) return
+        if (event.entity !is Player) return
         val player: Player = event.entity as Player
-        if(!isSpawnWorld(player.world)) return
+        if (!isSpawnWorld(player.world)) return
         event.foodLevel = 20
     }
 
@@ -55,7 +55,7 @@ class JoinEvent : Listener {
 
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
-        if(BuildCMD.buildSessionPlayers.contains(event.player)) {
+        if (BuildCMD.buildSessionPlayers.contains(event.player)) {
             BuildCMD.buildSessionPlayers.remove(event.player)
         }
         event.quitMessage = ""

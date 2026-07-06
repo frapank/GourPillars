@@ -8,14 +8,14 @@ import org.gourmet.gourPillars.managers.game.arena.State
 
 class StopBreakStartingEvent : Listener {
 
-    private val arenaManager = GourPillars.Companion.arenaManager
+    private val arenaManager = GourPillars.arenaManager
 
     @EventHandler
-    fun breakListener(event: BlockBreakEvent){
+    fun breakListener(event: BlockBreakEvent) {
         val player = event.player
         val arena = arenaManager.getArenaByPlayer(player) ?: return
 
-        if (arena.gameState != State.INGAME){
+        if (arena.gameState != State.INGAME) {
             event.isCancelled = true
             return
         }
