@@ -54,12 +54,12 @@ class ArenaManager {
         val arenaFolder = File(dataFolder, "arena")
 
         if (!arenaFolder.exists() || !arenaFolder.isDirectory) {
-            Bukkit.getLogger().info("Nessuna cartella 'arena' trovata, skip caricamento arene esterne")
+            Bukkit.getLogger().info("No 'arena' folder found, skipping external arena loading")
             return
         }
 
         val arenaFiles = arenaFolder.listFiles() ?: run {
-            Bukkit.getLogger().warning("Impossibile leggere la cartella 'arena'")
+            Bukkit.getLogger().warning("Unable to read the 'arena' folder")
             return
         }
 
@@ -121,7 +121,7 @@ class ArenaManager {
                     spawnsList[location] = null
                 }
             } ?: run {
-                Bukkit.getLogger().warning("Nessuno spawn di gioco trovato per l'arena $arenaName")
+                Bukkit.getLogger().warning("No game spawn found for arena $arenaName")
             }
 
             val arena = Arena(
@@ -138,7 +138,7 @@ class ArenaManager {
                 region,
                 arenaName
             )
-            Bukkit.getLogger().info("Arena '$arenaName' caricata")
+            Bukkit.getLogger().info("Arena '$arenaName' loaded")
             onlineArenas[arenaName] = arena
         }
     }

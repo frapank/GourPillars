@@ -45,9 +45,9 @@ class DatabaseListener : Listener {
     private fun warnAdmin(player: Player) {
         if (!player.isOp && !player.hasPermission("gpillars.admin")) return
 
-        val reason = databaseManager.lastError ?: "motivo sconosciuto"
+        val reason = databaseManager.lastError ?: "unknown reason"
         player.sendMessage(
-            "<red>[GourPillars] Database non raggiungibile ($reason). Le statistiche dei giocatori sono disabilitate.</red>".toMini()
+            "<red>[GourPillars] Database unreachable ($reason). Player statistics are disabled.</red>".toMini()
         )
     }
 }
