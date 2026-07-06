@@ -7,7 +7,7 @@ import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.messages.MessageData
 
-class CountDownTask(val arena: Arena) : BukkitRunnable(){
+class CountDownTask(val arena: Arena) : BukkitRunnable() {
 
     private val countdownSeconds = GourPillars.instance.config.getInt("game.countdown-seconds", 10)
     private var counter = countdownSeconds
@@ -15,7 +15,7 @@ class CountDownTask(val arena: Arena) : BukkitRunnable(){
     override fun run() {
 
                 //Cancel if player is not enought
-                if(arena.inGamePlayer.size < arena.minPlayer){
+                if (arena.inGamePlayer.size < arena.minPlayer) {
                     arena.gameState = State.WAITING
                     counter = countdownSeconds
                     cancel()
@@ -23,7 +23,7 @@ class CountDownTask(val arena: Arena) : BukkitRunnable(){
                 }
 
                 //End countdown
-                if(counter <= 0){
+                if (counter <= 0) {
                     //Messages and Effects
                     arena.sendTitleToPlayerInGame("&7Uccidi i tuoi avversari", "&8Ma non cadere...")
                     arena.sendDynamicTitleToPlayerInGame(MessageData.ARENA_TITLE_START, MessageData.ARENA_SUBTITLE_START)
@@ -49,7 +49,7 @@ class CountDownTask(val arena: Arena) : BukkitRunnable(){
                 }
 
                 //Send countdown with color
-                val countPrefix: String = when(counter){
+                val countPrefix: String = when (counter) {
                     1,2 -> "&c"
                     3,4,5 -> "&e"
                     else -> "&a"

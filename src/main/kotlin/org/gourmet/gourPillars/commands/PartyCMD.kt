@@ -18,18 +18,18 @@ object PartyCMD {
     private val invitedPlayers: MutableMap<Player, Player> = mutableMapOf()
 
     @Subcommand()
-    fun partyMain(player: Player){
+    fun partyMain(player: Player) {
         sendCommandsPartyHelp(player)
     }
 
     @Subcommand("create")
-    fun createParty(player: Player){
+    fun createParty(player: Player) {
         partyManager.createParty(player)
     }
 
     @Subcommand("accept")
-    fun acceptParty(player: Player){
-        if(!invitedPlayers.contains(player)){
+    fun acceptParty(player: Player) {
+        if (!invitedPlayers.contains(player)) {
             player.sendDynamicMessage(MessageData.PARTY_ERRORS_NO_PARTY_REQUEST)
             return
         }
@@ -45,15 +45,15 @@ object PartyCMD {
             player.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_IN_PARTY)
             return
         }
-        if(player == target){
+        if (player == target) {
             player.sendDynamicMessage(MessageData.PARTY_ERRORS_CANT_INVITE_YOURSELF)
             return
         }
-        if(partyManager.isInParty(target)) {
+        if (partyManager.isInParty(target)) {
             player.sendDynamicMessage(MessageData.PARTY_ERRORS_USER_ALREADY_IN_PARTY)
             return
         }
-        if(party.partyAdmin != player) {
+        if (party.partyAdmin != player) {
             player.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_PARTY_ADMIN)
             return
         }
@@ -62,10 +62,10 @@ object PartyCMD {
         target.sendDynamicMessage(MessageData.PARTY_INVITE_RECEIVE, "{player}" to player.name)
         player.sendDynamicMessage(MessageData.PARTY_INVITE, "{player}" to target.name)
 
-        object : BukkitRunnable(){
-            override fun run(){
+        object : BukkitRunnable() {
+            override fun run() {
 
-                if(invitedPlayers.contains(target)){
+                if (invitedPlayers.contains(target)) {
                     target.sendDynamicMessage(MessageData.PARTY_ERRORS_INVITE_EXPIRED)
                     invitedPlayers.remove(target)
                 }
@@ -102,7 +102,7 @@ object PartyCMD {
             val membersList = party.members.filter { it != party.partyAdmin }
                 .joinToString(" <gray>|</gray> ") { "<yellow>${it.name}</yellow>" }
 
-            if(membersList.isNotEmpty()){
+            if (membersList.isNotEmpty()) {
 
                 player.sendDynamicMessage(MessageData.PARTY_PARTY_INFO,
                     "{partyAdmin}" to party.partyAdmin.name,

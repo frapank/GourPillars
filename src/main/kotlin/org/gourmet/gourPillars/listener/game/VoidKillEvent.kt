@@ -23,7 +23,7 @@ class VoidKillEvent : Listener {
             if (playerLoc <= arena.minHeight) {
                 val damagerId = arena.lastDamagerMap.remove(player.uniqueId)
                 val damagerPlayer = damagerId?.let { Bukkit.getPlayer(it) }
-                if(!arena.gameTask.alivePlayer.contains(player)) return
+                if (!arena.gameTask.alivePlayer.contains(player)) return
                 if (damagerPlayer != null) {
                     arena.gameTask.playerEliminatedVoid(player, damagerPlayer)
                 } else {

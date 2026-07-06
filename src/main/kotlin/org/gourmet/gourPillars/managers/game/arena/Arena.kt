@@ -53,27 +53,27 @@ class Arena(
     val dayVote: ArrayList<Player> = ArrayList()
     val nightVote: ArrayList<Player> = ArrayList()
 
-    private fun startArena(){
+    private fun startArena() {
         CountDownTask(this).runTaskTimer(GourPillars.instance, 0L, 20L)
     }
 
     /* Utils */
-    fun addPlayer(player: Player){
-        if(isPrivate) {
+    fun addPlayer(player: Player) {
+        if (isPrivate) {
             player.sendMessage("non puoi entrare")
             return
         }
-        if(inGamePlayer.contains(player)){
+        if (inGamePlayer.contains(player)) {
             player.sendDynamicMessage(MessageData.ARENA_ERRORS_ALREADY_IN_GAME)
             return
         }
 
-        if(gameState == State.INGAME || gameState == State.STOPPED){
+        if (gameState == State.INGAME || gameState == State.STOPPED) {
             player.sendDynamicMessage(MessageData.ARENA_ERRORS_ARENA_NOT_READY)
             return
         }
 
-        if(inGamePlayer.size < maxPlayer){
+        if (inGamePlayer.size < maxPlayer) {
             BuildCMD.buildSessionPlayers.remove(player)
             inGamePlayer.add(player)
             scoreboardManager.setWaitingBoard(player)
@@ -99,7 +99,7 @@ class Arena(
             }
 
             //Start arena if player is enoght
-            if(inGamePlayer.size >= minPlayer && gameState == State.WAITING){
+            if (inGamePlayer.size >= minPlayer && gameState == State.WAITING) {
                 startArena()
                 this.gameState = State.STARTING
             }
@@ -111,7 +111,7 @@ class Arena(
         }
     }
 
-    private fun giveWaitingItems(player: Player){
+    private fun giveWaitingItems(player: Player) {
         val leaveItem = createWaitingItem("RED_DYE", MessageData.WAITING_ITEMS_LEAVE_NAME, MessageData.WAITING_ITEMS_LEAVE_LORE, "leave-item")
         val voteItem = createWaitingItem("PAPER", MessageData.WAITING_ITEMS_VOTE_NAME, MessageData.WAITING_ITEMS_VOTE_LORE, "vote-item")
 
@@ -134,11 +134,11 @@ class Arena(
     }
 
 
-    fun removePlayer(player: Player){
+    fun removePlayer(player: Player) {
 
         //Remove spawn and glass
-        spawnMap.forEach{ (location, playerInSpawn) ->
-            if(playerInSpawn == player){
+        spawnMap.forEach { (location, playerInSpawn) ->
+            if (playerInSpawn == player) {
                 Utils.setGlass(false, location)
                 spawnMap[location] = null
             }
@@ -162,7 +162,7 @@ class Arena(
         reloadWaitingScoreboard()
 
         //Stop cooldown if player is not enought
-        if(inGamePlayer.size < minPlayer && gameState != State.INGAME){
+        if (inGamePlayer.size < minPlayer && gameState != State.INGAME) {
             gameState = State.WAITING
             val playerRequired = maxPlayer - inGamePlayer.size
             sendDynamicMessageToPlayerInGame(MessageData.ARENA_PLAYER_NEEDED, "{playerRequired}" to playerRequired.toString())
@@ -170,13 +170,13 @@ class Arena(
         }
     }
 
-    private fun reloadWaitingScoreboard(){
+    private fun reloadWaitingScoreboard() {
         inGamePlayer.forEach { player ->
             scoreboardManager.setWaitingBoard(player)
         }
     }
 
-    fun reloadInGameScoreboard(){
+    fun reloadInGameScoreboard() {
         inGamePlayer.forEach { player ->
             scoreboardManager.setGameScoreboard(player)
         }
@@ -187,12 +187,12 @@ class Arena(
         return inGamePlayer.contains(player)
     }
 
-    fun sendMessageToPlayerInGame(message: String){
-        inGamePlayer.forEach{ player: Player ->  player.sendMessage(message.toMini())}
+    fun sendMessageToPlayerInGame(message: String) {
+        inGamePlayer.forEach { player: Player ->  player.sendMessage(message.toMini())}
     }
 
     fun sendDynamicMessageToPlayerInGame(message: DynamicMessage, vararg pairs: Pair<String, String>) {
-        inGamePlayer.forEach{ player: Player ->  player.sendDynamicMessage(message, *pairs)}
+        inGamePlayer.forEach { player: Player ->  player.sendDynamicMessage(message, *pairs)}
     }
 
     fun sendDynamicTitleToPlayerInGame(title: DynamicMessage, subtitle: DynamicMessage, vararg pairs: Pair<String, String>) {
@@ -201,8 +201,8 @@ class Arena(
         }
     }
 
-    fun sendTitleToPlayerInGame(title: String, subtitle: String){
-        inGamePlayer.forEach{ player: Player ->
+    fun sendTitleToPlayerInGame(title: String, subtitle: String) {
+        inGamePlayer.forEach { player: Player ->
             player.sendTitle(title.replace("&", "§"), subtitle.replace("&", "§"))
         }
 
