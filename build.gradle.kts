@@ -1,10 +1,10 @@
 
 plugins {
-    kotlin("jvm") version "2.1.20-Beta1"
-    id("io.papermc.paperweight.userdev") version "1.7.1"
+    kotlin("jvm") version "2.4.0"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("com.gradleup.shadow") version "8.3.4"
-    id("xyz.jpenilla.run-paper") version "2.3.0"
+    id("com.gradleup.shadow") version "9.4.3"
+    id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
 group = "org.gourmet"
@@ -19,12 +19,12 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
-    compileOnly("me.clip:placeholderapi:2.11.6")
-    implementation("com.zaxxer:HikariCP:6.3.0")
-    implementation("io.github.revxrsal:lamp.common:4.0.0-beta.19")
-    implementation("io.github.revxrsal:lamp.bukkit:4.0.0-beta.19")
-    implementation("io.github.revxrsal:lamp.brigadier:4.0.0-beta.19")
+    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
+    compileOnly("me.clip:placeholderapi:2.12.2")
+    implementation("com.zaxxer:HikariCP:7.1.0")
+    implementation("io.github.revxrsal:lamp.common:4.0.0-rc.17")
+    implementation("io.github.revxrsal:lamp.bukkit:4.0.0-rc.17")
+    implementation("io.github.revxrsal:lamp.brigadier:4.0.0-rc.17")
 }
 
 val targetJavaVersion = 21
@@ -41,6 +41,10 @@ tasks.build {
     dependsOn("shadowJar")
 }
 
+tasks.runServer {
+    minecraftVersion("1.21.11")
+}
+
 tasks {
     shadowJar {
         minimize()
@@ -52,7 +56,7 @@ tasks {
 
 bukkit {
     main = "org.gourmet.gourPillars.GourPillars"
-    apiVersion = "1.20"
+    apiVersion = "1.21"
     name = getName()
     version = getVersion().toString()
     author = "Gourmet"
