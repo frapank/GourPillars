@@ -32,7 +32,7 @@ object JoinerCMD {
             return
         }
 
-        if (arena.gameState != State.INGAME || arena.gameState != State.STOPPED) {
+        if (arena.gameState != State.INGAME && arena.gameState != State.STOPPED) {
             //This will add all the player in the party
             if (partyManager.isInParty(player)) {
                 val party = partyManager.getPartyByPlayer(player)

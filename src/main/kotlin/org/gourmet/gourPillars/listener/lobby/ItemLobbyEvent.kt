@@ -63,12 +63,13 @@ class ItemLobbyEvent : Listener {
 
         if (action == Action.RIGHT_CLICK_BLOCK) {
             val item = e.item
-            if (block.type == Material.FLOWER_POT && item != null && item.type.name.contains("SAPLING", true) ||
-                item!!.type.name.contains("FLOWER", true) ||
-                item.type.name.contains("MUSHROOM", true) ||
-                item.type.name.contains("FERN", true) ||
-                item.type.name.contains("CACTUS", true) ||
-                item.type.name.contains("BAMBOO", true)) {
+            if (item != null && block.type == Material.FLOWER_POT &&
+                (item.type.name.contains("SAPLING", true) ||
+                    item.type.name.contains("FLOWER", true) ||
+                    item.type.name.contains("MUSHROOM", true) ||
+                    item.type.name.contains("FERN", true) ||
+                    item.type.name.contains("CACTUS", true) ||
+                    item.type.name.contains("BAMBOO", true))) {
                 if (isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
                     e.isCancelled = true
                 }
