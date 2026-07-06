@@ -14,7 +14,7 @@ class ResetArenaTask(val arena: Arena) : BukkitRunnable() {
     override fun run() {
         val arenaManager = GourPillars.arenaManager
         val arenaName = arena.name
-        val worldName = GourPillars.instance.config.getString("Arenas.${arena.name}.world").toString()
+        val worldName = arena.region.world.name
 
         //Reset arena
         zipManager.restoreBackup(worldName)

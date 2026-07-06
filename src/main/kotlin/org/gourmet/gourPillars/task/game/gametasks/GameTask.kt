@@ -48,7 +48,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         setupEvent()
         removeAllGlass()
         setTimeByVote()
-        GameRandom.startRandomItemTask(alivePlayer, running)
+        GameRandom.startRandomItemTask(alivePlayer) { running }
 
         //Start event if present
         currentEventHandler?.onStart(arena)
@@ -97,7 +97,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
             GameEvents.KNOCKBACK -> null
         }
 
-        arena.sendMessageToPlayerInGame("<gray>Evento: <yellow>$winningEvent")
+        arena.sendMessageToPlayerInGame("<gray>Event: <yellow>$winningEvent")
 
     }
 
@@ -349,8 +349,8 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
         val minutes = secondsPassed / 60
         val remainingSeconds = secondsPassed % 60
 
-        val minuteText = if (minutes == 1) "1 minuto" else "$minutes minuti"
-        val secondText = if (remainingSeconds == 1) "1 secondo" else "$remainingSeconds secondi"
+        val minuteText = if (minutes == 1) "1 minute" else "$minutes minutes"
+        val secondText = if (remainingSeconds == 1) "1 second" else "$remainingSeconds seconds"
 
         return if (minutes > 0) "$minuteText $secondText" else secondText
     }
