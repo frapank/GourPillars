@@ -7,8 +7,8 @@ import org.gourmet.gourPillars.managers.game.arena.Arena
 
 class LavaHandler : GameHandler {
 
-    /* Every 4 seconds the lava will raise */
     override fun onStart(arena: Arena) {
+        val riseIntervalTicks = GourPillars.instance.config.getLong("game.lava-rise-interval-seconds", 4) * 20
         var lavaLevel = arena.minHeight
         object : BukkitRunnable(){
             override fun run() {
@@ -18,7 +18,7 @@ class LavaHandler : GameHandler {
 
             }
 
-        }.runTaskTimer(GourPillars.instance, 0L, 4 * 20)
+        }.runTaskTimer(GourPillars.instance, 0L, riseIntervalTicks)
     }
 
     override fun onStop(arena: Arena, winner: Player?) {}

@@ -1,6 +1,5 @@
 package org.gourmet.gourPillars.commands
 
-import org.bukkit.Bukkit
 import org.bukkit.GameRule
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -198,7 +197,7 @@ object EditCMD {
                     player.sendMessage("<red>Il mondo e' diverso dagli altri spawn, operazione non valida".toMini())
                     return
                 }
-                if(spawn.world == Bukkit.getWorld("world")){
+                if(spawn.world == GourPillars.spawnManager.getConfiguredWorld()){
                     player.sendMessage("<red>Non creare una arena nel mondo default".toMini())
                 }
             }
