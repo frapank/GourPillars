@@ -1,34 +1,39 @@
 package org.gourmet.gourPillars
 
 import org.bukkit.Bukkit
+import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
-import org.gourmet.gourPillars.commands.*
+import org.gourmet.gourPillars.commands.BuildCMD
+import org.gourmet.gourPillars.commands.EditCMD
+import org.gourmet.gourPillars.commands.JoinerCMD
+import org.gourmet.gourPillars.commands.PartyCMD
+import org.gourmet.gourPillars.commands.StatsCMD
+import org.gourmet.gourPillars.commands.TestCMD
+import org.gourmet.gourPillars.listener.game.BorderLimitListener
+import org.gourmet.gourPillars.listener.game.GameDeathListener
+import org.gourmet.gourPillars.listener.game.KnockbackListener
+import org.gourmet.gourPillars.listener.game.QuitGameListener
+import org.gourmet.gourPillars.listener.game.StopBreakStartingListener
+import org.gourmet.gourPillars.listener.game.VoidKillListener
+import org.gourmet.gourPillars.listener.general.ChatViewListener
+import org.gourmet.gourPillars.listener.general.DatabaseListener
+import org.gourmet.gourPillars.listener.general.GuiClickListener
+import org.gourmet.gourPillars.listener.general.LevelListener
+import org.gourmet.gourPillars.listener.lobby.ItemLobbyListener
+import org.gourmet.gourPillars.listener.lobby.JoinListener
+import org.gourmet.gourPillars.listener.lobby.WorldChangeListener
 import org.gourmet.gourPillars.managers.DatabaseManager
-import org.gourmet.gourPillars.managers.PlaceHolderManager
-import org.gourmet.gourPillars.listener.*
-import org.gourmet.gourPillars.listener.game.StopBreakStartingEvent
-import org.gourmet.gourPillars.listener.general.GuiClickEvent
-import org.gourmet.gourPillars.listener.game.BorderLimitEvent
-import org.gourmet.gourPillars.listener.game.GameDeathEvent
-import org.gourmet.gourPillars.listener.game.QuitGameEvent
-import org.gourmet.gourPillars.listener.game.VoidKillEvent
-import org.gourmet.gourPillars.listener.general.ChatViewEvent
-import org.gourmet.gourPillars.listener.general.DatabaseEvent
-import org.gourmet.gourPillars.listener.general.LevelEvent
-import org.gourmet.gourPillars.listener.lobby.ItemLobbyEvent
-import org.gourmet.gourPillars.listener.lobby.JoinEvent
-import org.gourmet.gourPillars.listener.lobby.WorldChangeEvent
-import org.gourmet.gourPillars.managers.game.ArenaManager
 import org.gourmet.gourPillars.managers.LobbyScoreboardManager
-import org.gourmet.gourPillars.managers.party.PartyManager
+import org.gourmet.gourPillars.managers.PlaceHolderManager
 import org.gourmet.gourPillars.managers.SpawnManager
+import org.gourmet.gourPillars.managers.game.ArenaManager
+import org.gourmet.gourPillars.managers.party.PartyManager
 import org.gourmet.gourPillars.other.Logger
 import org.gourmet.gourPillars.other.messages.LanguageManager
 import org.gourmet.gourPillars.task.ShowPlayerTask
 import revxrsal.commands.bukkit.BukkitLamp
 
 class GourPillars : JavaPlugin() {
-
 
     companion object {
         lateinit var instance: GourPillars
@@ -43,54 +48,79 @@ class GourPillars : JavaPlugin() {
 
     override fun onEnable() {
         instance = this
+
+        if (!dependenciesPresent()) {
+            Bukkit.getPluginManager().disablePlugin(this)
+            return
+        }
+
+        Logger.info("GourPillars starting...")
+
+        loadConfiguration()
+        initializeManagers()
+        registerListeners()
+        registerCommands()
+
+        PlaceHolderManager().register()
+    }
+
+    private fun dependenciesPresent(): Boolean {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
+            Logger.warning("Missing PlaceholderAPI")
+            return false
+        }
+        return true
+    }
+
+    private fun loadConfiguration() {
         saveDefaultConfig()
         languageManager = LanguageManager()
         languageManager.saveDefaultLanguageFile()
+    }
 
-        Logger.info("GourPillars starting...")
+    private fun initializeManagers() {
         databaseManager = DatabaseManager()
-
         partyManager = PartyManager()
         spawnManager = SpawnManager()
         arenaManager = ArenaManager()
+        lobbyScoreboardManager = LobbyScoreboardManager()
+
         ShowPlayerTask().runTaskTimer(this, 100L, 20L)
+    }
 
+    private fun registerListeners() {
+        val listeners: List<Listener> = listOf(
+            // lobby
+            ItemLobbyListener(),
+            JoinListener(),
+            WorldChangeListener(),
+            // game
+            BorderLimitListener(),
+            GameDeathListener(),
+            KnockbackListener(),
+            QuitGameListener(),
+            StopBreakStartingListener(),
+            VoidKillListener(),
+            // general
+            ChatViewListener(),
+            DatabaseListener(),
+            GuiClickListener(),
+            LevelListener(),
+        )
 
-        Bukkit.getPluginManager().registerEvents(GameDeathEvent(), this)
-        Bukkit.getPluginManager().registerEvents(ItemLobbyEvent(), this)
-        Bukkit.getPluginManager().registerEvents(WorldChangeEvent(), this)
-        Bukkit.getPluginManager().registerEvents(DatabaseEvent(), this)
-        Bukkit.getPluginManager().registerEvents(JoinEvent(), this)
-        Bukkit.getPluginManager().registerEvents(StopBreakStartingEvent(), this)
-        Bukkit.getPluginManager().registerEvents(QuitGameEvent(), this)
-        Bukkit.getPluginManager().registerEvents(VoidKillEvent(), this)
-        Bukkit.getPluginManager().registerEvents(ChatViewEvent(), this)
-        Bukkit.getPluginManager().registerEvents(BorderLimitEvent(), this)
-        Bukkit.getPluginManager().registerEvents(LevelEvent(), this)
-        Bukkit.getPluginManager().registerEvents(GuiClickEvent(), this)
-        Bukkit.getPluginManager().registerEvents(KnockBackEvent(), this)
-        val handler = BukkitLamp.builder(this).build()
-        handler.register(
+        val pluginManager = Bukkit.getPluginManager()
+        listeners.forEach { pluginManager.registerEvents(it, this) }
+    }
+
+    private fun registerCommands() {
+        val lamp = BukkitLamp.builder(this).build()
+        lamp.register(
             JoinerCMD,
             TestCMD,
             PartyCMD,
             EditCMD,
             BuildCMD,
-            StatsCMD
+            StatsCMD,
         )
-
-        lobbyScoreboardManager = LobbyScoreboardManager()
-        placeHolderInit()
-
     }
-
-    private fun placeHolderInit() {
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
-            Logger.warning("Missing PlaceHolderAPI")
-            Bukkit.getPluginManager().disablePlugin(this)
-            return
-        }
-        PlaceHolderManager().register()
-    }
-
 }

@@ -16,7 +16,7 @@ import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 
-class GuiClickEvent : Listener {
+class GuiClickListener : Listener {
 
     private val arenaManager = GourPillars.arenaManager
 
