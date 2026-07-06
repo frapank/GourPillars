@@ -2,6 +2,7 @@ package org.gourmet.gourPillars.listener.lobby
 
 import org.bukkit.event.Listener
 import org.bukkit.event.EventHandler
+import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.SignChangeEvent
@@ -40,9 +41,17 @@ class WorldChangeListener : Listener {
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
         if (!isSpawnWorld(e.player.world)) return
+        if (BuildCMD.buildSessionPlayers.contains(e.player)) return
+
+        val item = e.item
+        val isRightClick = e.action == Action.RIGHT_CLICK_BLOCK || e.action == Action.RIGHT_CLICK_AIR
+        if (isRightClick && item != null && item.type.name.endsWith("_SPAWN_EGG")) {
+            e.isCancelled = true
+            return
+        }
 
         val block = e.clickedBlock ?: return
-        if (e.action.isLeftClick && PLANT_MATERIALS.contains(block.type) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
+        if (e.action.isLeftClick && PLANT_MATERIALS.contains(block.type)) {
             e.isCancelled = true
         }
     }
