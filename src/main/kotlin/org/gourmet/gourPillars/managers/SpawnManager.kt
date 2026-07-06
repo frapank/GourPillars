@@ -23,7 +23,7 @@ class SpawnManager {
             player.teleport(spawn!!)
             player.gameMode = GameMode.SURVIVAL
         } else {
-            player.sendMessage("[Error] Spawn non settato")
+            player.sendMessage("[Error] Spawn not set")
         }
     }
 
