@@ -24,7 +24,7 @@ import org.gourmet.gourPillars.commands.BuildCMD
 import org.gourmet.gourPillars.managers.game.arena.State
 
 
-class ItemLobbyEvent : Listener {
+class ItemLobbyListener : Listener {
 
     private val arenaManager = GourPillars.arenaManager
 

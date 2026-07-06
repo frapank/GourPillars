@@ -6,7 +6,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.State
 
-class StopBreakStartingEvent : Listener {
+class StopBreakStartingListener : Listener {
 
     private val arenaManager = GourPillars.arenaManager
 
