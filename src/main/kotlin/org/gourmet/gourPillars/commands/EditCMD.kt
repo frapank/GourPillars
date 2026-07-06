@@ -2,13 +2,17 @@ package org.gourmet.gourPillars.commands
 
 import org.bukkit.GameRule
 import org.bukkit.Location
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.ZipManager
+import org.gourmet.gourPillars.other.Logger
 import org.gourmet.gourPillars.other.toMini
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.annotation.Subcommand
 import revxrsal.commands.bukkit.annotation.CommandPermission
+import java.io.File
+import java.io.IOException
 
 data class ArenaEdit(val editor: Player,
                      var name: String?,
@@ -70,16 +74,16 @@ object EditCMD {
         }
         if (arenaEdit.deathSpawn == null) {
             player.sendMessage("<red>You must set the death spawn!".toMini())
+            return
         }
         if (arenaEdit.regionLocationOne == null) {
             player.sendMessage("<red>You must set the first region!".toMini())
+            return
         }
         if (arenaEdit.regionLocationSecond == null) {
             player.sendMessage("<red>You must set the second region!".toMini())
+            return
         }
-
-        val config = GourPillars.instance.config
-        val arenaPath = "Arenas.$name"
 
         val world = locations.values.first().world
         val worldName = world.name
@@ -90,36 +94,47 @@ object EditCMD {
             it.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false)
         }
 
-        config.set("$arenaPath.world", worldName)
-        config.set("$arenaPath.min-players", arenaEdit.minPlayers)
-        config.set("$arenaPath.max-height", arenaEdit.maxHeight)
-        config.set("$arenaPath.min-height", arenaEdit.minHeight)
-        config.set("$arenaPath.slow-falling-time", arenaEdit.slowFallingTime)
+        val arenaConfig = YamlConfiguration()
 
-        config.set("$arenaPath.main-spawn.x", arenaEdit.deathSpawn?.x)
-        config.set("$arenaPath.main-spawn.y", arenaEdit.deathSpawn?.y)
-        config.set("$arenaPath.main-spawn.z", arenaEdit.deathSpawn?.z)
-        config.set("$arenaPath.main-spawn.yaw", arenaEdit.deathSpawn?.yaw)
-        config.set("$arenaPath.main-spawn.pitch", arenaEdit.deathSpawn?.pitch)
+        arenaConfig.set("world", worldName)
+        arenaConfig.set("private-arena", false)
+        arenaConfig.set("min-players", arenaEdit.minPlayers)
+        arenaConfig.set("max-height", arenaEdit.maxHeight)
+        arenaConfig.set("min-height", arenaEdit.minHeight)
+        arenaConfig.set("slow-falling-time", arenaEdit.slowFallingTime)
 
-        config.set("$arenaPath.region.loc-1.x", arenaEdit.regionLocationOne?.x)
-        config.set("$arenaPath.region.loc-1.y", arenaEdit.regionLocationOne?.y)
-        config.set("$arenaPath.region.loc-1.z", arenaEdit.regionLocationOne?.z)
+        arenaConfig.set("main-spawn.x", arenaEdit.deathSpawn?.x)
+        arenaConfig.set("main-spawn.y", arenaEdit.deathSpawn?.y)
+        arenaConfig.set("main-spawn.z", arenaEdit.deathSpawn?.z)
+        arenaConfig.set("main-spawn.yaw", arenaEdit.deathSpawn?.yaw)
+        arenaConfig.set("main-spawn.pitch", arenaEdit.deathSpawn?.pitch)
 
-        config.set("$arenaPath.region.loc-2.x", arenaEdit.regionLocationSecond?.x)
-        config.set("$arenaPath.region.loc-2.y", arenaEdit.regionLocationSecond?.y)
-        config.set("$arenaPath.region.loc-2.z", arenaEdit.regionLocationSecond?.z)
+        arenaConfig.set("region.loc-1.x", arenaEdit.regionLocationOne?.x)
+        arenaConfig.set("region.loc-1.y", arenaEdit.regionLocationOne?.y)
+        arenaConfig.set("region.loc-1.z", arenaEdit.regionLocationOne?.z)
+
+        arenaConfig.set("region.loc-2.x", arenaEdit.regionLocationSecond?.x)
+        arenaConfig.set("region.loc-2.y", arenaEdit.regionLocationSecond?.y)
+        arenaConfig.set("region.loc-2.z", arenaEdit.regionLocationSecond?.z)
 
         locations.forEach { (index, location) ->
-            config.set("$arenaPath.spawns.$index.x", location.x)
-            config.set("$arenaPath.spawns.$index.y", location.y)
-            config.set("$arenaPath.spawns.$index.z", location.z)
-            config.set("$arenaPath.spawns.$index.yaw", location.yaw)
-            config.set("$arenaPath.spawns.$index.pitch", location.pitch)
+            arenaConfig.set("spawns.$index.x", location.x)
+            arenaConfig.set("spawns.$index.y", location.y)
+            arenaConfig.set("spawns.$index.z", location.z)
+            arenaConfig.set("spawns.$index.yaw", location.yaw)
+            arenaConfig.set("spawns.$index.pitch", location.pitch)
         }
 
-        GourPillars.instance.saveConfig()
-        player.sendMessage("<green>Arena '$name' saved successfully!".toMini())
+        try {
+            val arenasFolder = File(GourPillars.instance.dataFolder, "arenas").apply { mkdirs() }
+            arenaConfig.save(File(arenasFolder, "$name.yml"))
+        } catch (e: IOException) {
+            Logger.warning("Failed to save arena '$name': ${e.message}")
+            player.sendMessage("<red>Failed to save arena '$name': ${e.message}".toMini())
+            return
+        }
+
+        player.sendMessage("<green>Arena '$name' saved successfully! Restart the server to load it.".toMini())
         editingPlayers.remove(player)
         zipManager.saveBackup(worldName)
     }
