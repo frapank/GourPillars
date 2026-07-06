@@ -25,7 +25,8 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
     lateinit var alivePlayer: MutableSet<Player>
     lateinit var playerKills: MutableMap<Player, Int>
     var running = false
-    var secondsPassed = 300
+    private val matchDurationSeconds = GourPillars.instance.config.getInt("game.match-duration-seconds", 300)
+    var secondsPassed = matchDurationSeconds
     private var lastPlayer: Player? = null
     private var lavaLevel = arena.minHeight
     private var currentEventHandler: GameHandler? = null
@@ -167,7 +168,7 @@ class GameTask(private val arena: Arena, private val plugin: JavaPlugin): Bukkit
             override fun run(){
 
                 running = false
-                secondsPassed = 300
+                secondsPassed = matchDurationSeconds
                 arena.gameState = State.STOPPED
 
                 //Teleport all play

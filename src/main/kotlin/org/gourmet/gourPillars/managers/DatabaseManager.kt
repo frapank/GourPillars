@@ -2,44 +2,108 @@ package org.gourmet.gourPillars.managers
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import org.bukkit.Bukkit
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
+import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.other.Logger
+import java.io.File
 import java.sql.SQLException
 
 class DatabaseManager {
-    private val url: String =
-        "jdbc:mysql://localhost:3306/dream?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8"
-    private val user: String = "root"
-    private val pass: String = "dream_db"
 
+    private data class DatabaseSettings(
+        val host: String,
+        val port: Int,
+        val database: String,
+        val username: String,
+        val password: String,
+        val useSsl: Boolean,
+        val allowPublicKeyRetrieval: Boolean,
+        val poolSize: Int
+    )
+
+    private companion object {
+        private val IDENTIFIER_REGEX = Regex("^[A-Za-z0-9_]+$")
+    }
+
+    private val settings = loadSettings()
     private lateinit var dataSource: HikariDataSource
 
     val playersStats = HashMap<Player, PlayerStats>()
     var isOnline = false
+        private set
+    var lastError: String? = null
+        private set
 
     init {
         checkAndCreateDatabase()
     }
 
-    private fun createHikariDataSource(jdbcUrl: String): HikariDataSource {
+    private fun loadSettings(): DatabaseSettings {
+        val plugin = GourPillars.instance
+        val file = File(plugin.dataFolder, "database.yml")
+        if (!file.exists()) {
+            plugin.saveResource("database.yml", false)
+        }
+        val config = YamlConfiguration.loadConfiguration(file)
 
+        val host = config.getString("host")?.trim()?.takeIf { it.isNotBlank() }
+            ?: invalid("host", "localhost")
+
+        val port = config.getInt("port", 3306)
+            .takeIf { it in 1..65535 } ?: invalid("port", 3306)
+
+        val database = config.getString("database")?.trim()
+            ?.takeIf { IDENTIFIER_REGEX.matches(it) } ?: invalid("database", "dream")
+
+        val username = config.getString("username")?.trim()
+            ?.takeIf { IDENTIFIER_REGEX.matches(it) } ?: invalid("username", "root")
+
+        val password = config.getString("password") ?: ""
+
+        val useSsl = config.getBoolean("use-ssl", false)
+        val allowPublicKeyRetrieval = config.getBoolean("allow-public-key-retrieval", true)
+
+        val poolSize = config.getInt("pool-size", 10)
+            .takeIf { it in 1..50 } ?: invalid("pool-size", 10)
+
+        return DatabaseSettings(host, port, database, username, password, useSsl, allowPublicKeyRetrieval, poolSize)
+    }
+
+    private fun <T> invalid(field: String, default: T): T {
+        Logger.warning("Valore mancante o non valido per '$field' in database.yml, uso il default: $default")
+        return default
+    }
+
+    private fun jdbcUrl(includeDatabase: Boolean): String {
+        val path = if (includeDatabase) "/${settings.database}" else "/"
+        return "jdbc:mysql://${settings.host}:${settings.port}$path" +
+            "?useSSL=${settings.useSsl}&allowPublicKeyRetrieval=${settings.allowPublicKeyRetrieval}&characterEncoding=UTF-8"
+    }
+
+    private fun createHikariDataSource(jdbcUrl: String): HikariDataSource {
         val config = HikariConfig()
         config.jdbcUrl = jdbcUrl
-        config.username = user
-        config.password = pass
+        config.username = settings.username
+        config.password = settings.password
         config.addDataSourceProperty("cachePrepStmts", "true")
         config.addDataSourceProperty("prepStmtCacheSize", "250")
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
-        config.maximumPoolSize = 10
+        config.maximumPoolSize = settings.poolSize
+        // Fail fast on startup instead of blocking the main thread for Hikari's 30s default.
+        config.connectionTimeout = 5000
         return HikariDataSource(config)
     }
 
+    private fun markOffline(message: String) {
+        Logger.warning(message)
+        isOnline = false
+        lastError = message
+    }
+
     private fun checkAndCreateDatabase() {
-        val baseUrl =
-            "jdbc:mysql://localhost:3306/?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8"
         val databaseCreateQuery =
-            "CREATE DATABASE IF NOT EXISTS dream CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+            "CREATE DATABASE IF NOT EXISTS `${settings.database}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
 
         val createTableQuery = """
             CREATE TABLE IF NOT EXISTS pillars_stats (
@@ -55,36 +119,36 @@ class DatabaseManager {
         """.trimIndent()
 
         try {
-            val tempDataSource = createHikariDataSource(baseUrl)
-            tempDataSource.connection.use { conn ->
-                conn.createStatement().use { stmt ->
-                    stmt.executeUpdate(databaseCreateQuery)
-                    Logger.info("Database 'dream' creato/verificato con successo")
+            createHikariDataSource(jdbcUrl(includeDatabase = false)).use { tempDataSource ->
+                tempDataSource.connection.use { conn ->
+                    conn.createStatement().use { stmt ->
+                        stmt.executeUpdate(databaseCreateQuery)
+                    }
                 }
             }
-            tempDataSource.close()
-        } catch (e: SQLException) {
-            Logger.warning("Errore nella creazione del database: ${e.message}")
-            isOnline = false
+            Logger.info("Database '${settings.database}' creato/verificato con successo")
+        } catch (e: Exception) {
+            markOffline("Errore nella creazione del database: ${e.message}")
             return
         }
 
         try {
-            dataSource = createHikariDataSource(url)
+            dataSource = createHikariDataSource(jdbcUrl(includeDatabase = true))
             dataSource.connection.use { conn ->
                 conn.createStatement().use { stmt ->
                     stmt.executeUpdate(createTableQuery)
-                    Logger.info("Tabella 'pillars_stats' creata/verificata con successo")
-                    isOnline = true
                 }
             }
-        } catch (e: SQLException) {
-            Logger.warning("Errore nella creazione della tabella pillars_stats: ${e.message}")
-            isOnline = false
+            Logger.info("Tabella 'pillars_stats' creata/verificata con successo")
+            isOnline = true
+            lastError = null
+        } catch (e: Exception) {
+            markOffline("Errore nella creazione della tabella pillars_stats: ${e.message}")
         }
     }
 
     fun createUser(player: Player) {
+        if (!isOnline) return
         val insertQuery = "INSERT IGNORE INTO pillars_stats (name) VALUES (?)"
         try {
             dataSource.connection.use { conn ->
@@ -108,6 +172,7 @@ class DatabaseManager {
         bestWinStreak: Int,
         currentWinStreak: Int
     ) {
+        if (!isOnline) return
         val query = """
             INSERT INTO pillars_stats (name, kills, wins, xp, level, playedGame, bestWinStreak, currentWinStreak)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -145,6 +210,7 @@ class DatabaseManager {
     }
 
     fun getStatistics(playerName: String): PlayerStats? {
+        if (!isOnline) return null
         val query = "SELECT kills, wins, xp, level, playedGame, bestWinStreak, currentWinStreak FROM pillars_stats WHERE name = ? LIMIT 1"
         try {
             dataSource.connection.use { conn ->

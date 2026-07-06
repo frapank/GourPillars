@@ -12,6 +12,9 @@ import org.gourmet.gourPillars.GourPillars
 object GameRandom {
 
     fun startRandomItemTask(alivePlayer: MutableSet<Player>, running: Boolean) {
+        val intervalSeconds = GourPillars.instance.config.getDouble("game.random-item-interval-seconds", 3.5)
+        val intervalTicks = (intervalSeconds * 20).toLong().coerceAtLeast(1L)
+
         object : BukkitRunnable() {
             override fun run() {
                 if (!running) {
@@ -23,7 +26,7 @@ object GameRandom {
                     giveRandomItem(player)
                 }
             }
-        }.runTaskTimer(GourPillars.Companion.instance, 0L, 70L)
+        }.runTaskTimer(GourPillars.Companion.instance, 0L, intervalTicks)
     }
 
     fun giveRandomItem(player: Player) {
@@ -63,7 +66,7 @@ object GameRandom {
             .toSet()
 
 
-        val world = Bukkit.getWorld("world")!!
+        val world = GourPillars.spawnManager.getConfiguredWorld() ?: Bukkit.getWorlds().first()
         val materials = Material.entries
             .filter { it.isItem  }
             .filter { m: Material ->
