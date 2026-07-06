@@ -49,11 +49,6 @@ class GourPillars : JavaPlugin() {
     override fun onEnable() {
         instance = this
 
-        if (!dependenciesPresent()) {
-            Bukkit.getPluginManager().disablePlugin(this)
-            return
-        }
-
         Logger.info("GourPillars starting...")
 
         loadConfiguration()
@@ -61,10 +56,15 @@ class GourPillars : JavaPlugin() {
         registerListeners()
         registerCommands()
 
+        if (!placeholderApiPresent()) {
+            Bukkit.getPluginManager().disablePlugin(this)
+            return
+        }
+
         PlaceHolderManager().register()
     }
 
-    private fun dependenciesPresent(): Boolean {
+    private fun placeholderApiPresent(): Boolean {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
             Logger.warning("Missing PlaceholderAPI")
             return false
