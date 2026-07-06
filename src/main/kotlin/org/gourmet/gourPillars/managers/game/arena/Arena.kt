@@ -148,6 +148,7 @@ class Arena(
         noEventVote.remove(player)
         lavaEvent.remove(player)
         knockbackVote.remove(player)
+        borderEvent.remove(player)
         dayVote.remove(player)
         nightVote.remove(player)
         inGamePlayer.remove(player)
