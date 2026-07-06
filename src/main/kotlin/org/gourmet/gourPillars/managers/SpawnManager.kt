@@ -27,6 +27,18 @@ class SpawnManager {
         }
     }
 
+    fun setSpawn(location: Location) {
+        spawn = location
+
+        config.set("spawn.world", location.world.name)
+        config.set("spawn.x", location.x)
+        config.set("spawn.y", location.y)
+        config.set("spawn.z", location.z)
+        config.set("spawn.yaw", location.yaw.toDouble())
+        config.set("spawn.pitch", location.pitch.toDouble())
+        GourPillars.instance.saveConfig()
+    }
+
     private fun loadSpawn(): Location? {
         val world: World = Bukkit.getWorld(config.getString("spawn.world").toString()) ?: return null
         val x: Double = config.getDouble("spawn.x")
