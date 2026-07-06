@@ -34,7 +34,7 @@ object StatsUpdater {
             val (dbStats, dbOk) = fetchDatabaseStats(player.name)
             if (!dbOk || dbStats == null) return@Runnable
 
-            // Aggiorna il kill count in database
+            // Update the kill count in the database
             databaseManager.updateStatistics(
                 dbStats.name,
                 dbStats.kills + 1,
@@ -46,7 +46,7 @@ object StatsUpdater {
                 dbStats.currentWinStreak
             )
 
-            // Aggiorna il kill count in locale
+            // Update the kill count in the local cache
             val (localStats, localOk) = fetchLocalStats(player)
             if (!localOk || localStats == null) return@Runnable
             localStats.kills = localStats.kills + 1
@@ -58,7 +58,7 @@ object StatsUpdater {
             val (dbStats, dbOk) = fetchDatabaseStats(player.name)
             if (!dbOk || dbStats == null) return@Runnable
 
-            // Aggiorna il win count in database
+            // Update the win count in the database
             databaseManager.updateStatistics(
                 dbStats.name,
                 dbStats.kills,
@@ -70,7 +70,7 @@ object StatsUpdater {
                 dbStats.currentWinStreak
             )
 
-            // Aggiorna il win count in locale
+            // Update the win count in the local cache
             val (localStats, localOk) = fetchLocalStats(player)
             if (!localOk || localStats == null) return@Runnable
             localStats.wins = localStats.wins + 1
@@ -82,7 +82,7 @@ object StatsUpdater {
             val (dbStats, dbOk) = fetchDatabaseStats(player.name)
             if (!dbOk || dbStats == null) return@Runnable
 
-            // Incrementa playedGame in database
+            // Increment playedGame in the database
             databaseManager.updateStatistics(
                 dbStats.name,
                 dbStats.kills,
@@ -94,7 +94,7 @@ object StatsUpdater {
                 dbStats.currentWinStreak
             )
 
-            // Incrementa playedGame in locale
+            // Increment playedGame in the local cache
             val (localStats, localOk) = fetchLocalStats(player)
             if (!localOk || localStats == null) return@Runnable
             localStats.playedGame = localStats.playedGame + 1
@@ -109,7 +109,7 @@ object StatsUpdater {
             val newCurrent = dbStats.currentWinStreak + 1
             val newBest = maxOf(newCurrent, dbStats.bestWinStreak)
 
-            // Aggiorna streak in database
+            // Update the streak in the database
             databaseManager.updateStatistics(
                 dbStats.name,
                 dbStats.kills,
@@ -121,7 +121,7 @@ object StatsUpdater {
                 newCurrent
             )
 
-            // Aggiorna streak in locale
+            // Update the streak in the local cache
             val (localStats, localOk) = fetchLocalStats(player)
             if (!localOk || localStats == null) return@Runnable
             localStats.currentWinStreak = newCurrent
@@ -137,7 +137,7 @@ object StatsUpdater {
             val newBest = maxOf(dbStats.currentWinStreak, dbStats.bestWinStreak)
             val newCurrent = 0
 
-            // Aggiorna streak in database
+            // Update the streak in the database
             databaseManager.updateStatistics(
                 dbStats.name,
                 dbStats.kills,
@@ -149,7 +149,7 @@ object StatsUpdater {
                 newCurrent
             )
 
-            // Aggiorna streak in locale
+            // Update the streak in the local cache
             val (localStats, localOk) = fetchLocalStats(player)
             if (!localOk || localStats == null) return@Runnable
             localStats.bestWinStreak = newBest

@@ -61,7 +61,7 @@ object VoteInventory {
 
     fun displayInventory(player: Player) {
         val mm = MiniMessage.miniMessage()
-        val inventory: Inventory = Bukkit.createInventory(null, 27, MessageData.GUI_VOTE_TITLE/*mm.deserialize("<light_purple>Vota 🌟")*/)
+        val inventory: Inventory = Bukkit.createInventory(null, 27, MessageData.GUI_VOTE_TITLE/*mm.deserialize("<light_purple>Vote 🌟")*/)
 
         val glassPane = ItemStack(Material.GRAY_STAINED_GLASS_PANE).apply {
             itemMeta = itemMeta?.apply { displayName(MessageData.GUI_ITEM_FILLER_NAME/*mm.deserialize("<gray>────</gray>")*/) }
