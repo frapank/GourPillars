@@ -11,13 +11,13 @@ import org.gourmet.gourPillars.GourPillars
 
 object GameRandom {
 
-    fun startRandomItemTask(alivePlayer: MutableSet<Player>, running: Boolean) {
+    fun startRandomItemTask(alivePlayer: MutableSet<Player>, isRunning: () -> Boolean) {
         val intervalSeconds = GourPillars.instance.config.getDouble("game.random-item-interval-seconds", 3.5)
         val intervalTicks = (intervalSeconds * 20).toLong().coerceAtLeast(1L)
 
         object : BukkitRunnable() {
             override fun run() {
-                if (!running) {
+                if (!isRunning()) {
                     cancel()
                     return
                 }

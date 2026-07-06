@@ -7,6 +7,7 @@ import org.gourmet.gourPillars.commands.BuildCMD
 import org.gourmet.gourPillars.commands.EditCMD
 import org.gourmet.gourPillars.commands.JoinerCMD
 import org.gourmet.gourPillars.commands.PartyCMD
+import org.gourmet.gourPillars.commands.SetSpawnCMD
 import org.gourmet.gourPillars.commands.StatsCMD
 import org.gourmet.gourPillars.commands.TestCMD
 import org.gourmet.gourPillars.listener.game.BorderLimitListener
@@ -49,11 +50,6 @@ class GourPillars : JavaPlugin() {
     override fun onEnable() {
         instance = this
 
-        if (!dependenciesPresent()) {
-            Bukkit.getPluginManager().disablePlugin(this)
-            return
-        }
-
         Logger.info("GourPillars starting...")
 
         loadConfiguration()
@@ -61,10 +57,15 @@ class GourPillars : JavaPlugin() {
         registerListeners()
         registerCommands()
 
+        if (!placeholderApiPresent()) {
+            Bukkit.getPluginManager().disablePlugin(this)
+            return
+        }
+
         PlaceHolderManager().register()
     }
 
-    private fun dependenciesPresent(): Boolean {
+    private fun placeholderApiPresent(): Boolean {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
             Logger.warning("Missing PlaceholderAPI")
             return false
@@ -121,6 +122,7 @@ class GourPillars : JavaPlugin() {
             EditCMD,
             BuildCMD,
             StatsCMD,
+            SetSpawnCMD,
         )
     }
 }
