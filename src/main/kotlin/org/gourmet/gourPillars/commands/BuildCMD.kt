@@ -15,16 +15,16 @@ object BuildCMD {
     @CommandPermission("gpillars.build")
     fun buildCommand(player: Player) {
         if (GourPillars.arenaManager.isPlayerInArena(player)) {
-            player.sendMessage("<red>Devi essere in lobby per usare il comando!".toMini())
+            player.sendMessage("<red>You must be in the lobby to use this command!".toMini())
             return
         }
         if (buildSessionPlayers.contains(player)) {
             buildSessionPlayers.remove(player)
-            player.sendMessage("<red>Non sei più in sessione build".toMini())
+            player.sendMessage("<red>You are no longer in a build session".toMini())
             Utils.giveLobbyItems(player)
         } else {
             buildSessionPlayers.add(player)
-            player.sendMessage("<green>Sei entrato in sessione build".toMini())
+            player.sendMessage("<green>You entered a build session".toMini())
         }
     }
 }

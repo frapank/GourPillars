@@ -17,11 +17,11 @@ class LanguageManager {
             plugin.saveResource("language.yml", false)
         }
         langConfig = YamlConfiguration.loadConfiguration(langFile)
-        MessageData.load() // Carica i messaggi subito dopo l'inizializzazione
+        MessageData.load() // Load the messages right after initialization
     }
 
     fun getLanguageConfig(): FileConfiguration {
-        check(::langConfig.isInitialized) { "Language config non inizializzato" }
+        check(::langConfig.isInitialized) { "Language config not initialized" }
         return langConfig
     }
 

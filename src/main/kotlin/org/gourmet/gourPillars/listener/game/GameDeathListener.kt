@@ -19,7 +19,7 @@ class GameDeathListener : Listener {
 
     private val arenaManager = GourPillars.arenaManager
 
-    //Quella del vuoto e' fatta in VoidKillListener.kt
+    //The void death case is handled in VoidKillListener.kt
     @EventHandler
     fun onDeath(event: PlayerDeathEvent) {
 

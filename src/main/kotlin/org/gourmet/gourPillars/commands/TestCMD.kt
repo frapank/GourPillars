@@ -15,6 +15,6 @@ object TestCMD {
     @Subcommand("backup")
     fun backupCommand(player: Player) {
         zipManager.saveBackup(player.location.world.name)
-        player.sendMessage("fatto")
+        player.sendMessage("done")
     }
 }
