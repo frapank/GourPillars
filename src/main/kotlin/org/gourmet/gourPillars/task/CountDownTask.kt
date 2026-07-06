@@ -2,20 +2,22 @@ package org.gourmet.gourPillars.task
 
 import org.bukkit.Sound
 import org.bukkit.scheduler.BukkitRunnable
+import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.messages.MessageData
 
 class CountDownTask(val arena: Arena) : BukkitRunnable(){
 
-    private var counter = 10
+    private val countdownSeconds = GourPillars.instance.config.getInt("game.countdown-seconds", 10)
+    private var counter = countdownSeconds
 
     override fun run() {
 
                 //Cancel if player is not enought
                 if(arena.inGamePlayer.size < arena.minPlayer){
                     arena.gameState = State.WAITING
-                    counter = 10
+                    counter = countdownSeconds
                     cancel()
                     return
                 }
@@ -32,7 +34,7 @@ class CountDownTask(val arena: Arena) : BukkitRunnable(){
                     //Arena update
                     arena.gameState = State.INGAME
                     arena.gameTask.run()
-                    counter = 10
+                    counter = countdownSeconds
                     cancel()
                     return
                 }

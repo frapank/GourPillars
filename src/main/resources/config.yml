@@ -34,6 +34,25 @@ spawn:
   yaw: 1
   pitch: 1
 
+game:
+  # Match length, in seconds.
+  match-duration-seconds: 300
+  # Pre-match countdown, in seconds.
+  countdown-seconds: 10
+  # How often (in seconds) each alive player receives a random item.
+  random-item-interval-seconds: 3.5
+  # Velocity multiplier applied to the victim when the "knockback" event is active.
+  knockback-multiplier: 2.0
+  # How often (in seconds) the lava rises when the "lava" event is active.
+  lava-rise-interval-seconds: 4
+  border:
+    # Border size (in blocks) at which the shrink stops.
+    final-size: 10.0
+    # How often (in seconds) the border shrinks when the "border" event is active.
+    shrink-interval-seconds: 7
+    # Damage dealt per second to players outside the border.
+    damage-amount: 3.0
+
 Arenas:
   bella:
     max-height: 200

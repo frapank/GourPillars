@@ -13,8 +13,10 @@ class BorderHandler : GameHandler {
     private val originalStates = mutableMapOf<Arena, BorderState>()
     private val tasks = mutableMapOf<Arena, BukkitTask>()
     private val plugin = GourPillars.instance
-    private val finalSize: Double = 10.0
-    private val shrinkIntervalSec: Long = 7L
+    private val config = plugin.config
+    private val finalSize: Double = config.getDouble("game.border.final-size", 10.0)
+    private val shrinkIntervalSec: Long = config.getLong("game.border.shrink-interval-seconds", 7L)
+    private val damageAmount: Double = config.getDouble("game.border.damage-amount", 3.0)
 
     override fun onStart(arena: Arena) {
         val world = arena.region.world
@@ -34,7 +36,7 @@ class BorderHandler : GameHandler {
         ).toDouble() + 2.0
         border.size = initialSize
         border.damageBuffer = 0.0
-        border.damageAmount = 3.0
+        border.damageAmount = damageAmount
 
         val task = object : BukkitRunnable() {
             override fun run() {

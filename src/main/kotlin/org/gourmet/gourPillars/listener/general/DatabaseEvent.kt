@@ -8,6 +8,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.DatabaseManager.PlayerStats
+import org.gourmet.gourPillars.other.toMini
 
 class DatabaseEvent : Listener {
 
@@ -16,7 +17,11 @@ class DatabaseEvent : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onJoin(event: PlayerJoinEvent) {
         val player: Player = event.player
-        if (!databaseManager.isOnline) return
+
+        if (!databaseManager.isOnline) {
+            warnAdmin(player)
+            return
+        }
 
         databaseManager.createUser(player)
         val stats: PlayerStats? = databaseManager.getStatistics(player.name)
@@ -35,5 +40,14 @@ class DatabaseEvent : Listener {
         if (!databaseManager.isOnline) return
 
         databaseManager.playersStats.remove(player)
+    }
+
+    private fun warnAdmin(player: Player) {
+        if (!player.isOp && !player.hasPermission("gpillars.admin")) return
+
+        val reason = databaseManager.lastError ?: "motivo sconosciuto"
+        player.sendMessage(
+            "<red>[GourPillars] Database non raggiungibile ($reason). Le statistiche dei giocatori sono disabilitate.</red>".toMini()
+        )
     }
 }

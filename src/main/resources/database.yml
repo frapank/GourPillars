@@ -1,0 +1,16 @@
+# GourPillars database configuration
+# Connection settings for the MySQL server used to store player statistics.
+# If a value below is missing or invalid, GourPillars falls back to a safe
+# default and logs a warning in the console instead of failing to start.
+
+host: "localhost"
+port: 3306
+database: "dream"
+username: "root"
+password: ""
+
+use-ssl: false
+allow-public-key-retrieval: true
+
+# Maximum number of pooled JDBC connections (1-50).
+pool-size: 10
