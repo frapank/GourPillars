@@ -7,7 +7,7 @@ import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 
 class PartyManager {
 
-    //todo stringa identificativa party
+    //todo party identifier string
     //private val prefix = "<bold><green>Party </bold><green>|"
     private val parties: MutableSet<PartyData> = mutableSetOf()
 
@@ -36,7 +36,7 @@ class PartyManager {
 
         partyData.members.clear()
 
-        // 🔥 Metodo alternativo per rimuovere il party dalla lista
+        // 🔥 Alternative method to remove the party from the list
         parties.removeIf { it.partyAdmin == partyData.partyAdmin }
 
     }
@@ -84,12 +84,12 @@ class PartyManager {
             return false
         }
         if (!party.members.contains(target)) {
-            //owner.sendMessage("$prefix ${target.name} non e' nel party".toMini())
+            //owner.sendMessage("$prefix ${target.name} is not in the party".toMini())
             owner.sendDynamicMessage(MessageData.PARTY_ERRORS_TARGET_NOT_IN_PARTY, "{player}" to target.name)
             return false
         }
         party.members.forEach { player ->
-            //player.sendMessage("$prefix <white>${target.name} <yellow>e' uscito dal party!".toMini())
+            //player.sendMessage("$prefix <white>${target.name} <yellow>left the party!".toMini())
             player.sendDynamicMessage(MessageData.PARTY_USER_LEFT_PARTY, "{player}" to target.name)
         }
         party.members.remove(target)
@@ -118,13 +118,13 @@ class PartyManager {
             first.sendDynamicMessage(MessageData.PARTY_PARTY_PROMOTE)
             party.members.forEach { member ->
                 if (member != first)
-                    //member.sendMessage("$prefix <green>${first.name} e' il nuovo owner del party!".toMini())
+                    //member.sendMessage("$prefix <green>${first.name} is the new party owner!".toMini())
                     member.sendDynamicMessage(MessageData.PARTY_PARTY_PROMOTE_BROADCAST, "{player}" to first.name)
             }
         } else {
             party.members.remove(player)
             party.members.forEach { member ->
-                //member.sendMessage("$prefix <red>${player.name} e' uscito dal party".toMini())
+                //member.sendMessage("$prefix <red>${player.name} left the party".toMini())
                 member.sendDynamicMessage(MessageData.PARTY_USER_LEFT_PARTY, "{player}" to player.name)
             }
             player.sendDynamicMessage(MessageData.PARTY_PARTY_LEAVE)
@@ -149,7 +149,7 @@ class PartyManager {
         target.sendDynamicMessage(MessageData.PARTY_PARTY_PROMOTE)
         party.members.forEach { member ->
             if (member != party.partyAdmin)
-                //member.sendMessage("$prefix <white>${target.name} <yellow>e' il nuovo owner del party!".toMini())
+                //member.sendMessage("$prefix <white>${target.name} <yellow>is the new party owner!".toMini())
                 member.sendDynamicMessage(MessageData.PARTY_PARTY_PROMOTE_BROADCAST, "{player}" to target.name)
         }
         return true

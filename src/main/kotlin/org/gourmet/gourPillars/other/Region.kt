@@ -16,7 +16,7 @@ class Region private constructor(
     companion object {
 
         fun createRegion(loc1: Location, loc2: Location): Region {
-            if (loc1.world != loc2.world) throw IllegalArgumentException("Le location devono essere nello stesso mondo")
+            if (loc1.world != loc2.world) throw IllegalArgumentException("Locations must be in the same world")
 
             val world = loc1.world!!
 
@@ -48,7 +48,7 @@ class Region private constructor(
     }
 
     fun getBounds(): String {
-        return "Mondo: ${world.name} | X: $minX-$maxX | Y: $minY-$maxY | Z: $minZ-$maxZ"
+        return "World: ${world.name} | X: $minX-$maxX | Y: $minY-$maxY | Z: $minZ-$maxZ"
     }
 
     fun clone(): Region = Region(world, minX, minY, minZ, maxX, maxY, maxZ)

@@ -71,7 +71,7 @@ class DatabaseManager {
     }
 
     private fun <T> invalid(field: String, default: T): T {
-        Logger.warning("Valore mancante o non valido per '$field' in database.yml, uso il default: $default")
+        Logger.warning("Missing or invalid value for '$field' in database.yml, using default: $default")
         return default
     }
 
@@ -126,9 +126,9 @@ class DatabaseManager {
                     }
                 }
             }
-            Logger.info("Database '${settings.database}' creato/verificato con successo")
+            Logger.info("Database '${settings.database}' created/verified successfully")
         } catch (e: Exception) {
-            markOffline("Errore nella creazione del database: ${e.message}")
+            markOffline("Error creating the database: ${e.message}")
             return
         }
 
@@ -139,11 +139,11 @@ class DatabaseManager {
                     stmt.executeUpdate(createTableQuery)
                 }
             }
-            Logger.info("Tabella 'pillars_stats' creata/verificata con successo")
+            Logger.info("Table 'pillars_stats' created/verified successfully")
             isOnline = true
             lastError = null
         } catch (e: Exception) {
-            markOffline("Errore nella creazione della tabella pillars_stats: ${e.message}")
+            markOffline("Error creating the pillars_stats table: ${e.message}")
         }
     }
 

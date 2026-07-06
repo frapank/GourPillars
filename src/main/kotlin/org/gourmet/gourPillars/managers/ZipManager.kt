@@ -22,7 +22,7 @@ class ZipManager {
         val worldFolder = File(Bukkit.getWorldContainer(), worldName)
 
         if (!backupFile.exists()) {
-            Logger.warning("Nessun backup trovato per $worldName!")
+            Logger.warning("No backup found for $worldName!")
             return
         }
 
@@ -69,19 +69,19 @@ class ZipManager {
                     newWorld.save()
                 }
 
-                Logger.info("Backup di $worldName caricato!")
+                Logger.info("Backup of $worldName loaded!")
             }
         }.runTaskLater(GourPillars.instance, 80L)
 
         if (!File(worldFolder, "level.dat").exists()) {
-            Logger.warning("Attenzione: level.dat mancante! Il mondo potrebbe non caricarsi correttamente.")
+            Logger.warning("Warning: level.dat missing! The world might not load correctly.")
         }
     }
 
     fun saveBackup(worldName: String) {
         val worldFolder = File(Bukkit.getWorldContainer(), worldName)
         if (!worldFolder.exists()) {
-            Logger.warning("Il mondo $worldName non esiste!")
+            Logger.warning("World $worldName does not exist!")
             return
         }
 
@@ -100,6 +100,6 @@ class ZipManager {
             }
         }
 
-        Logger.info("Backup di $worldName salvato in ${backupFile.absolutePath}")
+        Logger.info("Backup of $worldName saved to ${backupFile.absolutePath}")
     }
 }
