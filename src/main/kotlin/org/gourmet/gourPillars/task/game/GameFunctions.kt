@@ -18,7 +18,7 @@ object GameFunctions {
             player.playSound(player.location, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f)
         }
 
-        if(arena.containPlayer(winner)) {
+        if (arena.containPlayer(winner)) {
             object : BukkitRunnable() {
                 var count = 0
                 override fun run() {

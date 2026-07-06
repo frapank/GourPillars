@@ -1,4 +1,5 @@
 package org.gourmet.gourPillars.managers
+
 import org.bukkit.Bukkit
 import org.bukkit.WorldCreator
 import org.bukkit.scheduler.BukkitRunnable
@@ -52,17 +53,21 @@ class ZipManager {
 
         object : BukkitRunnable() {
             override fun run() {
-                val wc = WorldCreator(worldName)
-                val newWorld = Bukkit.createWorld(wc)
+                val newWorld = Bukkit.createWorld(WorldCreator(worldName))
                 val spawn = newWorld?.spawnLocation
-                for (x in -2..2) {
-                    for (z in -2..2) {
-                        newWorld?.loadChunk(spawn?.blockX!! / 16 + x, spawn?.blockZ!! / 16 + z)
+
+                if (newWorld != null && spawn != null) {
+                    val chunkX = spawn.blockX / 16
+                    val chunkZ = spawn.blockZ / 16
+                    for (x in -2..2) {
+                        for (z in -2..2) {
+                            newWorld.loadChunk(chunkX + x, chunkZ + z)
+                        }
                     }
+                    newWorld.keepSpawnInMemory = true
+                    newWorld.isAutoSave = false
+                    newWorld.save()
                 }
-                newWorld?.keepSpawnInMemory = true
-                newWorld?.isAutoSave = false
-                newWorld?.save()
 
                 Logger.info("Backup di $worldName caricato!")
             }

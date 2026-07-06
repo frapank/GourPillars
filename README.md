@@ -29,7 +29,7 @@ GourPillars is a Paper plugin implementing a "pillars" last-man-standing minigam
 | `/leave`                   | -                 | Leave the current arena               |
 | `/stats`                   | -                 | Show your player statistics           |
 | `/party`, `/p`              | -                 | Party management (see `/party help`)  |
-| `/edit`                    | `gpillars.admim`  | Arena editing session                 |
+| `/edit`                    | `gpillars.admin`  | Arena editing session                 |
 | `/build`                   | `gpillars.build`  | Toggle a build session in the lobby   |
 
 `/party` subcommands: `create`, `invite <target>`, `accept`, `remove <target>`, `leave`, `disband`, `promote <target>`, `info`/`list`.
@@ -64,7 +64,9 @@ Global
 
 ## Configuration
 
-Arenas, spawns and scoreboard layouts are defined in `config.yml`; all in-game text is defined in `language.yml` using MiniMessage formatting. Database connection settings are currently defined in `DatabaseManager.kt` and must be adjusted there before building.
+- `config.yml` — arenas, spawns, scoreboard layouts and match tuning (match/countdown length, random item interval, knockback multiplier, lava/border event timings).
+- `language.yml` — all in-game text, using MiniMessage formatting.
+- `database.yml` — MySQL connection settings (host, port, database, credentials, pool size). Generated with safe defaults on first run; invalid values fall back to defaults and log a warning instead of preventing startup. If the database is unreachable, server operators (and any player with `gpillars.admin`) are warned in chat on join, and statistics are disabled for that session.
 
 ## Building from Source
 

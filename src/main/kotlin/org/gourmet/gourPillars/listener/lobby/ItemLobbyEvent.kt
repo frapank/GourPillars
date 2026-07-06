@@ -24,7 +24,7 @@ import org.gourmet.gourPillars.commands.BuildCMD
 import org.gourmet.gourPillars.managers.game.arena.State
 
 
-class ItemLobbyEvent : Listener{
+class ItemLobbyEvent : Listener {
 
     private val arenaManager = GourPillars.arenaManager
 
@@ -56,7 +56,7 @@ class ItemLobbyEvent : Listener{
 
         //incomplete - Pot interaction
         if (type == Material.FLOWER_POT || type.name.startsWith("POTTED_")) {
-            if(isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
+            if (isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
                 e.isCancelled = true
             }
         }
@@ -69,7 +69,7 @@ class ItemLobbyEvent : Listener{
                 item.type.name.contains("FERN", true) ||
                 item.type.name.contains("CACTUS", true) ||
                 item.type.name.contains("BAMBOO", true)) {
-                if(isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
+                if (isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
                     e.isCancelled = true
                 }
             }
@@ -98,7 +98,7 @@ class ItemLobbyEvent : Listener{
 
         val arena = arenaManager.getArenaByPlayer(e.player)
 
-        if(arena?.gameState == State.INGAME || arena?.gameState == State.STARTING) {
+        if (arena?.gameState == State.INGAME || arena?.gameState == State.STARTING) {
             e.isCancelled = true
         }
 
@@ -131,7 +131,7 @@ class ItemLobbyEvent : Listener{
         if (entity is ItemFrame || entity is Painting || entity is GlowItemFrame) {
             if (event.remover is Player) {
                 val player = event.remover as Player
-                if(isSpawnWorld(event.remover.location.world) && !BuildCMD.buildSessionPlayers.contains(player)) {
+                if (isSpawnWorld(event.remover.location.world) && !BuildCMD.buildSessionPlayers.contains(player)) {
                     event.isCancelled = true
                 }
             }

@@ -18,14 +18,14 @@ import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 
 class GuiClickEvent : Listener {
 
-    private val arenaManager = GourPillars.Companion.arenaManager
+    private val arenaManager = GourPillars.arenaManager
 
     @EventHandler
     fun onPlayerInteract(event: PlayerInteractEvent) {
         val player = event.player
         val arena = arenaManager.getArenaByPlayer(player) ?: return
 
-        if(arena.gameState != State.WAITING && arena.gameState != State.STARTING){
+        if (arena.gameState != State.WAITING && arena.gameState != State.STARTING) {
             return
         }
 
@@ -56,7 +56,7 @@ class GuiClickEvent : Listener {
 
         val item = event.currentItem ?: return
 
-        if(arena.gameState == State.WAITING || arena.gameState == State.STARTING){
+        if (arena.gameState == State.WAITING || arena.gameState == State.STARTING) {
             event.isCancelled = true
         }
 
@@ -133,7 +133,7 @@ class GuiClickEvent : Listener {
         val player = event.player
         val arena = arenaManager.getArenaByPlayer(player) ?: return
 
-        if(arena.gameState == State.WAITING || arena.gameState == State.STARTING){
+        if (arena.gameState == State.WAITING || arena.gameState == State.STARTING) {
             event.isCancelled = true
             return
         }
@@ -144,7 +144,7 @@ class GuiClickEvent : Listener {
         if (!item.hasItemMeta()) return false
 
         val meta = item.itemMeta ?: return false
-        val key = NamespacedKey(GourPillars.Companion.instance, tag)
+        val key = NamespacedKey(GourPillars.instance, tag)
         val hasTag = meta.persistentDataContainer.has(key, PersistentDataType.STRING)
 
         return hasTag

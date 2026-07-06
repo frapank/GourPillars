@@ -14,7 +14,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.commands.BuildCMD
 
-class WorldChangeEvent : Listener{
+class WorldChangeEvent : Listener {
 
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {

@@ -30,7 +30,7 @@ import revxrsal.commands.bukkit.BukkitLamp
 class GourPillars : JavaPlugin() {
 
 
-    companion object{
+    companion object {
         lateinit var instance: GourPillars
         lateinit var arenaManager: ArenaManager
         lateinit var spawnManager: SpawnManager

@@ -9,7 +9,7 @@ import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 
 class BorderLimitEvent : Listener {
 
-    private val arenaManager = GourPillars.Companion.arenaManager
+    private val arenaManager = GourPillars.arenaManager
 
     @EventHandler
     fun onBlockPlace(event: BlockPlaceEvent) {

@@ -15,29 +15,29 @@ object JoinerCMD {
     private val partyManager = GourPillars.partyManager
 
     @Command("join <name>")
-    fun joinCommand(player: Player, name: String){
-        if(GourPillars.isEditing){
+    fun joinCommand(player: Player, name: String) {
+        if (GourPillars.isEditing) {
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_ARENA_EDIT)
             return
         }
 
-        val arena: Arena = arenaManager.getArenaByName(name) ?: run{
+        val arena: Arena = arenaManager.getArenaByName(name) ?: run {
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_ARENA_NOT_EXIST)
             return
         }
 
         //Can't join if you are not the party leader
-        if(partyManager.isInParty(player) && !partyManager.isOwner(player)) {
+        if (partyManager.isInParty(player) && !partyManager.isOwner(player)) {
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_USER_IN_PARTY)
             return
         }
 
-        if(arena.gameState != State.INGAME || arena.gameState != State.STOPPED){
+        if (arena.gameState != State.INGAME || arena.gameState != State.STOPPED) {
             //This will add all the player in the party
-            if(partyManager.isInParty(player)){
+            if (partyManager.isInParty(player)) {
                 val party = partyManager.getPartyByPlayer(player)
-                if(party?.partyAdmin == player){
-                    party.members.forEach{ member ->
+                if (party?.partyAdmin == player) {
+                    party.members.forEach { member ->
                         arena.addPlayer(member)
                     }
                 }
@@ -59,7 +59,7 @@ object JoinerCMD {
         val currentArena = arenaManager.getArenaByPlayer(player)
 
         if (currentArena != null) {
-            when (currentArena.gameState){
+            when (currentArena.gameState) {
                 State.STOPPED -> {
                     player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_WAIT)
                     return
@@ -87,17 +87,17 @@ object JoinerCMD {
             return
         }
 
-        if(partyManager.isInParty(player) && !partyManager.isOwner(player)) {
+        if (partyManager.isInParty(player) && !partyManager.isOwner(player)) {
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_USER_IN_PARTY)
             return
         }
 
         val selectedArena = arena.value
 
-        if(partyManager.isInParty(player)){
+        if (partyManager.isInParty(player)) {
             val party = partyManager.getPartyByPlayer(player)
-            if(party?.partyAdmin == player){
-                party.members.forEach{ member ->
+            if (party?.partyAdmin == player) {
+                party.members.forEach { member ->
                     selectedArena.addPlayer(member)
                 }
             }
@@ -108,19 +108,19 @@ object JoinerCMD {
     }
 
     @Command("leave")
-    fun leaveCommand(player: Player){
+    fun leaveCommand(player: Player) {
 
         val arena: Arena = arenaManager.getArenaByPlayer(player) ?: run {
             player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_NOT_IN_ARENA)
             return
         }
 
-        if(arena.gameState == State.INGAME) {
+        if (arena.gameState == State.INGAME) {
 
-            if(partyManager.isInParty(player)){
+            if (partyManager.isInParty(player)) {
                 val party = partyManager.getPartyByPlayer(player)
-                if(party?.partyAdmin == player){
-                    party.members.forEach{ member ->
+                if (party?.partyAdmin == player) {
+                    party.members.forEach { member ->
                         arena.gameTask.playerEliminated(member)
                         arena.spawnManager.teleportPlayerToSpawn(member)
                     }
@@ -133,10 +133,10 @@ object JoinerCMD {
 
         } else {
 
-            if(partyManager.isInParty(player)){
+            if (partyManager.isInParty(player)) {
                 val party = partyManager.getPartyByPlayer(player)
-                if(party?.partyAdmin == player){
-                    party.members.forEach{ member ->
+                if (party?.partyAdmin == player) {
+                    party.members.forEach { member ->
                         arena.removePlayer(member)
                         arena.spawnManager.teleportPlayerToSpawn(member)
                     }
