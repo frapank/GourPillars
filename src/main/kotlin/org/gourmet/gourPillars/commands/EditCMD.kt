@@ -141,38 +141,50 @@ object EditCMD {
 
     @Subcommand("setRegionOne")
     fun setRegionOne(player: Player) {
+        if (!checkIfEditing(player)) return
+
         editingPlayers[player]?.regionLocationOne = player.location
-        player.sendMessage("".toMini())
+        player.sendMessage("<green>First region corner set!".toMini())
     }
 
     @Subcommand("setRegionTwo")
     fun setRegionTwo(player: Player) {
+        if (!checkIfEditing(player)) return
+
         editingPlayers[player]?.regionLocationSecond = player.location
-        player.sendMessage("".toMini())
+        player.sendMessage("<green>Second region corner set!".toMini())
     }
 
     @Subcommand("setMaxHeight")
     fun setMaxHeight(player: Player) {
+        if (!checkIfEditing(player)) return
+
         editingPlayers[player]?.maxHeight = player.location.y.toInt()
-        player.sendMessage("<green>Height set to ${player.location.y.toInt()}".toMini())
+        player.sendMessage("<green>Max height set to ${player.location.y.toInt()}".toMini())
     }
 
     @Subcommand("setDeathSpawn")
     fun setDeathSpawn(player: Player) {
+        if (!checkIfEditing(player)) return
+
         editingPlayers[player]?.deathSpawn = player.location
         player.sendMessage("<green>Death spawn set!".toMini())
     }
 
     @Subcommand("setFallingTime <number>")
     fun setFallingTime(player: Player, number: Int) {
+        if (!checkIfEditing(player)) return
+
         editingPlayers[player]?.slowFallingTime = number
-        player.sendMessage("<green>Height set to number".toMini())
+        player.sendMessage("<green>Slow falling time set to $number".toMini())
     }
 
     @Subcommand("setMinHeight")
     fun setMinHeight(player: Player) {
+        if (!checkIfEditing(player)) return
+
         editingPlayers[player]?.minHeight = player.location.y.toInt()
-        player.sendMessage("<green>Height set to ${player.location.y.toInt()}".toMini())
+        player.sendMessage("<green>Min height set to ${player.location.y.toInt()}".toMini())
     }
 
     @Subcommand("stop")
