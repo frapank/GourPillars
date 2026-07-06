@@ -63,10 +63,11 @@ object GameRandom {
             .toSet()
 
 
+        val world = Bukkit.getWorld("world")!!
         val materials = Material.entries
             .filter { it.isItem  }
             .filter { m: Material ->
-                !m.isEmpty && !m.isLegacy && m.isItem && m.isEnabledByFeature(Bukkit.getWorld("world")!!) && m !in nonPlacableMaterials && m !in armorTrimMaterials
+                !m.isEmpty && !m.isLegacy && m.isItem && m.asItemType()?.let { world.isEnabled(it) } == true && m !in nonPlacableMaterials && m !in armorTrimMaterials
             }
 
         return materials.random()
