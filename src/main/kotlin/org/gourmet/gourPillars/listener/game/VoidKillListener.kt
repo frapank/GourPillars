@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerMoveEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.State
 
-class VoidKillEvent : Listener {
+class VoidKillListener : Listener {
 
     val arenaManager = GourPillars.arenaManager
 
