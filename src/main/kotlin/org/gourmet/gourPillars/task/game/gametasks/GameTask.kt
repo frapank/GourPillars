@@ -48,7 +48,6 @@ class GameTask(
             StatsUpdater.updateGamesPlayed(player)
         }
 
-        setupEvent()
         removeAllGlass()
         setTimeByVote()
         GameRandom.startRandomItemTask(alivePlayer) { running }
@@ -72,37 +71,14 @@ class GameTask(
         }.runTaskTimer(plugin, 0L, 20L)
     }
 
-    private fun setupEvent() {
-        val voteCounts =
-            mapOf(
-                GameEvents.LAVA to arena.lavaEvent.size,
-                GameEvents.KNOCKBACK to arena.knockbackVote.size,
-                GameEvents.BORDER to arena.borderEvent.size,
-            )
-
-        val maxVotes = voteCounts.values.maxOrNull() ?: return
-
-        // "No event" wins ties, and always blocks an event if it has fewer than 2 votes
-        if (maxVotes < 2 || arena.noEventVote.size >= maxVotes) {
-            return
-        }
-
-        val winners = voteCounts.filter { it.value == maxVotes }.keys
-        if (winners.size > 1) {
-            return
-        }
-
-        val winningEvent = winners.first()
-
-        arena.gameEvent = winningEvent
+    fun applyEvent(event: GameEvents?) {
+        arena.gameEvent = event
         currentEventHandler =
-            when (winningEvent) {
+            when (event) {
                 GameEvents.LAVA -> LavaHandler()
                 GameEvents.BORDER -> BorderHandler()
-                GameEvents.KNOCKBACK -> null
+                GameEvents.KNOCKBACK, null -> null
             }
-
-        arena.sendMessageToPlayerInGame("<gray>Event: <yellow>$winningEvent")
     }
 
     private fun setTimeByVote() {
@@ -171,6 +147,8 @@ class GameTask(
         }
 
         currentEventHandler?.onStop(arena, winner)
+        currentEventHandler = null
+        arena.gameEvent = null
 
         // Arena reset
         object : BukkitRunnable() {

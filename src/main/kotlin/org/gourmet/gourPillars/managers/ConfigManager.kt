@@ -1,6 +1,7 @@
 package org.gourmet.gourPillars.managers
 
 import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.other.Logger
@@ -15,16 +16,28 @@ object ConfigManager {
      */
     fun applyMissingDefaults() {
         val plugin = GourPillars.instance
-        val defaultsStream = plugin.getResource("config.yml") ?: return
+        applyMissingDefaults("config.yml", plugin.config) { plugin.saveConfig() }
+    }
+
+    /**
+     * Same as [applyMissingDefaults] but for any bundled resource/config pair (e.g. language.yml).
+     */
+    fun applyMissingDefaults(
+        resourceName: String,
+        target: FileConfiguration,
+        save: () -> Unit,
+    ) {
+        val plugin = GourPillars.instance
+        val defaultsStream = plugin.getResource(resourceName) ?: return
         val defaults =
             defaultsStream.use {
                 YamlConfiguration.loadConfiguration(InputStreamReader(it, StandardCharsets.UTF_8))
             }
 
-        val added = mergeMissingKeys(defaults, plugin.config)
+        val added = mergeMissingKeys(defaults, target)
         if (added > 0) {
-            plugin.saveConfig()
-            Logger.warning("Added $added missing config option(s) from the default template, check config.yml")
+            save()
+            Logger.warning("Added $added missing option(s) to $resourceName from the default template, check $resourceName")
         }
     }
 

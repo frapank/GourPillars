@@ -4,6 +4,7 @@ import org.bukkit.Sound
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.Arena
+import org.gourmet.gourPillars.managers.game.arena.EventSelector
 import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.messages.MessageData
 
@@ -24,18 +25,9 @@ class CountDownTask(
 
         // End countdown
         if (counter <= 0) {
-            // Messages and Effects
-            arena.sendTitleToPlayerInGame("&7Uccidi i tuoi avversari", "&8Ma non cadere...")
-            arena.sendDynamicTitleToPlayerInGame(MessageData.ARENA_TITLE_START, MessageData.ARENA_SUBTITLE_START)
-            arena.inGamePlayer.forEach { player ->
-                player.playSound(player.location, Sound.ENTITY_WITHER_SPAWN, 0.8f, 2.0f)
-            }
-
-            // Arena update
-            arena.gameState = State.INGAME
-            arena.gameTask.run()
             counter = countdownSeconds
             cancel()
+            startEventSelection()
             return
         }
 
@@ -57,5 +49,24 @@ class CountDownTask(
             }
         arena.sendTitleToPlayerInGame("$countPrefix $counter", "")
         counter--
+    }
+
+    private fun startEventSelection() {
+        arena.inGamePlayer.forEach { player ->
+            player.closeInventory()
+            player.inventory.clear()
+        }
+
+        val winner = EventSelector.selectWinner(arena)
+        EventSelectionAnimationTask.run(arena, winner) {
+            arena.sendTitleToPlayerInGame("&7Uccidi i tuoi avversari", "&8Ma non cadere...")
+            arena.sendDynamicTitleToPlayerInGame(MessageData.ARENA_TITLE_START, MessageData.ARENA_SUBTITLE_START)
+            arena.inGamePlayer.forEach { player ->
+                player.playSound(player.location, Sound.ENTITY_WITHER_SPAWN, 0.8f, 2.0f)
+            }
+
+            arena.gameState = State.INGAME
+            arena.gameTask.run()
+        }
     }
 }
