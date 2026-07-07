@@ -184,10 +184,7 @@ class GameTask(
                     GourPillars.spawnManager.teleportPlayerToSpawn(player)
                     GourPillars.lobbyScoreboardManager.setScoreboard(player)
                     player.inventory.clear()
-                    player.fireTicks = 0
-                    player.clearActivePotionEffects()
-                    player.health = 20.0
-                    player.foodLevel = 20
+                    Utils.resetPlayerState(player)
                     Utils.giveLobbyItems(player)
                 }
 
@@ -223,12 +220,10 @@ class GameTask(
         // Reset player foot, level, health and apply slow falling level
         val effect = PotionEffect(PotionEffectType.SLOW_FALLING, arena.slowFallingTime * 20, 0)
         alivePlayer.forEach { player ->
-            player.isInvulnerable = false
+            Utils.resetPlayerState(player)
             player.addPotionEffect(effect)
             player.inventory.clear()
             player.gameMode = GameMode.SURVIVAL
-            player.health = 20.0
-            player.foodLevel = 20
             player.closeInventory()
             arena.scoreboardManager.setGameScoreboard(player)
         }
