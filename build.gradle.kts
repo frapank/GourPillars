@@ -23,6 +23,7 @@ dependencies {
     paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.12.2")
     implementation("com.zaxxer:HikariCP:7.1.0")
+    implementation("org.xerial:sqlite-jdbc:3.53.2.0")
     implementation("io.github.revxrsal:lamp.common:4.0.0-rc.17")
     implementation("io.github.revxrsal:lamp.bukkit:4.0.0-rc.17")
     implementation("io.github.revxrsal:lamp.brigadier:4.0.0-rc.17")
@@ -61,7 +62,11 @@ tasks.runServer {
 
 tasks {
     shadowJar {
-        minimize()
+        minimize {
+            // JDBC drivers are loaded via ServiceLoader/Class.forName, minimize()'s bytecode
+            // reachability analysis can't see that and would otherwise strip them.
+            exclude(dependency("org.xerial:sqlite-jdbc:.*"))
+        }
     }
     build {
         dependsOn(shadowJar)
