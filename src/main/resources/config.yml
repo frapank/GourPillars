@@ -34,6 +34,13 @@ spawn:
   yaw: 1
   pitch: 1
 
+party:
+  # A party's max size is normally the max player count of the biggest currently
+  # loaded arena (in any state, including in-game ones), so a party can never be
+  # too big to fit in any arena. This value is only used as a fallback when no
+  # arena is loaded at all.
+  fallback-max-size: 8
+
 game:
   # Match length, in seconds.
   match-duration-seconds: 300

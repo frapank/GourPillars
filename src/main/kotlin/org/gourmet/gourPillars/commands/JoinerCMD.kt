@@ -40,6 +40,10 @@ object JoinerCMD {
             if (partyManager.isInParty(player)) {
                 val party = partyManager.getPartyByPlayer(player)
                 if (party?.partyAdmin == player) {
+                    if (!hasRoomForParty(arena, party.members.size)) {
+                        sendPartyTooBigMessage(player, arena, party.members.size)
+                        return
+                    }
                     party.members.forEach { member ->
                         arena.addPlayer(member)
                     }
@@ -100,6 +104,10 @@ object JoinerCMD {
         if (partyManager.isInParty(player)) {
             val party = partyManager.getPartyByPlayer(player)
             if (party?.partyAdmin == player) {
+                if (!hasRoomForParty(selectedArena, party.members.size)) {
+                    sendPartyTooBigMessage(player, selectedArena, party.members.size)
+                    return
+                }
                 party.members.forEach { member ->
                     selectedArena.addPlayer(member)
                 }
@@ -150,5 +158,23 @@ object JoinerCMD {
         Utils.resetPlayerState(player)
         GourPillars.lobbyScoreboardManager.setScoreboard(player)
         Utils.giveLobbyItems(player)
+    }
+
+    private fun hasRoomForParty(
+        arena: Arena,
+        partySize: Int,
+    ): Boolean = partySize <= arena.maxPlayer - arena.inGamePlayer.size
+
+    private fun sendPartyTooBigMessage(
+        player: Player,
+        arena: Arena,
+        partySize: Int,
+    ) {
+        val available = arena.maxPlayer - arena.inGamePlayer.size
+        player.sendDynamicMessage(
+            MessageData.JOIN_LEAVE_ERRORS_PARTY_TOO_BIG_FOR_ARENA,
+            "{size}" to partySize.toString(),
+            "{available}" to available.toString(),
+        )
     }
 }
