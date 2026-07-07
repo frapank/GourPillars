@@ -147,8 +147,7 @@ object JoinerCMD {
         }
 
         player.inventory.clear()
-        player.health = 20.0
-        player.foodLevel = 20
+        Utils.resetPlayerState(player)
         GourPillars.lobbyScoreboardManager.setScoreboard(player)
         Utils.giveLobbyItems(player)
     }
