@@ -80,8 +80,7 @@ class Arena(
             reloadWaitingScoreboard()
             player.gameMode = GameMode.SURVIVAL
             player.inventory.clear()
-            player.health = 20.0
-            player.foodLevel = 20
+            Utils.resetPlayerState(player)
             giveWaitingItems(player)
             sendDynamicMessageToPlayerInGame(
                 MessageData.ARENA_JOIN,
@@ -172,8 +171,7 @@ class Arena(
         inGamePlayer.remove(player)
 
         // clear player
-        player.activePotionEffects.clear()
-        player.fireTicks = 0
+        Utils.resetPlayerState(player)
 
         // Customization
         player.sendTitle("", "")

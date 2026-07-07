@@ -22,8 +22,7 @@ class JoinListener : Listener {
             }
         }.runTaskLater(GourPillars.instance, 1L)
 
-        event.player.health = 20.0
-        event.player.foodLevel = 20
+        Utils.resetPlayerState(event.player)
         event.joinMessage = ""
 
         Utils.giveLobbyItems(event.player)
