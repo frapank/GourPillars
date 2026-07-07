@@ -23,6 +23,7 @@ import org.gourmet.gourPillars.listener.general.LevelListener
 import org.gourmet.gourPillars.listener.lobby.ItemLobbyListener
 import org.gourmet.gourPillars.listener.lobby.JoinListener
 import org.gourmet.gourPillars.listener.lobby.WorldChangeListener
+import org.gourmet.gourPillars.managers.ConfigManager
 import org.gourmet.gourPillars.managers.DatabaseManager
 import org.gourmet.gourPillars.managers.LobbyScoreboardManager
 import org.gourmet.gourPillars.managers.PlaceHolderManager
@@ -75,6 +76,7 @@ class GourPillars : JavaPlugin() {
 
     private fun loadConfiguration() {
         saveDefaultConfig()
+        ConfigManager.applyMissingDefaults()
         languageManager = LanguageManager()
         languageManager.saveDefaultLanguageFile()
     }

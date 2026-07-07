@@ -8,6 +8,7 @@ import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.commands.BuildCMD
 import org.gourmet.gourPillars.managers.GameScoreboardManager
+import org.gourmet.gourPillars.other.Logger
 import org.gourmet.gourPillars.other.Region
 import org.gourmet.gourPillars.other.Utils
 import org.gourmet.gourPillars.other.messages.DynamicMessage
@@ -112,15 +113,26 @@ class Arena(
     }
 
     private fun giveWaitingItems(player: Player) {
-        val leaveItem = createWaitingItem("RED_DYE", MessageData.WAITING_ITEMS_LEAVE_NAME, MessageData.WAITING_ITEMS_LEAVE_LORE, "leave-item")
-        val voteItem = createWaitingItem("PAPER", MessageData.WAITING_ITEMS_VOTE_NAME, MessageData.WAITING_ITEMS_VOTE_LORE, "vote-item")
+        val config = GourPillars.instance.config
 
-        player.inventory.setItem(8, leaveItem)
-        player.inventory.setItem(0, voteItem)
+        val voteSlot = config.getInt("waiting-items.vote.slot", 0)
+        val voteMaterial = config.getString("waiting-items.vote.material", "PAPER")!!
+        val leaveSlot = config.getInt("waiting-items.leave.slot", 8)
+        val leaveMaterial = config.getString("waiting-items.leave.material", "RED_DYE")!!
+
+        val voteItem = createWaitingItem(voteMaterial, MessageData.WAITING_ITEMS_VOTE_NAME, MessageData.WAITING_ITEMS_VOTE_LORE, "vote-item")
+        val leaveItem = createWaitingItem(leaveMaterial, MessageData.WAITING_ITEMS_LEAVE_NAME, MessageData.WAITING_ITEMS_LEAVE_LORE, "leave-item")
+
+        player.inventory.setItem(voteSlot, voteItem)
+        player.inventory.setItem(leaveSlot, leaveItem)
     }
 
-    private fun createWaitingItem(material: String, name: Component, lore: Component, tag: String): ItemStack {
-        val item = ItemStack(Material.valueOf(material), 1)
+    private fun createWaitingItem(materialName: String, name: Component, lore: Component, tag: String): ItemStack {
+        val material = Material.matchMaterial(materialName) ?: run {
+            Logger.warning("Invalid material '$materialName' for the $tag waiting item, using PAPER")
+            Material.PAPER
+        }
+        val item = ItemStack(material, 1)
         val meta = item.itemMeta
 
         meta.displayName(name)
