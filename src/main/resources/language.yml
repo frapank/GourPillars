@@ -83,6 +83,11 @@ party:
   party-promote: "{prefix_party} <green>You were promoted to party owner"
   user-left-party: "{prefix_party} <white>{player} <yellow>left the party!"
   party-promote-broadcast: "{prefix_party} <white>{player} <yellow>is the new party owner!"
+  party-public: "{prefix_party} <green>Your party is now public! Anyone can join with <yellow>/party join {player}</yellow>"
+  party-private: "{prefix_party} <yellow>Your party is now private"
+  party-broadcast:
+    - "{prefix_party} <yellow>{player}'s party is looking for members!"
+    - "<hover:show_text:'<white>/party join {player}'><click:run_command:/party join {player}><green><bold>CLICK HERE TO JOIN"
   party-info:
     - "<gradient:#c061cb:#3584e4>✦━━━ PARTY INFO ━━━✦</gradient>"
     - "<gray>👑 Admin:</gray> <yellow>{partyAdmin}</yellow>"
@@ -108,6 +113,10 @@ party:
     - "<gold>/party remove <player></gold> <gray>- <yellow>Remove a member</yellow>"
     - "<gold>/party promote <player></gold> <gray>- <yellow>Promote a member to admin</yellow>"
     - "<gold>/party info</gold> <gray>- <yellow>Party info</yellow>"
+    - "<gold>/party join <player></gold> <gray>- <yellow>Join a public party</yellow>"
+    - "<gold>/party public</gold> <gray>- <yellow>Make your party public</yellow>"
+    - "<gold>/party private</gold> <gray>- <yellow>Make your party private</yellow>"
+    - "<gold>/party broadcast</gold> <gray>- <yellow>Invite everyone to join</yellow>"
     - ""
     - "<gradient:#c061cb:#3584e4>━━━━━━━━━━━━━━━━━━━━━━━</gradient>"
     - ""
@@ -118,7 +127,7 @@ party:
     player-not-in-party:
       - "{prefix_party} <red>You are not in a party"
       - "<hover:show_text:'<white>/party create'><click:run_command:/party create><green><bold>CREATE A PARTY"
-    max-party-member: "{prefix_party} <red>You can invite up to 7 people to your party"
+    max-party-member: "{prefix_party} <red>The party is full! (max {max} members)"
     not-party-admin: "{prefix_party} <red>You are not the party owner!"
     user-in-party: "{prefix_party} <red>This user is already in a party"
     not-in-party: "{prefix_party} <red>You are not in a party"
@@ -126,6 +135,11 @@ party:
     already-in-party: "{prefix_party} <red>You are already in a party"
     target-not-in-party: "{prefix_party} <white>{player} <red>is not in the party"
     party-invite-expired: "{prefix_party} <red>The party invite has expired"
+    target-has-no-party: "{prefix_party} <red>{player} is not in a party"
+    party-not-public: "{prefix_party} <red>This party is not public"
+    no-public-permission: "{prefix_party} <red>You don't have permission to create a public party"
+    already-public: "{prefix_party} <red>Your party is already public"
+    already-private: "{prefix_party} <red>Your party is already private"
 
 gui:
   # Vote GUI text/icons/layout live in config.yml (gui.vote) instead.
@@ -183,6 +197,7 @@ join-leave-cmd:
     user-in-party: "{prefix_game} <red>You can't join a game because you are in a party!"
     already-best-arena: "{prefix_game} <green>You are already in the best arena"
     wait: "{prefix_game} <red>Wait a few seconds"
+    party-too-big-for-arena: "{prefix_game} <red>Your party ({size}) doesn't fit in this arena ({available} slot(s) available)"
 
 spectate-cmd:
   joined: ""
