@@ -123,3 +123,70 @@ waiting-items:
   leave:
     slot: 8
     material: RED_DYE
+
+# The GUI opened when a player clicks the "vote" waiting item, used to vote
+# for an event and for day/night. Also drives the slot-machine style
+# event-selection-animation below, which reuses each item's name as the
+# scrolling/reveal title.
+gui:
+  vote:
+    title: "<light_purple>Vote 🌟"
+    # Inventory size, must be a multiple of 9 between 9 and 54.
+    size: 27
+    filler:
+      material: GRAY_STAINED_GLASS_PANE
+      name: "<gray>────</gray>"
+    # Each key below is a fixed internal id that also determines what the item
+    # does when clicked, so don't rename them; you can still freely change
+    # slot, material, name and lore, or remove an entry entirely to hide it
+    # (lava-event/knockback-event/border-event are also hidden automatically
+    # when their event is disabled under game.events).
+    # "material" is any Bukkit material (https://jd.papermc.io/paper/1.21/org/bukkit/Material.html).
+    # Set it to PLAYER_HEAD and add "head-texture" (a base64 skin texture
+    # value, e.g. from https://minecraft-heads.com) for a custom head icon.
+    items:
+      no-event:
+        slot: 10
+        material: PLAYER_HEAD
+        head-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGEyZmUwMWExZjdkNzZmM2NkNmRkYjUzZDUzMjVhMzk4YWQ3NDhkNzE4YWU3MjBhNmJjMjMzODI4NjdkNjUzMSJ9fX0="
+        name: "<red>No event"
+        lore:
+          - "<gray>Vote for a classic game!"
+      lava-event:
+        slot: 11
+        material: PLAYER_HEAD
+        head-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjY5YTMyY2ZmZjAzMTU1YjlmODEwOTg1OGQ4MzAzYjA2ZmU3MGQwYjUzNWJhNjRiNTFkMDMwMmZmMzM5ZTBjYiJ9fX0="
+        name: "<yellow>Lava event"
+        lore:
+          - "<gray>A lava floor will"
+          - "<gray>appear under your feet!"
+      knockback-event:
+        slot: 12
+        material: PLAYER_HEAD
+        head-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjA2MWY5OGFhZmYxZTQwNmUwNmY2ZjEzZmZlMDYwMDU4NzNmM2QxZWFkZGIxYjU5ZTE5ZGRhMGVkOWZmYjI3MCJ9fX0="
+        name: "<green>Knockback Event"
+        lore:
+          - "<gray>Players will get a"
+          - "<gray>boosted knockback!"
+      border-event:
+        slot: 13
+        material: PLAYER_HEAD
+        head-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjk1MGNiNjVlNDFiMWQ2NjhjZjg4MmViODk4NWUwM2UxNzY2MTc5NTU2NjM2NDA3MTRmYzA4ZmJlZTFmMWE0NiJ9fX0="
+        name: "<green>Border Event"
+        lore:
+          - "<gray>the arena border"
+          - "<gray>will shrink!"
+      day-vote:
+        slot: 15
+        material: PLAYER_HEAD
+        head-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTUxZTUyYjFkZTk3YjUzNDM1OGI1M2NkMmM5YzQ1NTI2MDg2ZDJhNmYwZTBhZTY1ZTRiYTJmZjVjNjI5MGVjIn19fQ=="
+        name: "<aqua>Day time"
+        lore:
+          - "<gray>A bright game!"
+      night-vote:
+        slot: 16
+        material: PLAYER_HEAD
+        head-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzZiMzIxNDRlNzAzMjcyNjE0MTdhYTEwN2U0Y2YyYjMyNTMxNWEzMmYxZDgxYzIxZDE5ZjBmNzhjNjEwMzhhOSJ9fX0="
+        name: "<yellow>Night event"
+        lore:
+          - "<gray>A nighttime game!"
