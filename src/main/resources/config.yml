@@ -6,7 +6,7 @@
 #%neededplayers%
 #%aliveplayers%
 scoreboards:
-  titles: "Pillars"
+  titles: "Pillars Of Fortune"
   lobby:
     - ""
     - "<green>Players: <white>%pillars_arenaname%"

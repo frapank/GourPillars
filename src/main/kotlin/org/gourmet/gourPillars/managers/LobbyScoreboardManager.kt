@@ -20,7 +20,7 @@ class LobbyScoreboardManager {
         langCfg = GourPillars.languageManager.getLanguageConfig()
 
         val scoreboard = Bukkit.getScoreboardManager().newScoreboard
-        val title = PlaceholderAPI.setPlaceholders(player, langCfg.getString("scoreboard.lobby.title", "Pillars")!!)
+        val title = PlaceholderAPI.setPlaceholders(player, langCfg.getString("scoreboard.lobby.title", "Pillars Of Fortune")!!)
         val objective = scoreboard.registerNewObjective("game", "dummy", miniMessage.deserialize(title))
         objective.displaySlot = DisplaySlot.SIDEBAR
 
