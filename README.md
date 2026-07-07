@@ -81,10 +81,25 @@ Global
 
 ## Configuration
 
-- `config.yml` — lobby spawn, scoreboard layouts and match tuning (match/countdown length, random item interval, knockback multiplier, lava/border event timings).
+- `config.yml` — lobby spawn, scoreboard layouts, match tuning (match/countdown length, random item interval, knockback multiplier, lava/border event timings), and the lobby/waiting-room items (see below).
 - `arenas/<name>.yml` — one file per arena (world, height/player limits, main spawn, region, in-game spawns), created by `/edit save` or dropped in manually. Requires a server restart to be picked up. Arenas previously stored under `config.yml`'s `Arenas` section are migrated here automatically on first startup after updating.
 - `language.yml` — all in-game text, using MiniMessage formatting.
 - `database.yml` — MySQL connection settings (host, port, database, credentials, pool size). Generated with safe defaults on first run; invalid values fall back to defaults and log a warning instead of preventing startup. If the database is unreachable, server operators (and any player with `gpillars.admin`) are warned in chat on join, and statistics are disabled for that session.
+
+On startup, `config.yml` is compared against the bundled default: any option missing (e.g. after updating to a version that added new settings) is added back with its default value, logging a warning naming the option. Existing invalid entries (bad slot, unknown material, etc.) are never edited — they're logged as a warning and skipped in favor of a safe fallback at runtime.
+
+## Lobby Items
+
+- `config.yml`'s `lobby-items` section defines the items players get while standing in the lobby (the mode selector, cosmetics, casual match by default). Each entry is a freely-named key with:
+  - `slot` — hotbar/inventory slot (0-35).
+  - `material` — a valid [Bukkit `Material`](https://jd.papermc.io/paper/1.21.11/org/bukkit/Material.html) name, e.g. `COMPASS`.
+  - `name` — MiniMessage-formatted display name.
+  - `lore` — list of MiniMessage-formatted lore lines (optional).
+  - `command` — command run (without the leading `/`) when the item is right-clicked; leave empty (`""`) for a purely decorative item.
+
+  Add, remove or reorder entries freely — invalid ones (bad slot/material) are skipped with a warning instead of blocking startup.
+
+- `config.yml`'s `waiting-items` section only configures `slot`/`material` for the vote and leave items given in an arena's waiting room, since what they do is fixed; their name/lore stay in `language.yml` under `items.waiting`.
 
 ## Building from Source
 
