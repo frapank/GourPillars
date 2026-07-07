@@ -52,3 +52,40 @@ game:
     shrink-interval-seconds: 7
     # Damage dealt per second to players outside the border.
     damage-amount: 3.0
+
+# Items given to players standing in the lobby (hotbar slots 0-8).
+# Add, remove or reorder entries freely; each key is just an internal id.
+# "command" is optional: leave it empty ("") for an item that does nothing when clicked.
+lobby-items:
+  mode-selector:
+    slot: 4
+    material: COMPASS
+    name: "<gold>✩ <white><bold>Mode Selector <gold>✩"
+    lore:
+      - "<gray>Click to choose a game mode"
+    command: "dm open serverselector"
+  cosmetics:
+    slot: 6
+    material: EMERALD
+    name: "<gold>✩ <white><bold>Cosmetics <gold>✩"
+    lore:
+      - "<gray>Customize your appearance"
+    command: ""
+  casual-match:
+    slot: 2
+    material: NETHER_STAR
+    name: "<gold>✩ <white><bold>Casual Match <gold>✩"
+    lore:
+      - "<gray>Join the best available arena"
+    command: "joinrandom"
+
+# Slot and material for the two items given to players in an arena's waiting
+# room. Their name/lore come from language.yml (items.waiting.*) since what
+# they do (open the vote menu / leave the arena) is fixed.
+waiting-items:
+  vote:
+    slot: 0
+    material: PAPER
+  leave:
+    slot: 8
+    material: RED_DYE
