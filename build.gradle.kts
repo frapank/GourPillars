@@ -95,5 +95,6 @@ bukkit {
         register("gpillars.party.join") { default = Default.TRUE }
         register("gpillars.party.public") { default = Default.OP }
         register("gpillars.party.broadcast") { default = Default.OP }
+        register("gpillars.spectate") { default = Default.TRUE }
     }
 }

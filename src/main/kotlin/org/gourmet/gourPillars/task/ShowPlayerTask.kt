@@ -10,19 +10,13 @@ class ShowPlayerTask : BukkitRunnable() {
 
     override fun run() {
         for (viewer in Bukkit.getOnlinePlayers()) {
-            if (arenaManager.isPlayerInArena(viewer)) {
-                for (other in Bukkit.getOnlinePlayers()) {
-                    if (viewer === other) continue
+            val worldScoped = arenaManager.isPlayerInArena(viewer) || arenaManager.isSpectating(viewer)
+            for (other in Bukkit.getOnlinePlayers()) {
+                if (viewer === other) continue
 
-                    if (viewer.world == other.world) {
-                        viewer.showPlayer(GourPillars.instance, other)
-                    } else {
-                        viewer.hidePlayer(GourPillars.instance, other)
-                    }
-                }
-            } else {
-                for (other in Bukkit.getOnlinePlayers()) {
-                    if (viewer === other) continue
+                if (worldScoped && viewer.world != other.world) {
+                    viewer.hidePlayer(GourPillars.instance, other)
+                } else {
                     viewer.showPlayer(GourPillars.instance, other)
                 }
             }

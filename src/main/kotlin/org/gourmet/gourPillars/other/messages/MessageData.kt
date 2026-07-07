@@ -168,6 +168,17 @@ object MessageData {
     lateinit var JOIN_LEAVE_ERRORS_WAIT: DynamicMessage
     lateinit var JOIN_LEAVE_ERRORS_PARTY_TOO_BIG_FOR_ARENA: DynamicMessage
 
+    // spectate cmd
+    lateinit var SPECTATE_JOINED_ARENA: DynamicMessage
+    lateinit var SPECTATE_JOINED_PLAYER: DynamicMessage
+    lateinit var SPECTATE_LEFT: DynamicMessage
+    lateinit var SPECTATE_MATCH_ENDED: DynamicMessage
+    lateinit var SPECTATE_CHAT_FORMAT: DynamicMessage
+    lateinit var SPECTATE_ERRORS_NOT_FOUND: DynamicMessage
+    lateinit var SPECTATE_ERRORS_NOT_IN_GAME: DynamicMessage
+    lateinit var SPECTATE_ERRORS_ALREADY_IN_GAME: DynamicMessage
+    lateinit var SPECTATE_ERRORS_ALREADY_SPECTATING: DynamicMessage
+
     fun load() {
         config = GourPillars.languageManager.getLanguageConfig()
 
@@ -301,6 +312,17 @@ object MessageData {
         JOIN_LEAVE_ERRORS_ALREADY_BEST_ARENA = getMessage(config, "join-leave-cmd.errors.already-best-arena")
         JOIN_LEAVE_ERRORS_WAIT = getMessage(config, "join-leave-cmd.errors.wait")
         JOIN_LEAVE_ERRORS_PARTY_TOO_BIG_FOR_ARENA = getMessage(config, "join-leave-cmd.errors.party-too-big-for-arena")
+
+        // spectate cmd
+        SPECTATE_JOINED_ARENA = getMessage(config, "spectate-cmd.joined-arena")
+        SPECTATE_JOINED_PLAYER = getMessage(config, "spectate-cmd.joined-player")
+        SPECTATE_LEFT = getMessage(config, "spectate-cmd.left")
+        SPECTATE_MATCH_ENDED = getMessage(config, "spectate-cmd.match-ended")
+        SPECTATE_CHAT_FORMAT = getMessage(config, "spectate-cmd.chat-format")
+        SPECTATE_ERRORS_NOT_FOUND = getMessage(config, "spectate-cmd.errors.not-found")
+        SPECTATE_ERRORS_NOT_IN_GAME = getMessage(config, "spectate-cmd.errors.not-in-game")
+        SPECTATE_ERRORS_ALREADY_IN_GAME = getMessage(config, "spectate-cmd.errors.already-in-game")
+        SPECTATE_ERRORS_ALREADY_SPECTATING = getMessage(config, "spectate-cmd.errors.already-spectating")
     }
 
     private fun getMessage(
