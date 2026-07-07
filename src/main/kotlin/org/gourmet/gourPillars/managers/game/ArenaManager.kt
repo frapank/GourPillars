@@ -45,6 +45,13 @@ class ArenaManager {
         return false
     }
 
+    fun getArenaBySpectator(player: Player): Arena? = onlineArenas.values.find { it.spectators.contains(player) }
+
+    fun isSpectating(player: Player): Boolean = getArenaBySpectator(player) != null
+
+    // Excludes private arenas so /spec can't be used to discover or watch them.
+    fun getSpectatableArena(name: String): Arena? = onlineArenas.values.find { !it.isPrivate && it.name.equals(name, ignoreCase = true) }
+
     // Private arenas are excluded: nothing can ever join one (see Arena.addPlayer).
     fun maxArenaCapacity(): Int = onlineArenas.values.filterNot { it.isPrivate }.maxOfOrNull { it.maxPlayer } ?: 0
 
