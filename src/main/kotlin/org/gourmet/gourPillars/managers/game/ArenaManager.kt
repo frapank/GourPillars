@@ -45,6 +45,9 @@ class ArenaManager {
         return false
     }
 
+    // Private arenas are excluded: nothing can ever join one (see Arena.addPlayer).
+    fun maxArenaCapacity(): Int = onlineArenas.values.filterNot { it.isPrivate }.maxOfOrNull { it.maxPlayer } ?: 0
+
     fun shuffleArenas() {
         onlineArenas =
             onlineArenas.entries
