@@ -119,6 +119,13 @@ object JoinerCMD {
 
     @Command("leave")
     fun leaveCommand(player: Player) {
+        val spectatingArena = arenaManager.getArenaBySpectator(player)
+        if (spectatingArena != null) {
+            spectatingArena.removeSpectator(player)
+            player.sendDynamicMessage(MessageData.SPECTATE_LEFT)
+            return
+        }
+
         val arena: Arena =
             arenaManager.getArenaByPlayer(player) ?: run {
                 player.sendDynamicMessage(MessageData.JOIN_LEAVE_ERRORS_NOT_IN_ARENA)

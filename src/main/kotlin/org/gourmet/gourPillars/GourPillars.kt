@@ -9,6 +9,7 @@ import org.gourmet.gourPillars.commands.EditCMD
 import org.gourmet.gourPillars.commands.JoinerCMD
 import org.gourmet.gourPillars.commands.PartyCMD
 import org.gourmet.gourPillars.commands.SetSpawnCMD
+import org.gourmet.gourPillars.commands.SpecCMD
 import org.gourmet.gourPillars.commands.StatsCMD
 import org.gourmet.gourPillars.commands.TestCMD
 import org.gourmet.gourPillars.database.Database
@@ -24,6 +25,7 @@ import org.gourmet.gourPillars.listener.general.ChatViewListener
 import org.gourmet.gourPillars.listener.general.DatabaseListener
 import org.gourmet.gourPillars.listener.general.GuiClickListener
 import org.gourmet.gourPillars.listener.general.LevelListener
+import org.gourmet.gourPillars.listener.general.SpectatorGameModeListener
 import org.gourmet.gourPillars.listener.lobby.ItemLobbyListener
 import org.gourmet.gourPillars.listener.lobby.JoinListener
 import org.gourmet.gourPillars.listener.lobby.WorldChangeListener
@@ -121,6 +123,7 @@ class GourPillars : JavaPlugin() {
                 DatabaseListener(),
                 GuiClickListener(),
                 LevelListener(),
+                SpectatorGameModeListener(),
             )
 
         val pluginManager = Bukkit.getPluginManager()
@@ -137,6 +140,7 @@ class GourPillars : JavaPlugin() {
             BuildCMD,
             StatsCMD,
             SetSpawnCMD,
+            SpecCMD,
         )
     }
 }
