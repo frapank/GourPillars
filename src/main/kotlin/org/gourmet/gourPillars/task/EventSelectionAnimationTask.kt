@@ -1,10 +1,12 @@
 package org.gourmet.gourPillars.task
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.kyori.adventure.title.Title
 import org.bukkit.Sound
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.guis.VoteInventory
 import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.EventSelector
 import org.gourmet.gourPillars.managers.game.arena.GameEvents
@@ -133,20 +135,9 @@ object EventSelectionAnimationTask {
     }
 
     private fun eventTitle(event: GameEvents?): Component =
-        when (event) {
-            null -> MessageData.GUI_CLASSIC_VOTE_NAME
-            GameEvents.LAVA -> MessageData.GUI_LAVA_VOTE_NAME
-            GameEvents.KNOCKBACK -> MessageData.GUI_KNOCKBACK_VOTE_NAME
-            GameEvents.BORDER -> MessageData.GUI_BORDER_VOTE_NAME
-        }
+        VoteInventory.nameFor(GameEvents.voteItemId(event)) ?: Component.text(GameEvents.voteItemId(event))
 
-    private fun plainName(event: GameEvents?): String =
-        when (event) {
-            null -> "No Event"
-            GameEvents.LAVA -> "Lava"
-            GameEvents.KNOCKBACK -> "Knockback"
-            GameEvents.BORDER -> "Border"
-        }
+    private fun plainName(event: GameEvents?): String = PlainTextComponentSerializer.plainText().serialize(eventTitle(event))
 
     private fun readSound(
         name: String?,

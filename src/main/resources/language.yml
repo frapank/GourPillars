@@ -128,28 +128,8 @@ party:
     party-invite-expired: "{prefix_party} <red>The party invite has expired"
 
 gui:
-  vote:
-    title: "<light_purple>Vote 🌟"
-    item-filler-name: "<gray>────</gray>"
-    classic-vote-name: "<red>No event"
-    classic-vote-lore: "<gray>Vote for a classic game!"
-    knockback-vote-name: "<green>Knockback Event"
-    knockback-vote-lore:
-      - "<gray>Players will get a"
-      - "<gray>boosted knockback!"
-    border-vote-name: "<green>Border Event"
-    border-vote-lore:
-      - "<gray>the arena border"
-      - "<gray>will shrink!"
-    lava-vote-name: "<yellow>Lava event"
-    lava-vote-lore:
-      - "<gray>A lava floor will"
-      - "<gray>appear under your feet!"
-    day-vote-name: "<aqua>Day time"
-    day-vote-lore: "<gray>A bright game!"
-    night-vote-name: "<yellow>Night event"
-    night-vote-lore: "<gray>A nighttime game!"
-
+  # The vote GUI's name/lore/icons/layout are configured in config.yml
+  # (gui.vote) instead, since they're tied to slots, materials and event ids.
   stats:
     title: "<light_purple>Vote 🌟"
     item-filler-name: "<gray>────</gray>"
