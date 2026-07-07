@@ -1,8 +1,12 @@
 # GourPillars database configuration
-# Connection settings for the MySQL server used to store player statistics.
+#
+# storage-type selects the backend used to store player statistics: "mysql" or "sqlite".
+# If missing or unrecognized, GourPillars falls back to "mysql".
+storage-type: "mysql"
+
+# --- MySQL settings (used when storage-type is "mysql") ---
 # If a value below is missing or invalid, GourPillars falls back to a safe
 # default and logs a warning in the console instead of failing to start.
-
 host: "localhost"
 port: 3306
 database: "dream"
@@ -14,3 +18,8 @@ allow-public-key-retrieval: true
 
 # Maximum number of pooled JDBC connections (1-50).
 pool-size: 10
+
+# --- SQLite settings (used when storage-type is "sqlite") ---
+sqlite:
+  # File name, stored inside the plugin's data folder.
+  file: "database.db"
