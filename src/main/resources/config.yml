@@ -101,21 +101,21 @@ lobby-items:
   mode-selector:
     slot: 4
     material: COMPASS
-    name: "<gold>✩ <white><bold>Mode Selector <gold>✩"
+    name: "<gold><bold>Mode Selector"
     lore:
       - "<gray>Click to choose a game mode"
-    command: "dm open serverselector"
+    command: ""
   cosmetics:
     slot: 6
     material: EMERALD
-    name: "<gold>✩ <white><bold>Cosmetics <gold>✩"
+    name: "<gold><bold>Cosmetics"
     lore:
       - "<gray>Customize your appearance"
     command: ""
   casual-match:
     slot: 2
     material: NETHER_STAR
-    name: "<gold>✩ <white><bold>Casual Match <gold>✩"
+    name: "<gold><bold>Casual Match"
     lore:
       - "<gray>Join the best available arena"
     command: "joinrandom"
@@ -135,7 +135,7 @@ waiting-items:
 # Item names are reused by the event-selection-animation below.
 gui:
   vote:
-    title: "<light_purple>Vote 🌟"
+    title: "<light_purple>Vote"
     # Must be a multiple of 9, between 9 and 54.
     size: 27
     filler:

@@ -9,7 +9,7 @@ storage-type: "mysql"
 # default and logs a warning in the console instead of failing to start.
 host: "localhost"
 port: 3306
-database: "dream"
+database: "gourpillars"
 username: "root"
 password: ""
 
