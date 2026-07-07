@@ -208,7 +208,7 @@ spectate-cmd:
 
 scoreboard:
   lobby:
-    title: "<bold><red>❤ <#f6f5f4>Pillars of luck <red>❤"
+    title: "<bold><red>❤ <#f6f5f4>Pillars Of Fortune <red>❤"
     lines:
       - ""
       - "<#c061cb>Players: <#f6f5f4>%pillars_playersinmatch%"
@@ -218,7 +218,7 @@ scoreboard:
       - "<#62a0ea>play.frisknetwork.it"
 
   waiting:
-    title: "<bold><red>❤ <#f6f5f4>Pillars of luck <red>❤"
+    title: "<bold><red>❤ <#f6f5f4>Pillars Of Fortune <red>❤"
     lines:
       - ""
       - "<#c061cb>State"
@@ -231,7 +231,7 @@ scoreboard:
       - "<#62a0ea>play.frisknetwork.it"
 
   playing:
-    title: "<bold><red>❤ <#f6f5f4>Pillars of luck <red>❤"
+    title: "<bold><red>❤ <#f6f5f4>Pillars Of Fortune <red>❤"
     lines:
       - ""
       - "<#c061cb>Time: <#f6f5f4>%pillars_time%"
