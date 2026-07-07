@@ -1,3 +1,4 @@
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.Permission.Default
 
 plugins {
     kotlin("jvm") version "2.4.0"
@@ -81,4 +82,18 @@ bukkit {
     author = "Gourmet"
     depend = listOf("Multiverse-Core")
     softDepend = listOf("PlaceholderAPI")
+
+    permissions {
+        register("gpillars.party.create") { default = Default.TRUE }
+        register("gpillars.party.invite") { default = Default.TRUE }
+        register("gpillars.party.accept") { default = Default.TRUE }
+        register("gpillars.party.remove") { default = Default.TRUE }
+        register("gpillars.party.leave") { default = Default.TRUE }
+        register("gpillars.party.disband") { default = Default.TRUE }
+        register("gpillars.party.promote") { default = Default.TRUE }
+        register("gpillars.party.info") { default = Default.TRUE }
+        register("gpillars.party.join") { default = Default.TRUE }
+        register("gpillars.party.public") { default = Default.OP }
+        register("gpillars.party.broadcast") { default = Default.OP }
+    }
 }
