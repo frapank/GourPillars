@@ -5,7 +5,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
 
 class ChatViewListener : Listener {
-
     /*
         This will show the messages only
         if the player is in the same world

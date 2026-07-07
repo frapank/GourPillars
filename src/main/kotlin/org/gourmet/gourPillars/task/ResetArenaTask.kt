@@ -3,12 +3,13 @@ package org.gourmet.gourPillars.task
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.managers.ZipManager
 import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.State
-import org.gourmet.gourPillars.managers.ZipManager
 
-class ResetArenaTask(val arena: Arena) : BukkitRunnable() {
-
+class ResetArenaTask(
+    val arena: Arena,
+) : BukkitRunnable() {
     private val zipManager = ZipManager()
 
     override fun run() {
@@ -16,15 +17,15 @@ class ResetArenaTask(val arena: Arena) : BukkitRunnable() {
         val arenaName = arena.name
         val worldName = arena.region.world.name
 
-        //Reset arena
+        // Reset arena
         zipManager.restoreBackup(worldName)
 
-        //Here I will reset all the pointers
+        // Here I will reset all the pointers
         object : BukkitRunnable() {
             override fun run() {
                 arenaManager.onlineArenas.forEach { (name, arena) ->
                     if (name == arenaName) {
-                        arena.spawnMap.forEach {(location, _) ->
+                        arena.spawnMap.forEach { (location, _) ->
                             location.world = Bukkit.getWorld(worldName)
                         }
                         arena.spawnMainLocation.world = Bukkit.getWorld(worldName)
@@ -35,8 +36,7 @@ class ResetArenaTask(val arena: Arena) : BukkitRunnable() {
             }
         }.runTaskLater(GourPillars.instance, 100L)
 
-        //Randomize arena order
+        // Randomize arena order
         GourPillars.arenaManager.shuffleArenas()
     }
-
 }

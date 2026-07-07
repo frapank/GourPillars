@@ -8,7 +8,6 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.State
 
 class VoidKillListener : Listener {
-
     val arenaManager = GourPillars.arenaManager
 
     @EventHandler
@@ -17,7 +16,6 @@ class VoidKillListener : Listener {
         val playerLoc = player.y
         val arena = arenaManager.getArenaByPlayer(player) ?: return
         val gameState = arena.gameState
-
 
         if (gameState == State.INGAME) {
             if (playerLoc <= arena.minHeight) {
@@ -32,5 +30,4 @@ class VoidKillListener : Listener {
             }
         }
     }
-
 }

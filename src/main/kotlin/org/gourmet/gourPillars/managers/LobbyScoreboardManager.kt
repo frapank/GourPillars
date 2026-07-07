@@ -11,13 +11,12 @@ import org.bukkit.scoreboard.Objective
 import org.bukkit.scoreboard.Scoreboard
 import org.gourmet.gourPillars.GourPillars
 
-class LobbyScoreboardManager() {
+class LobbyScoreboardManager {
     private val scoreboards: MutableMap<Player, Scoreboard> = mutableMapOf()
     private val miniMessage = MiniMessage.miniMessage()
     private lateinit var langCfg: FileConfiguration
 
     fun setScoreboard(player: Player) {
-
         langCfg = GourPillars.languageManager.getLanguageConfig()
 
         val scoreboard = Bukkit.getScoreboardManager().newScoreboard
@@ -32,7 +31,11 @@ class LobbyScoreboardManager() {
         scoreboards[player] = scoreboard
     }
 
-    private fun setLines(player: Player, objective: Objective, lines: List<String>) {
+    private fun setLines(
+        player: Player,
+        objective: Objective,
+        lines: List<String>,
+    ) {
         var lineNumber = lines.size
         for (line in lines) {
             val parsedLine = PlaceholderAPI.setPlaceholders(player, line)
@@ -46,5 +49,4 @@ class LobbyScoreboardManager() {
             lineNumber--
         }
     }
-
 }

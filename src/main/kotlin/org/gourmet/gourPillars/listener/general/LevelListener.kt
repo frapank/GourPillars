@@ -4,11 +4,10 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerExpChangeEvent
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.other.Logger
 import org.gourmet.gourPillars.managers.DatabaseManager.PlayerStats
+import org.gourmet.gourPillars.other.Logger
 
 class LevelListener : Listener {
-
     private val databaseManager = GourPillars.databaseManager
 
     @EventHandler

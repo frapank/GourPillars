@@ -9,7 +9,6 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.GameEvents
 
 class KnockbackListener : Listener {
-
     val arenaManager = GourPillars.arenaManager
     private val knockbackMultiplier = GourPillars.instance.config.getDouble("game.knockback-multiplier", 2.0)
 
@@ -28,7 +27,11 @@ class KnockbackListener : Listener {
         val hitCountKey = "knockback_hits"
         val hitCount = attacker.getMetadata(hitCountKey).firstOrNull()?.asInt() ?: 0
 
-        val knockbackDirection = victim.location.toVector().subtract(attacker.location.toVector()).normalize()
+        val knockbackDirection =
+            victim.location
+                .toVector()
+                .subtract(attacker.location.toVector())
+                .normalize()
         victim.velocity = knockbackDirection.multiply(knockbackMultiplier)
 
         attacker.setMetadata(hitCountKey, FixedMetadataValue(GourPillars.instance, hitCount + 1))

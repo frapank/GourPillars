@@ -1,22 +1,21 @@
 package org.gourmet.gourPillars.listener.lobby
 
-import org.bukkit.event.Listener
+import org.bukkit.Material
+import org.bukkit.World
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.SignChangeEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
-import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.Material
-import org.bukkit.World
-import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.commands.BuildCMD
 
 class WorldChangeListener : Listener {
-
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {
         if (isSpawnWorld(e.block.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
@@ -56,7 +55,7 @@ class WorldChangeListener : Listener {
         }
     }
 
-    //Remove damage
+    // Remove damage
     @EventHandler
     fun onAnyDamage(e: EntityDamageEvent) {
         val entity = e.entity
@@ -65,7 +64,7 @@ class WorldChangeListener : Listener {
         }
     }
 
-    //Remove damage
+    // Remove damage
     @EventHandler
     fun onPlayerVsPlayerDamage(e: EntityDamageByEntityEvent) {
         val damager = e.damager
@@ -77,29 +76,28 @@ class WorldChangeListener : Listener {
         }
     }
 
-    private fun isSpawnWorld(eventWorld: World): Boolean {
-        return GourPillars.spawnManager.getConfiguredWorld() == eventWorld
-    }
+    private fun isSpawnWorld(eventWorld: World): Boolean = GourPillars.spawnManager.getConfiguredWorld() == eventWorld
 
     companion object {
-        private val PLANT_MATERIALS = setOf(
-            Material.TALL_GRASS,
-            Material.FERN,
-            Material.LARGE_FERN,
-            Material.DANDELION,
-            Material.POPPY,
-            Material.BLUE_ORCHID,
-            Material.ALLIUM,
-            Material.AZURE_BLUET,
-            Material.RED_TULIP,
-            Material.ORANGE_TULIP,
-            Material.WHITE_TULIP,
-            Material.PINK_TULIP,
-            Material.OXEYE_DAISY,
-            Material.SUNFLOWER,
-            Material.LILAC,
-            Material.ROSE_BUSH,
-            Material.PEONY
-        )
+        private val PLANT_MATERIALS =
+            setOf(
+                Material.TALL_GRASS,
+                Material.FERN,
+                Material.LARGE_FERN,
+                Material.DANDELION,
+                Material.POPPY,
+                Material.BLUE_ORCHID,
+                Material.ALLIUM,
+                Material.AZURE_BLUET,
+                Material.RED_TULIP,
+                Material.ORANGE_TULIP,
+                Material.WHITE_TULIP,
+                Material.PINK_TULIP,
+                Material.OXEYE_DAISY,
+                Material.SUNFLOWER,
+                Material.LILAC,
+                Material.ROSE_BUSH,
+                Material.PEONY,
+            )
     }
 }
