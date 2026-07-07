@@ -32,10 +32,12 @@ class GameTask(
     private var lastPlayer: Player? = null
     private var lavaLevel = arena.minHeight
     private var currentEventHandler: GameHandler? = null
+    private var gameEnded = false
 
     override fun run() {
         // Init game
         running = true
+        gameEnded = false
         lavaLevel = arena.minHeight
         alivePlayer = mutableSetOf()
         playerKills = mutableMapOf()
@@ -62,7 +64,7 @@ class GameTask(
                 updateScoreBoard()
 
                 // End game
-                if (alivePlayer.size <= 1 || secondsPassed == 0) {
+                if (gameEnded || alivePlayer.size <= 1 || secondsPassed == 0) {
                     handleEndGame()
                     cancel()
                 }
@@ -135,6 +137,10 @@ class GameTask(
     }
 
     private fun handleEndGame() {
+        if (gameEnded) return
+        gameEnded = true
+        arena.gameState = State.STOPPED
+
         val winner = getWinner()
         if (winner != null) {
             arena.sendDynamicTitleToPlayerInGame(MessageData.ARENA_TITLE_END, MessageData.ARENA_SUBTITLE_END, "{winner}" to winner.name)
@@ -178,10 +184,7 @@ class GameTask(
                     GourPillars.spawnManager.teleportPlayerToSpawn(player)
                     GourPillars.lobbyScoreboardManager.setScoreboard(player)
                     player.inventory.clear()
-                    player.fireTicks = 0
-                    player.clearActivePotionEffects()
-                    player.health = 20.0
-                    player.foodLevel = 20
+                    Utils.resetPlayerState(player)
                     Utils.giveLobbyItems(player)
                 }
 
@@ -217,12 +220,10 @@ class GameTask(
         // Reset player foot, level, health and apply slow falling level
         val effect = PotionEffect(PotionEffectType.SLOW_FALLING, arena.slowFallingTime * 20, 0)
         alivePlayer.forEach { player ->
-            player.isInvulnerable = false
+            Utils.resetPlayerState(player)
             player.addPotionEffect(effect)
             player.inventory.clear()
             player.gameMode = GameMode.SURVIVAL
-            player.health = 20.0
-            player.foodLevel = 20
             player.closeInventory()
             arena.scoreboardManager.setGameScoreboard(player)
         }
@@ -261,6 +262,7 @@ class GameTask(
         arena.inGamePlayer.forEach { receiverPlayer ->
             receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED, "{player}" to player.name)
         }
+        checkForGameEnd()
     }
 
     // fall damage death message
@@ -269,6 +271,7 @@ class GameTask(
         arena.inGamePlayer.forEach { receiverPlayer ->
             receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED_FALL, "{player}" to player.name)
         }
+        checkForGameEnd()
     }
 
     // fall void fall death message
@@ -277,6 +280,7 @@ class GameTask(
         arena.inGamePlayer.forEach { receiverPlayer ->
             receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED_VOID, "{player}" to player.name)
         }
+        checkForGameEnd()
     }
 
     // player void kill by player death message
@@ -305,6 +309,7 @@ class GameTask(
         }
 
         arena.reloadInGameScoreboard()
+        checkForGameEnd()
     }
 
     // fall mob kill death message
@@ -320,6 +325,7 @@ class GameTask(
                 "{killer}" to damager.name,
             )
         }
+        checkForGameEnd()
     }
 
     // player kill by player death message
@@ -349,6 +355,13 @@ class GameTask(
         }
 
         arena.reloadInGameScoreboard()
+        checkForGameEnd()
+    }
+
+    private fun checkForGameEnd() {
+        if (alivePlayer.size <= 1) {
+            handleEndGame()
+        }
     }
 
     fun getTimeFormatted(): String {
