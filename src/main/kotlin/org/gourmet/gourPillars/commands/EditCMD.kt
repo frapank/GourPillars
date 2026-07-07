@@ -14,21 +14,22 @@ import revxrsal.commands.bukkit.annotation.CommandPermission
 import java.io.File
 import java.io.IOException
 
-data class ArenaEdit(val editor: Player,
-                     var name: String?,
-                     var minPlayers: Int?,
-                     var maxHeight: Int?,
-                     var minHeight: Int?,
-                     var slowFallingTime: Int?,
-                     var deathSpawn: Location?,
-                     var regionLocationOne: Location?,
-                     var regionLocationSecond: Location?,
-                     var locations: MutableMap<Int, Location>)
+data class ArenaEdit(
+    val editor: Player,
+    var name: String?,
+    var minPlayers: Int?,
+    var maxHeight: Int?,
+    var minHeight: Int?,
+    var slowFallingTime: Int?,
+    var deathSpawn: Location?,
+    var regionLocationOne: Location?,
+    var regionLocationSecond: Location?,
+    var locations: MutableMap<Int, Location>,
+)
 
 @Command("edit")
 @CommandPermission("gpillars.admin")
 object EditCMD {
-
     private val arenaManager = GourPillars.arenaManager
     private val editingPlayers: MutableMap<Player, ArenaEdit> = mutableMapOf()
     private val zipManager = ZipManager()
@@ -41,7 +42,7 @@ object EditCMD {
             return
         }
 
-        editingPlayers[player] = ArenaEdit(player, null, null, null, null, null, null, null, null ,mutableMapOf())
+        editingPlayers[player] = ArenaEdit(player, null, null, null, null, null, null, null, null, mutableMapOf())
         isEditing = true
         player.sendMessage("<green>You are now editing".toMini())
     }
@@ -172,7 +173,10 @@ object EditCMD {
     }
 
     @Subcommand("setFallingTime <number>")
-    fun setFallingTime(player: Player, number: Int) {
+    fun setFallingTime(
+        player: Player,
+        number: Int,
+    ) {
         if (!checkIfEditing(player)) return
 
         editingPlayers[player]?.slowFallingTime = number
@@ -197,14 +201,21 @@ object EditCMD {
     }
 
     @Subcommand("name <name>")
-    fun setName(player: Player, name: String) {
+    fun setName(
+        player: Player,
+        name: String,
+    ) {
         if (!checkIfEditing(player)) return
 
         editingPlayers[player]?.name = name
         player.sendMessage("<green>Name set to $name".toMini())
     }
+
     @Subcommand("minplayers <min>")
-    fun setMinPlayers(player: Player, min: Int) {
+    fun setMinPlayers(
+        player: Player,
+        min: Int,
+    ) {
         if (!checkIfEditing(player)) return
 
         editingPlayers[player]?.minPlayers = min
@@ -212,7 +223,10 @@ object EditCMD {
     }
 
     @Subcommand("spawn <number>")
-    fun setSpawn(player: Player, number: Int) {
+    fun setSpawn(
+        player: Player,
+        number: Int,
+    ) {
         if (!checkIfEditing(player)) return
 
         val spawnLocation = player.location
@@ -246,7 +260,10 @@ object EditCMD {
         player.sendMessage("<yellow>Name <green>-> $name".toMini())
         player.sendMessage("Arenas:".toMini())
         locations?.forEach { (index, location) ->
-            player.sendMessage("<yellow>$index <green>-> ${location.world.name}, ${location.x.toInt()}, ${location.y.toInt()}, ${location.z.toInt()}".toMini())
+            player.sendMessage(
+                "<yellow>$index <green>-> ${location.world.name}, ${location.x.toInt()}, ${location.y.toInt()}, ${location.z.toInt()}"
+                    .toMini(),
+            )
         }
         player.sendMessage("<yellow>-----------------------------".toMini())
     }
@@ -258,5 +275,4 @@ object EditCMD {
         }
         return true
     }
-
 }

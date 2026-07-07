@@ -5,5 +5,9 @@ import org.gourmet.gourPillars.managers.game.arena.Arena
 
 interface GameHandler {
     fun onStart(arena: Arena)
-    fun onStop(arena: Arena, winner: Player?)
+
+    fun onStop(
+        arena: Arena,
+        winner: Player?,
+    )
 }

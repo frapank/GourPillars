@@ -11,11 +11,13 @@ class Region private constructor(
     var minZ: Int,
     var maxX: Int,
     val maxY: Int,
-    var maxZ: Int
+    var maxZ: Int,
 ) {
     companion object {
-
-        fun createRegion(loc1: Location, loc2: Location): Region {
+        fun createRegion(
+            loc1: Location,
+            loc2: Location,
+        ): Region {
             if (loc1.world != loc2.world) throw IllegalArgumentException("Locations must be in the same world")
 
             val world = loc1.world!!
@@ -26,15 +28,13 @@ class Region private constructor(
 
             return Region(world, minX, minY, minZ, maxX, maxY, maxZ)
         }
-
     }
 
-    fun isInRegion(loc: Location): Boolean {
-        return loc.world == world &&
-                loc.x >= minX && loc.x <= maxX &&
-                loc.y >= minY && loc.y <= maxY &&
-                loc.z >= minZ && loc.z <= maxZ
-    }
+    fun isInRegion(loc: Location): Boolean =
+        loc.world == world &&
+            loc.x >= minX && loc.x <= maxX &&
+            loc.y >= minY && loc.y <= maxY &&
+            loc.z >= minZ && loc.z <= maxZ
 
     fun replaceYLevelWithLava(targetY: Int) {
         if (targetY < world.minHeight || targetY > world.maxHeight) return
@@ -47,9 +47,7 @@ class Region private constructor(
         }
     }
 
-    fun getBounds(): String {
-        return "World: ${world.name} | X: $minX-$maxX | Y: $minY-$maxY | Z: $minZ-$maxZ"
-    }
+    fun getBounds(): String = "World: ${world.name} | X: $minX-$maxX | Y: $minY-$maxY | Z: $minZ-$maxZ"
 
     fun clone(): Region = Region(world, minX, minY, minZ, maxX, maxY, maxZ)
 }

@@ -7,7 +7,6 @@ import revxrsal.commands.annotation.Command
 import revxrsal.commands.bukkit.annotation.CommandPermission
 
 object SetSpawnCMD {
-
     @Command("setspawn")
     @CommandPermission("gpillars.admin")
     fun setSpawn(player: Player) {

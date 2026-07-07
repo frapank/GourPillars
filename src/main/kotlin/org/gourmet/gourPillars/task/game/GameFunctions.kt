@@ -10,8 +10,10 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.Arena
 
 object GameFunctions {
-
-    fun playVictoryEffects(winner: Player, arena: Arena) {
+    fun playVictoryEffects(
+        winner: Player,
+        arena: Arena,
+    ) {
         val world = winner.world
 
         arena.inGamePlayer.forEach { player ->
@@ -21,6 +23,7 @@ object GameFunctions {
         if (arena.containPlayer(winner)) {
             object : BukkitRunnable() {
                 var count = 0
+
                 override fun run() {
                     if (count >= 3) {
                         cancel()
@@ -29,11 +32,12 @@ object GameFunctions {
                     val firework = world.spawn(winner.location, Firework::class.java)
                     val meta = firework.fireworkMeta
                     meta.addEffect(
-                        FireworkEffect.builder()
+                        FireworkEffect
+                            .builder()
                             .with(FireworkEffect.Type.BALL_LARGE)
                             .withColor(Color.RED, Color.BLUE, Color.YELLOW)
                             .withFlicker()
-                            .build()
+                            .build(),
                     )
                     meta.power = 1
                     firework.fireworkMeta = meta
