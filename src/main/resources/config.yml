@@ -52,6 +52,40 @@ game:
     shrink-interval-seconds: 7
     # Damage dealt per second to players outside the border.
     damage-amount: 3.0
+  # Votes only make an event more likely, they never guarantee it: after the vote, one option
+  # (including "no event") is picked at random, weighted by how many votes it received.
+  events:
+    lava:
+      # If disabled, this event can't be voted for or picked, even with votes.
+      enabled: true
+    knockback:
+      enabled: true
+    border:
+      enabled: true
+    # Weight every option (including "no event") starts with before votes are counted, so an
+    # option can still be picked with zero votes. Set to 0 to require at least one vote.
+    base-weight: 1.0
+    # Extra weight added per vote received.
+    vote-weight: 1.0
+  # Slot-machine style animation played once the vote closes, right before the match starts.
+  event-selection-animation:
+    enabled: true
+    # How many names scroll by before landing on the picked event.
+    scroll-count: 16
+    # Delay (in ticks) between scrolled names at the start/end of the animation; it gradually
+    # slows down from the start value to the end value for a "landing" effect.
+    scroll-interval-start-ticks: 2
+    scroll-interval-end-ticks: 7
+    # Sound played for each scrolled name. See https://jd.papermc.io/paper/1.21/org/bukkit/Sound.html
+    scroll-sound: BLOCK_NOTE_BLOCK_PLING
+    scroll-sound-volume: 0.6
+    scroll-sound-pitch: 1.4
+    # Sound played once when the picked event is revealed.
+    reveal-sound: BLOCK_NOTE_BLOCK_PLING
+    reveal-sound-volume: 1.0
+    reveal-sound-pitch: 2.0
+    # How long (in ticks) the reveal stays on screen before the match actually starts.
+    reveal-hold-ticks: 40
 
 # Items given to players standing in the lobby (hotbar slots 0-8).
 # Add, remove or reorder entries freely; each key is just an internal id.
