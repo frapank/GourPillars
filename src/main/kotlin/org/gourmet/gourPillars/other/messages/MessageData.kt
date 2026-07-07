@@ -117,7 +117,7 @@ object MessageData {
     lateinit var ARENA_VOTE_EVENT_DISABLED: DynamicMessage
 
     // Gui
-    // Vote GUI name/lore/icons/layout live in config.yml (gui.vote) instead, see VoteInventory.
+    // Vote GUI config lives in config.yml (gui.vote), see VoteInventory.
 
     lateinit var GUI_STATS_TITLE: Component
     lateinit var GUI_STATS_FILLER_NAME: Component
