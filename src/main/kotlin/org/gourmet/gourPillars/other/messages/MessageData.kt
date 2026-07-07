@@ -94,6 +94,10 @@ object MessageData {
     lateinit var ARENA_TITLE_COUNTDOWN_3: DynamicMessage
     lateinit var ARENA_TITLE_COUNTDOWN_2: DynamicMessage
     lateinit var ARENA_TITLE_COUNTDOWN_1: DynamicMessage
+    lateinit var ARENA_TITLE_EVENT_SELECT_SUBTITLE: DynamicMessage
+    lateinit var ARENA_TITLE_EVENT_REVEAL_SUBTITLE: DynamicMessage
+
+    lateinit var ARENA_EVENT_SELECTED: DynamicMessage
 
     // Arena Errors
     lateinit var ARENA_ERRORS_ALREADY_IN_GAME: DynamicMessage
@@ -110,6 +114,7 @@ object MessageData {
     lateinit var ARENA_VOTE_DAY_VOTED: DynamicMessage
     lateinit var ARENA_VOTE_ALREADY_VOTED_EVENT: DynamicMessage
     lateinit var ARENA_VOTE_ALREADY_VOTED_TIME: DynamicMessage
+    lateinit var ARENA_VOTE_EVENT_DISABLED: DynamicMessage
 
     // Gui
     lateinit var GUI_VOTE_TITLE: Component
@@ -201,6 +206,10 @@ object MessageData {
         ARENA_TITLE_COUNTDOWN_3 = getMessage(config, "arena.title.countdown-3")
         ARENA_TITLE_COUNTDOWN_2 = getMessage(config, "arena.title.countdown-2")
         ARENA_TITLE_COUNTDOWN_1 = getMessage(config, "arena.title.countdown-1")
+        ARENA_TITLE_EVENT_SELECT_SUBTITLE = getMessage(config, "arena.title.event-select-subtitle")
+        ARENA_TITLE_EVENT_REVEAL_SUBTITLE = getMessage(config, "arena.title.event-reveal-subtitle")
+
+        ARENA_EVENT_SELECTED = getMessage(config, "arena.event-selected")
 
         // Arena Vote
         ARENA_VOTE_CLASSIC_VOTED = getMessage(config, "arena.vote.classic-voted")
@@ -211,6 +220,7 @@ object MessageData {
         ARENA_VOTE_DAY_VOTED = getMessage(config, "arena.vote.day-voted")
         ARENA_VOTE_ALREADY_VOTED_EVENT = getMessage(config, "arena.vote.already-voted-event")
         ARENA_VOTE_ALREADY_VOTED_TIME = getMessage(config, "arena.vote.already-voted-time")
+        ARENA_VOTE_EVENT_DISABLED = getMessage(config, "arena.vote.event-disabled")
 
         // Party
         PARTY_PARTY_CREATED = getMessage(config, "party.party-created")
