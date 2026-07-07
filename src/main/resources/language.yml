@@ -198,11 +198,16 @@ join-leave-cmd:
     party-too-big-for-arena: "{prefix_game} <red>Your party ({size}) doesn't fit in this arena ({available} slot(s) available)"
 
 spectate-cmd:
-  joined: ""
+  joined-arena: "{prefix_game} <green>You are now spectating <yellow>{arena}</yellow>"
+  joined-player: "{prefix_game} <green>You are now spectating <yellow>{player}</yellow> in <yellow>{arena}</yellow>"
+  left: "{prefix_game} <red>You are no longer spectating"
+  match-ended: "{prefix_game} <red>The match ended, you were sent back to the lobby"
+  chat-format: "<dark_gray>[<gray>SPEC<dark_gray>]</dark_gray> <white>{player}</white><gray>:</gray> <white>{message}</white>"
   errors:
-    not-in-game: ""
-    already-in-game: ""
-    game-not-started: ""
+    not-found: "{prefix_game} <red>No online player or in-game arena found with that name"
+    not-in-game: "{prefix_game} <red>That arena's match hasn't started yet"
+    already-in-game: "{prefix_game} <red>You must leave your current match before spectating"
+    already-spectating: "{prefix_game} <red>You are already spectating, use /leave first"
 
 scoreboard:
   lobby:
