@@ -14,6 +14,10 @@ See [config.md](config.md) for the full list of tunable values (weights, animati
 
 Create, invite, promote, disband and kick, with public/private parties and a server-wide broadcast invite. Every action has its own permission node. A party's max size automatically follows the biggest loaded arena, so it can never outgrow what's joinable. See [commands.md](commands.md) for the full list of subcommands and permissions.
 
+## Spectator mode
+
+`/spec <player|arena>` puts you into spectator mode inside an arena that's currently in-game: it accepts either the name of a player currently playing that match, or the arena's own name. You're teleported in as gamemode `SPECTATOR` — free to fly around, invisible to interaction, and never added to the arena's player list, so you can't be counted, voted, or interfered with in any way. Spectators have their own chat, isolated from both the match's players and spectators of other arenas. `/leave` exits spectating at any time, and it also happens automatically once the match ends. See [commands.md](commands.md) for the permission node.
+
 ## Player statistics
 
 Kills, wins, defeats, XP, level and win streaks, persisted through an async database layer backed by either MySQL (via HikariCP) or SQLite. See [database.md](database.md).
