@@ -36,7 +36,6 @@ import org.gourmet.gourPillars.task.ShowPlayerTask
 import revxrsal.commands.bukkit.BukkitLamp
 
 class GourPillars : JavaPlugin() {
-
     companion object {
         lateinit var instance: GourPillars
         lateinit var arenaManager: ArenaManager
@@ -92,24 +91,25 @@ class GourPillars : JavaPlugin() {
     }
 
     private fun registerListeners() {
-        val listeners: List<Listener> = listOf(
-            // lobby
-            ItemLobbyListener(),
-            JoinListener(),
-            WorldChangeListener(),
-            // game
-            BorderLimitListener(),
-            GameDeathListener(),
-            KnockbackListener(),
-            QuitGameListener(),
-            StopBreakStartingListener(),
-            VoidKillListener(),
-            // general
-            ChatViewListener(),
-            DatabaseListener(),
-            GuiClickListener(),
-            LevelListener(),
-        )
+        val listeners: List<Listener> =
+            listOf(
+                // lobby
+                ItemLobbyListener(),
+                JoinListener(),
+                WorldChangeListener(),
+                // game
+                BorderLimitListener(),
+                GameDeathListener(),
+                KnockbackListener(),
+                QuitGameListener(),
+                StopBreakStartingListener(),
+                VoidKillListener(),
+                // general
+                ChatViewListener(),
+                DatabaseListener(),
+                GuiClickListener(),
+                LevelListener(),
+            )
 
         val pluginManager = Bukkit.getPluginManager()
         listeners.forEach { pluginManager.registerEvents(it, this) }

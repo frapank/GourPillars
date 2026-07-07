@@ -10,10 +10,15 @@ import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.other.miniMessage
 
-class DynamicMessage(private val rawMessage: String) {
+class DynamicMessage(
+    private val rawMessage: String,
+) {
     private val replacements = mutableMapOf<String, String>()
 
-    fun replace(placeholder: String, value: String): DynamicMessage {
+    fun replace(
+        placeholder: String,
+        value: String,
+    ): DynamicMessage {
         replacements[placeholder] = value
         return this
     }
@@ -24,7 +29,6 @@ class DynamicMessage(private val rawMessage: String) {
         pairs.forEach { (k, v) -> processed = processed.replace(k, v) }
         return miniMessage.deserialize(processed)
     }
-
 }
 
 object MessageData {
@@ -150,11 +154,11 @@ object MessageData {
     lateinit var SCOREBOARD_PLAYING_TITLE: DynamicMessage
     lateinit var SCOREBOARD_PLAYING_LINES: DynamicMessage
 
-    //stats
+    // stats
     lateinit var STATS_USER: DynamicMessage
     lateinit var STATS_TARGET: DynamicMessage
 
-    //stats-leave cmd
+    // stats-leave cmd
     lateinit var JOIN_LEAVE_ERRORS_ARENA_EDIT: DynamicMessage
     lateinit var JOIN_LEAVE_ERRORS_ARENA_NOT_EXIST: DynamicMessage
     lateinit var JOIN_LEAVE_ERRORS_ARENA_NOT_AVAILABLE: DynamicMessage
@@ -286,11 +290,11 @@ object MessageData {
         SCOREBOARD_PLAYING_TITLE = getMessage(config, "scoreboard.playing.title")
         SCOREBOARD_PLAYING_LINES = getMessage(config, "scoreboard.playing.lines")
 
-        //stats
+        // stats
         STATS_USER = getMessage(config, "stats.stats-user")
         STATS_TARGET = getMessage(config, "stats.stats-target")
 
-        //join-leave cmd
+        // join-leave cmd
         JOIN_LEAVE_ERRORS_ARENA_EDIT = getMessage(config, "join-leave-cmd.errors.arena-editing")
         JOIN_LEAVE_ERRORS_ARENA_NOT_EXIST = getMessage(config, "join-leave-cmd.errors.arena-not-exist")
         JOIN_LEAVE_ERRORS_ARENA_NOT_AVAILABLE = getMessage(config, "join-leave-cmd.errors.arena-not-available")
@@ -298,46 +302,57 @@ object MessageData {
         JOIN_LEAVE_ERRORS_USER_IN_PARTY = getMessage(config, "join-leave-cmd.errors.user-in-party")
         JOIN_LEAVE_ERRORS_ALREADY_BEST_ARENA = getMessage(config, "join-leave-cmd.errors.already-best-arena")
         JOIN_LEAVE_ERRORS_WAIT = getMessage(config, "join-leave-cmd.errors.wait")
-
     }
 
-    private fun getMessage(config: FileConfiguration, path: String): DynamicMessage {
-        return when (val value = config.get(path)) {
+    private fun getMessage(
+        config: FileConfiguration,
+        path: String,
+    ): DynamicMessage =
+        when (val value = config.get(path)) {
             is String -> DynamicMessage(processString(value))
             is List<*> -> DynamicMessage(processList(value))
             else -> DynamicMessage("<red>Messaggio non trovato!")
         }
-    }
 
-    private fun getMessageComponent(config: FileConfiguration, path: String): Component {
-        return when (val value = config.get(path)) {
-            is String -> miniMessage.deserialize(processString(value))
+    private fun getMessageComponent(
+        config: FileConfiguration,
+        path: String,
+    ): Component =
+        when (val value = config.get(path)) {
+            is String -> {
+                miniMessage.deserialize(processString(value))
+            }
+
             is List<*> -> {
                 val components = (value as List<String>).map { miniMessage.deserialize(processString(it)) }
                 Component.text().append(components).build()
-
             }
 
-            else -> miniMessage.deserialize("<red>Messaggio non trovato!")
+            else -> {
+                miniMessage.deserialize("<red>Messaggio non trovato!")
+            }
         }
-    }
 
-    private fun processString(value: String): String {
-        return value.replace("{prefix_game}", PREFIX_GAME_STRING)
+    private fun processString(value: String): String =
+        value
+            .replace("{prefix_game}", PREFIX_GAME_STRING)
             .replace("{prefix_party}", PREFIX_PARTY_STRING)
-    }
 
-    private fun processList(value: List<*>): String {
-        return value.filterIsInstance<String>()
+    private fun processList(value: List<*>): String =
+        value
+            .filterIsInstance<String>()
             .joinToString("\n") { line ->
-                line.replace("{prefix_game}", PREFIX_GAME_STRING)
+                line
+                    .replace("{prefix_game}", PREFIX_GAME_STRING)
                     .replace("{prefix_party}", PREFIX_PARTY_STRING)
             }
-    }
 }
 
 // Extension functions per l'invio
-fun Player.sendDynamicMessage(message: DynamicMessage, vararg replacements: Pair<String, String>) {
+fun Player.sendDynamicMessage(
+    message: DynamicMessage,
+    vararg replacements: Pair<String, String>,
+) {
     this.sendMessage(message.build(*replacements))
 }
 
@@ -345,7 +360,10 @@ fun Player.sendDynamicMessage(message: DynamicMessage) {
     this.sendMessage(message.build())
 }
 
-fun Player.sendDynamicTitle(title: DynamicMessage, subTitle: DynamicMessage) {
+fun Player.sendDynamicTitle(
+    title: DynamicMessage,
+    subTitle: DynamicMessage,
+) {
     val mainTitle: Component = title.build()
     val subTitle: Component = subTitle.build()
 
@@ -354,7 +372,11 @@ fun Player.sendDynamicTitle(title: DynamicMessage, subTitle: DynamicMessage) {
     this.showTitle(title)
 }
 
-fun Player.sendDynamicTitle(title: DynamicMessage, subTitle: DynamicMessage, vararg subTitleReplace: Pair<String, String>) {
+fun Player.sendDynamicTitle(
+    title: DynamicMessage,
+    subTitle: DynamicMessage,
+    vararg subTitleReplace: Pair<String, String>,
+) {
     val mainTitle: Component = title.build()
     val subTitle: Component = subTitle.build(*subTitleReplace)
 

@@ -5,6 +5,7 @@ plugins {
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     id("com.gradleup.shadow") version "9.4.3"
     id("xyz.jpenilla.run-paper") version "3.0.2"
+    id("com.diffplug.spotless") version "8.8.0"
 }
 
 group = "org.gourmet"
@@ -35,6 +36,19 @@ kotlin {
     }
 
     jvmToolchain(targetJavaVersion)
+}
+
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        ktlint()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    kotlinGradle {
+        target("*.gradle.kts")
+        ktlint()
+    }
 }
 
 tasks.build {

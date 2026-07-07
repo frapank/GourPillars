@@ -6,7 +6,6 @@ import org.gourmet.gourPillars.GourPillars
 import java.io.File
 
 class LanguageManager {
-
     private lateinit var langFile: File
     lateinit var langConfig: FileConfiguration
     private val plugin = GourPillars.instance
@@ -24,7 +23,6 @@ class LanguageManager {
         check(::langConfig.isInitialized) { "Language config not initialized" }
         return langConfig
     }
-
 
     fun reloadLanguage() {
         langConfig = YamlConfiguration.loadConfiguration(langFile)

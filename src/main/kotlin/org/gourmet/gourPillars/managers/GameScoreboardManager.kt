@@ -14,7 +14,9 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.State
 
-class GameScoreboardManager(private val arena: Arena) {
+class GameScoreboardManager(
+    private val arena: Arena,
+) {
     private val scoreboards: MutableMap<Player, Scoreboard> = mutableMapOf()
     private val plugin = GourPillars.instance
     private val miniMessage = MiniMessage.miniMessage()
@@ -52,7 +54,11 @@ class GameScoreboardManager(private val arena: Arena) {
         scoreboards[player] = scoreboard
     }
 
-    private fun setLines(player: Player, objective: Objective, lines: List<String>) {
+    private fun setLines(
+        player: Player,
+        objective: Objective,
+        lines: List<String>,
+    ) {
         val scoreboard = objective.scoreboard
         var lineNumber = lines.size
 
@@ -73,5 +79,4 @@ class GameScoreboardManager(private val arena: Arena) {
             lineNumber--
         }
     }
-
 }
