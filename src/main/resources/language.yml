@@ -31,6 +31,7 @@ arena:
   player-eliminated-void-attack: "{prefix_game} <yellow><green>{player}</green> was knocked into the void by <green>{killer}</green></yellow>"
   player-eliminated-void: "{prefix_game} <yellow><green>{player}</green> fell into the void</yellow>"
   player-eliminated-mob: "{prefix_game} <yellow><green>{player}</green> was killed by <green>{killer}</green></yellow>"
+  event-selected: "{prefix_game} <gray>Event: <yellow>{event}"
   errors:
     already-in-game: "{prefix_game} <red>You are already in this arena"
     arena-not-ready: "{prefix_game} <red>Arena not ready"
@@ -48,6 +49,8 @@ arena:
     countdown-3: "<yellow>{number}</yellow>"
     countdown-2: "<red>{number}</red>"
     countdown-1: "<red>{number}</red>"
+    event-select-subtitle: "<gray>Selecting event..."
+    event-reveal-subtitle: "<green>Event selected!"
 
   vote:
     classic-voted: "{prefix_game} <green>{player} voted for a <yellow><bold>classic</bold></yellow> game"
@@ -58,6 +61,7 @@ arena:
     day-voted: "{prefix_game} <green>{player} voted for <yellow><bold>day</bold></yellow>"
     already-voted-event: "{prefix_game} <red>You already voted for an event!"
     already-voted-time: "{prefix_game} <red>You already voted for the time!"
+    event-disabled: "{prefix_game} <red>This event is disabled"
 
 items:
   waiting:

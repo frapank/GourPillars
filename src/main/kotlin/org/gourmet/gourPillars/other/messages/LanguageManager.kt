@@ -3,6 +3,7 @@ package org.gourmet.gourPillars.other.messages
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.managers.ConfigManager
 import java.io.File
 
 class LanguageManager {
@@ -16,6 +17,7 @@ class LanguageManager {
             plugin.saveResource("language.yml", false)
         }
         langConfig = YamlConfiguration.loadConfiguration(langFile)
+        ConfigManager.applyMissingDefaults("language.yml", langConfig) { langConfig.save(langFile) }
         MessageData.load() // Load the messages right after initialization
     }
 

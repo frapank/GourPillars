@@ -12,6 +12,8 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.guis.VoteInventory
+import org.gourmet.gourPillars.managers.game.arena.EventSelector
+import org.gourmet.gourPillars.managers.game.arena.GameEvents
 import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
@@ -57,6 +59,11 @@ class GuiClickListener : Listener {
         }
 
         if (hasItemTag(item, "knockback-event")) {
+            if (!EventSelector.isEnabled(GameEvents.KNOCKBACK)) {
+                player.sendDynamicMessage(MessageData.ARENA_VOTE_EVENT_DISABLED)
+                return
+            }
+
             if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) ||
                 arena.noEventVote.contains(player)
             ) {
@@ -70,6 +77,11 @@ class GuiClickListener : Listener {
         }
 
         if (hasItemTag(item, "lava-event")) {
+            if (!EventSelector.isEnabled(GameEvents.LAVA)) {
+                player.sendDynamicMessage(MessageData.ARENA_VOTE_EVENT_DISABLED)
+                return
+            }
+
             if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) ||
                 arena.noEventVote.contains(player)
             ) {
@@ -83,6 +95,11 @@ class GuiClickListener : Listener {
         }
 
         if (hasItemTag(item, "border-event")) {
+            if (!EventSelector.isEnabled(GameEvents.BORDER)) {
+                player.sendDynamicMessage(MessageData.ARENA_VOTE_EVENT_DISABLED)
+                return
+            }
+
             if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) ||
                 arena.noEventVote.contains(player)
             ) {

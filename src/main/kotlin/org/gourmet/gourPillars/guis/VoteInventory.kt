@@ -12,6 +12,8 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.managers.game.arena.EventSelector
+import org.gourmet.gourPillars.managers.game.arena.GameEvents
 import org.gourmet.gourPillars.other.messages.MessageData
 import java.util.*
 
@@ -65,7 +67,6 @@ object VoteInventory {
         )
 
     fun displayInventory(player: Player) {
-        val mm = MiniMessage.miniMessage()
         val inventory: Inventory = Bukkit.createInventory(null, 27, MessageData.GUI_VOTE_TITLE)
 
         val glassPane =
@@ -75,9 +76,9 @@ object VoteInventory {
         for (i in 0 until 27) inventory.setItem(i, glassPane)
 
         inventory.setItem(10, noEvent)
-        inventory.setItem(11, lavaEvent)
-        inventory.setItem(12, knockbackEvent)
-        inventory.setItem(13, borderEvent)
+        if (EventSelector.isEnabled(GameEvents.LAVA)) inventory.setItem(11, lavaEvent)
+        if (EventSelector.isEnabled(GameEvents.KNOCKBACK)) inventory.setItem(12, knockbackEvent)
+        if (EventSelector.isEnabled(GameEvents.BORDER)) inventory.setItem(13, borderEvent)
         inventory.setItem(15, dayEvent)
         inventory.setItem(16, nightEvent)
 
