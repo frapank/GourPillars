@@ -57,6 +57,9 @@ object MessageData {
     lateinit var PARTY_PARTY_INFO: DynamicMessage
     lateinit var PARTY_PARTY_INFO_NO_MEMBERS: DynamicMessage
     lateinit var PARTY_PARTY_COMMAND_HELP: DynamicMessage
+    lateinit var PARTY_PARTY_PUBLIC: DynamicMessage
+    lateinit var PARTY_PARTY_PRIVATE: DynamicMessage
+    lateinit var PARTY_PARTY_BROADCAST: DynamicMessage
 
     // Party Errors
     lateinit var PARTY_ERRORS_USER_ALREADY_IN_PARTY: DynamicMessage
@@ -71,6 +74,11 @@ object MessageData {
     lateinit var PARTY_ERRORS_ALREADY_IN_PARTY: DynamicMessage
     lateinit var PARTY_ERRORS_TARGET_NOT_IN_PARTY: DynamicMessage
     lateinit var PARTY_ERRORS_INVITE_EXPIRED: DynamicMessage
+    lateinit var PARTY_ERRORS_TARGET_HAS_NO_PARTY: DynamicMessage
+    lateinit var PARTY_ERRORS_PARTY_NOT_PUBLIC: DynamicMessage
+    lateinit var PARTY_ERRORS_NO_PUBLIC_PERMISSION: DynamicMessage
+    lateinit var PARTY_ERRORS_ALREADY_PUBLIC: DynamicMessage
+    lateinit var PARTY_ERRORS_ALREADY_PRIVATE: DynamicMessage
 
     // Arena
     lateinit var ARENA_JOIN: DynamicMessage
@@ -158,6 +166,7 @@ object MessageData {
     lateinit var JOIN_LEAVE_ERRORS_USER_IN_PARTY: DynamicMessage
     lateinit var JOIN_LEAVE_ERRORS_ALREADY_BEST_ARENA: DynamicMessage
     lateinit var JOIN_LEAVE_ERRORS_WAIT: DynamicMessage
+    lateinit var JOIN_LEAVE_ERRORS_PARTY_TOO_BIG_FOR_ARENA: DynamicMessage
 
     fun load() {
         config = GourPillars.languageManager.getLanguageConfig()
@@ -223,6 +232,9 @@ object MessageData {
         PARTY_PARTY_INFO = getMessage(config, "party.party-info")
         PARTY_PARTY_INFO_NO_MEMBERS = getMessage(config, "party.party-info-no-members")
         PARTY_PARTY_COMMAND_HELP = getMessage(config, "party.command-help")
+        PARTY_PARTY_PUBLIC = getMessage(config, "party.party-public")
+        PARTY_PARTY_PRIVATE = getMessage(config, "party.party-private")
+        PARTY_PARTY_BROADCAST = getMessage(config, "party.party-broadcast")
 
         // Party Errors
         PARTY_ERRORS_USER_ALREADY_IN_PARTY = getMessage(config, "party.errors.user-already-in-party")
@@ -237,6 +249,11 @@ object MessageData {
         PARTY_ERRORS_ALREADY_IN_PARTY = getMessage(config, "party.errors.already-in-party")
         PARTY_ERRORS_TARGET_NOT_IN_PARTY = getMessage(config, "party.errors.target-not-in-party")
         PARTY_ERRORS_INVITE_EXPIRED = getMessage(config, "party.errors.party-invite-expired")
+        PARTY_ERRORS_TARGET_HAS_NO_PARTY = getMessage(config, "party.errors.target-has-no-party")
+        PARTY_ERRORS_PARTY_NOT_PUBLIC = getMessage(config, "party.errors.party-not-public")
+        PARTY_ERRORS_NO_PUBLIC_PERMISSION = getMessage(config, "party.errors.no-public-permission")
+        PARTY_ERRORS_ALREADY_PUBLIC = getMessage(config, "party.errors.already-public")
+        PARTY_ERRORS_ALREADY_PRIVATE = getMessage(config, "party.errors.already-private")
 
         // Arena Errors
         ARENA_ERRORS_ALREADY_IN_GAME = getMessage(config, "arena.errors.already-in-game")
@@ -283,6 +300,7 @@ object MessageData {
         JOIN_LEAVE_ERRORS_USER_IN_PARTY = getMessage(config, "join-leave-cmd.errors.user-in-party")
         JOIN_LEAVE_ERRORS_ALREADY_BEST_ARENA = getMessage(config, "join-leave-cmd.errors.already-best-arena")
         JOIN_LEAVE_ERRORS_WAIT = getMessage(config, "join-leave-cmd.errors.wait")
+        JOIN_LEAVE_ERRORS_PARTY_TOO_BIG_FOR_ARENA = getMessage(config, "join-leave-cmd.errors.party-too-big-for-arena")
     }
 
     private fun getMessage(
