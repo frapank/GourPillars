@@ -39,6 +39,15 @@ object Utils {
         }
     }
 
+    // Clears invulnerability, potion effects and fire so no state carries over between games/lobby
+    fun resetPlayerState(player: Player) {
+        player.isInvulnerable = false
+        player.fireTicks = 0
+        player.clearActivePotionEffects()
+        player.health = 20.0
+        player.foodLevel = 20
+    }
+
     fun giveLobbyItems(player: Player) {
         val inv = player.inventory
         inv.clear()
