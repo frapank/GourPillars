@@ -19,6 +19,13 @@ class QuitGameListener : Listener {
     @EventHandler
     fun quitListener(event: PlayerQuitEvent) {
         val player: Player = event.player
+
+        val spectatingArena = arenaManager.getArenaBySpectator(player)
+        if (spectatingArena != null) {
+            spectatingArena.removeSpectator(player)
+            return
+        }
+
         val arena: Arena = arenaManager.getArenaByPlayer(player) ?: return
         val gameRunnable: GameTask = arena.gameTask
 

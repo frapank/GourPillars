@@ -157,6 +157,11 @@ class GameTask(
                 secondsPassed = matchDurationSeconds
                 arena.gameState = State.STOPPED
 
+                arena.spectators.toList().forEach { spectator ->
+                    arena.removeSpectator(spectator)
+                    spectator.sendDynamicMessage(MessageData.SPECTATE_MATCH_ENDED)
+                }
+
                 // Teleport all play
                 arena.inGamePlayer.forEach { player ->
                     GourPillars.spawnManager.teleportPlayerToSpawn(player)
