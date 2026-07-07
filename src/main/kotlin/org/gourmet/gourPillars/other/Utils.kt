@@ -7,6 +7,7 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.World
 import org.bukkit.block.Block
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
@@ -37,25 +38,50 @@ object Utils {
     }
 
 
-    fun giveLobbyItems(player: org.bukkit.entity.Player) {
+    fun giveLobbyItems(player: Player) {
         val inv = player.inventory
         inv.clear()
 
-        inv.setItem(4, createNamedCompass("<gold>✩ <white><bold>ѕᴇʟᴇᴛᴛᴏʀᴇ ᴍᴏᴅᴀʟɪᴛᴀ' <gold>✩", "dm open serverselector", Material.COMPASS))
-        inv.setItem(6, createNamedCompass("<gold>✩ <white><bold>ᴄᴏѕᴍᴇᴛɪᴄɪ <gold>✩", null, Material.EMERALD))
-        inv.setItem(2, createNamedCompass("<gold>✩ <white><bold>ᴘᴀʀᴛɪᴛᴀ ᴄᴀѕᴜᴀʟᴇ <gold>✩", "joinrandom", Material.NETHER_STAR))
+        val section = GourPillars.instance.config.getConfigurationSection("lobby-items") ?: return
+        for (key in section.getKeys(false)) {
+            val itemSection = section.getConfigurationSection(key) ?: continue
+
+            val slot = itemSection.getInt("slot", -1)
+            if (slot !in 0..35) {
+                Logger.warning("Skipping lobby item '$key': invalid or missing slot")
+                continue
+            }
+
+            val materialName = itemSection.getString("material")
+            val material = materialName?.let { Material.matchMaterial(it) }
+            if (material == null) {
+                Logger.warning("Skipping lobby item '$key': unknown material '$materialName'")
+                continue
+            }
+
+            val name = itemSection.getString("name", "")!!
+            val lore = itemSection.getStringList("lore")
+            val command = itemSection.getString("command")
+
+            inv.setItem(slot, createLobbyItem(material, name, lore, command))
+        }
     }
 
-    private fun createNamedCompass(name: String, command: String?, material: Material): ItemStack {
-        val compass = ItemStack(material, 1)
-        val meta: ItemMeta = compass.itemMeta!!
+    private fun createLobbyItem(material: Material, name: String, lore: List<String>, command: String?): ItemStack {
+        val item = ItemStack(material, 1)
+        val meta: ItemMeta = item.itemMeta!!
+
         meta.displayName(name.toMini())
-        if (command != null) {
+        if (lore.isNotEmpty()) {
+            meta.lore(lore.map { it.toMini() })
+        }
+        if (!command.isNullOrBlank()) {
             val key = NamespacedKey(GourPillars.instance, "lobby_command")
             meta.persistentDataContainer.set(key, PersistentDataType.STRING, command)
         }
-        compass.itemMeta = meta
-        return compass
+
+        item.itemMeta = meta
+        return item
     }
 
 }
