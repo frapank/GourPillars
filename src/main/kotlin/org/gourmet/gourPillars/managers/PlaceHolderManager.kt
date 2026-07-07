@@ -4,8 +4,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
-import org.gourmet.gourPillars.managers.DatabaseManager.PlayerStats
-import org.gourmet.gourPillars.other.Logger
+import org.gourmet.gourPillars.database.PlayerStats
 
 class PlaceHolderManager : PlaceholderExpansion() {
     companion object {
@@ -15,7 +14,6 @@ class PlaceHolderManager : PlaceholderExpansion() {
     }
 
     private val arenaManager = GourPillars.arenaManager
-    private val databaseManager = GourPillars.databaseManager
 
     override fun onRequest(
         player: OfflinePlayer?,
@@ -24,7 +22,7 @@ class PlaceHolderManager : PlaceholderExpansion() {
         if (player !is Player) return ""
         val gamePlayer: Player = player
 
-        val stats: PlayerStats? = databaseManager.playersStats[gamePlayer]
+        val stats: PlayerStats? = GourPillars.playersStats[gamePlayer]
 
         return when (params.lowercase()) {
             "minplayers" -> {
