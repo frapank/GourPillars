@@ -15,7 +15,6 @@ import java.io.File
 import kotlin.random.Random
 
 class ArenaManager {
-
     var onlineArenas: MutableMap<String, Arena> = hashMapOf()
 
     private val arenasFolder = File(GourPillars.instance.dataFolder, "arenas")
@@ -25,9 +24,7 @@ class ArenaManager {
         loadArenas()
     }
 
-    fun getArenaByName(name: String): Arena? {
-        return onlineArenas[name]
-    }
+    fun getArenaByName(name: String): Arena? = onlineArenas[name]
 
     fun getArenaByPlayer(player: Player): Arena? {
         for (arena in onlineArenas.values) {
@@ -49,7 +46,11 @@ class ArenaManager {
     }
 
     fun shuffleArenas() {
-        onlineArenas = onlineArenas.entries.shuffled(Random.Default).associate { it.toPair() }.toMutableMap()
+        onlineArenas =
+            onlineArenas.entries
+                .shuffled(Random.Default)
+                .associate { it.toPair() }
+                .toMutableMap()
     }
 
     /**
@@ -86,7 +87,10 @@ class ArenaManager {
         }
     }
 
-    private fun loadArenaFile(file: File, arenaName: String): Arena? {
+    private fun loadArenaFile(
+        file: File,
+        arenaName: String,
+    ): Arena? {
         val config: FileConfiguration = YamlConfiguration.loadConfiguration(file)
 
         val worldName = config.getString("world")
@@ -94,20 +98,22 @@ class ArenaManager {
             Logger.warning("Skipping arena '$arenaName': missing 'world'")
             return null
         }
-        val world = Bukkit.getWorld(worldName) ?: run {
-            Logger.warning("Skipping arena '$arenaName': world '$worldName' is not loaded")
-            return null
-        }
+        val world =
+            Bukkit.getWorld(worldName) ?: run {
+                Logger.warning("Skipping arena '$arenaName': world '$worldName' is not loaded")
+                return null
+            }
 
         val isPrivateArena = config.getBoolean("private-arena", false)
         val minHeight = config.getInt("min-height")
         val minPlayer = config.getInt("min-players", 2)
         val slowFalling = config.getInt("slow-falling-time", 1)
 
-        val mainSpawn = config.getConfigurationSection("main-spawn")?.toLocation(world) ?: run {
-            Logger.warning("Skipping arena '$arenaName': missing or invalid 'main-spawn'")
-            return null
-        }
+        val mainSpawn =
+            config.getConfigurationSection("main-spawn")?.toLocation(world) ?: run {
+                Logger.warning("Skipping arena '$arenaName': missing or invalid 'main-spawn'")
+                return null
+            }
 
         val regionLocOne = config.getConfigurationSection("region.loc-1")?.toLocation(world)
         val regionLocTwo = config.getConfigurationSection("region.loc-2")?.toLocation(world)
@@ -142,7 +148,7 @@ class ArenaManager {
             regionLocOne,
             regionLocTwo,
             region,
-            arenaName
+            arenaName,
         )
     }
 
@@ -154,7 +160,7 @@ class ArenaManager {
             getDouble("y"),
             getDouble("z"),
             getDouble("yaw", 0.0).toFloat(),
-            getDouble("pitch", 0.0).toFloat()
+            getDouble("pitch", 0.0).toFloat(),
         )
     }
 
@@ -191,7 +197,10 @@ class ArenaManager {
         }
     }
 
-    private fun migrateLegacyArena(name: String, legacy: ConfigurationSection) {
+    private fun migrateLegacyArena(
+        name: String,
+        legacy: ConfigurationSection,
+    ) {
         val target = YamlConfiguration()
 
         target.set("world", legacy.getString("world", "world"))
@@ -213,7 +222,12 @@ class ArenaManager {
         Logger.info("Migrated legacy arena '$name' to arenas/$name.yml")
     }
 
-    private fun copyLocation(source: ConfigurationSection, sourcePath: String, target: YamlConfiguration, targetPath: String) {
+    private fun copyLocation(
+        source: ConfigurationSection,
+        sourcePath: String,
+        target: YamlConfiguration,
+        targetPath: String,
+    ) {
         if (!source.isSet("$sourcePath.x")) return
         target.set("$targetPath.x", source.getDouble("$sourcePath.x"))
         target.set("$targetPath.y", source.getDouble("$sourcePath.y"))

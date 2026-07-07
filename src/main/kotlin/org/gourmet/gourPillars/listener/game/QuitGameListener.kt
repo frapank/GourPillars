@@ -13,13 +13,11 @@ import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 import org.gourmet.gourPillars.task.game.gametasks.GameTask
 
 class QuitGameListener : Listener {
-
     private val arenaManager: ArenaManager = GourPillars.arenaManager
     private val partyManager = GourPillars.partyManager
 
     @EventHandler
     fun quitListener(event: PlayerQuitEvent) {
-
         val player: Player = event.player
         val arena: Arena = arenaManager.getArenaByPlayer(player) ?: return
         val gameRunnable: GameTask = arena.gameTask
@@ -30,7 +28,7 @@ class QuitGameListener : Listener {
 
         arena.removePlayer(player)
 
-        //If player quit during the game, he will die and leave the party
+        // If player quit during the game, he will die and leave the party
         if (arena.gameState == State.INGAME) {
             if (partyManager.isInParty(player)) {
                 partyManager.leaveParty(player)
@@ -39,11 +37,9 @@ class QuitGameListener : Listener {
                 gameRunnable.playerEliminated(player)
             }
 
-            arena.inGamePlayer.forEach {member ->
+            arena.inGamePlayer.forEach { member ->
                 member.sendDynamicMessage(MessageData.ARENA_PLAYER_LEFT, "{player}" to player.name)
             }
-
         }
-
     }
 }

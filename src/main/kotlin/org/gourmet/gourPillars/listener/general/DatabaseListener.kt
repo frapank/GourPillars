@@ -11,7 +11,6 @@ import org.gourmet.gourPillars.managers.DatabaseManager.PlayerStats
 import org.gourmet.gourPillars.other.toMini
 
 class DatabaseListener : Listener {
-
     private val databaseManager = GourPillars.databaseManager
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -28,9 +27,10 @@ class DatabaseListener : Listener {
         if (stats != null) {
             databaseManager.playersStats[player] = stats
         } else {
-            databaseManager.playersStats[player] = PlayerStats(
-                name = player.name
-            )
+            databaseManager.playersStats[player] =
+                PlayerStats(
+                    name = player.name,
+                )
         }
     }
 
@@ -47,7 +47,7 @@ class DatabaseListener : Listener {
 
         val reason = databaseManager.lastError ?: "unknown reason"
         player.sendMessage(
-            "<red>[GourPillars] Database unreachable ($reason). Player statistics are disabled.</red>".toMini()
+            "<red>[GourPillars] Database unreachable ($reason). Player statistics are disabled.</red>".toMini(),
         )
     }
 }

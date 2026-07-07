@@ -14,8 +14,10 @@ import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 
 object Utils {
-
-    fun setGlass(put: Boolean, location: Location) {
+    fun setGlass(
+        put: Boolean,
+        location: Location,
+    ) {
         val world: World = location.world ?: return
         val x = location.blockX
         val y = location.blockY - 1
@@ -36,7 +38,6 @@ object Utils {
             }
         }
     }
-
 
     fun giveLobbyItems(player: Player) {
         val inv = player.inventory
@@ -67,7 +68,12 @@ object Utils {
         }
     }
 
-    private fun createLobbyItem(material: Material, name: String, lore: List<String>, command: String?): ItemStack {
+    private fun createLobbyItem(
+        material: Material,
+        name: String,
+        lore: List<String>,
+        command: String?,
+    ): ItemStack {
         val item = ItemStack(material, 1)
         val meta: ItemMeta = item.itemMeta!!
 
@@ -83,7 +89,8 @@ object Utils {
         item.itemMeta = meta
         return item
     }
-
 }
+
 val miniMessage = MiniMessage.builder().build()
+
 fun String.toMini(): Component = miniMessage.deserialize(this)

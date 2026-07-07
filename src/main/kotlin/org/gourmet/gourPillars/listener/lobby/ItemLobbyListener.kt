@@ -23,9 +23,7 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.commands.BuildCMD
 import org.gourmet.gourPillars.managers.game.arena.State
 
-
 class ItemLobbyListener : Listener {
-
     private val arenaManager = GourPillars.arenaManager
 
     @EventHandler
@@ -53,8 +51,7 @@ class ItemLobbyListener : Listener {
             }
         }
 
-
-        //incomplete - Pot interaction
+        // incomplete - Pot interaction
         if (type == Material.FLOWER_POT || type.name.startsWith("POTTED_")) {
             if (isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
                 e.isCancelled = true
@@ -64,12 +61,15 @@ class ItemLobbyListener : Listener {
         if (action == Action.RIGHT_CLICK_BLOCK) {
             val item = e.item
             if (item != null && block.type == Material.FLOWER_POT &&
-                (item.type.name.contains("SAPLING", true) ||
-                    item.type.name.contains("FLOWER", true) ||
-                    item.type.name.contains("MUSHROOM", true) ||
-                    item.type.name.contains("FERN", true) ||
-                    item.type.name.contains("CACTUS", true) ||
-                    item.type.name.contains("BAMBOO", true))) {
+                (
+                    item.type.name.contains("SAPLING", true) ||
+                        item.type.name.contains("FLOWER", true) ||
+                        item.type.name.contains("MUSHROOM", true) ||
+                        item.type.name.contains("FERN", true) ||
+                        item.type.name.contains("CACTUS", true) ||
+                        item.type.name.contains("BAMBOO", true)
+                )
+            ) {
                 if (isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
                     e.isCancelled = true
                 }
@@ -102,7 +102,6 @@ class ItemLobbyListener : Listener {
         if (arena?.gameState == State.INGAME || arena?.gameState == State.STARTING) {
             e.isCancelled = true
         }
-
     }
 
     @EventHandler
@@ -121,7 +120,9 @@ class ItemLobbyListener : Listener {
 
     @EventHandler
     fun onItemFrameDamage(e: EntityDamageByEntityEvent) {
-        if (e.entity is ItemFrame && e.damager is Player && isSpawnWorld(e.entity.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.damager as Player))) {
+        if (e.entity is ItemFrame && e.damager is Player && isSpawnWorld(e.entity.location.world) &&
+            (!BuildCMD.buildSessionPlayers.contains(e.damager as Player))
+        ) {
             e.isCancelled = true
         }
     }
@@ -142,7 +143,9 @@ class ItemLobbyListener : Listener {
     @EventHandler
     fun onHangingPlace(event: HangingPlaceEvent) {
         val entity = event.entity
-        if ((entity is ItemFrame || entity is Painting || entity is GlowItemFrame) && isSpawnWorld(event.player!!.location.world) && !BuildCMD.buildSessionPlayers.contains(event.player)) {
+        if ((entity is ItemFrame || entity is Painting || entity is GlowItemFrame) && isSpawnWorld(event.player!!.location.world) &&
+            !BuildCMD.buildSessionPlayers.contains(event.player)
+        ) {
             event.isCancelled = true
         }
     }
@@ -152,9 +155,5 @@ class ItemLobbyListener : Listener {
         event.isCancelled = true
     }
 
-
-    private fun isSpawnWorld(eventWorld: World): Boolean {
-        return GourPillars.spawnManager.getConfiguredWorld() == eventWorld
-    }
-
+    private fun isSpawnWorld(eventWorld: World): Boolean = GourPillars.spawnManager.getConfiguredWorld() == eventWorld
 }

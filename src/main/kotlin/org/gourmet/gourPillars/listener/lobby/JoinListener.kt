@@ -14,11 +14,8 @@ import org.gourmet.gourPillars.managers.LevelBarManager
 import org.gourmet.gourPillars.other.Utils
 
 class JoinListener : Listener {
-
-
     @EventHandler
     fun joinEvent(event: PlayerJoinEvent) {
-
         object : BukkitRunnable() {
             override fun run() {
                 GourPillars.spawnManager.teleportPlayerToSpawn(event.player)
@@ -38,7 +35,6 @@ class JoinListener : Listener {
         }.runTaskLater(GourPillars.instance, 20 * 1)
 
         LevelBarManager.updateLevelInBar(event.player)
-
     }
 
     @EventHandler
@@ -49,9 +45,7 @@ class JoinListener : Listener {
         event.foodLevel = 20
     }
 
-    private fun isSpawnWorld(eventWorld: World): Boolean {
-        return GourPillars.spawnManager.getConfiguredWorld() == eventWorld
-    }
+    private fun isSpawnWorld(eventWorld: World): Boolean = GourPillars.spawnManager.getConfiguredWorld() == eventWorld
 
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
@@ -60,5 +54,4 @@ class JoinListener : Listener {
         }
         event.quitMessage = ""
     }
-
 }

@@ -16,55 +16,49 @@ import java.util.*
 
 @SuppressWarnings("deprecation")
 class GameDeathListener : Listener {
-
     private val arenaManager = GourPillars.arenaManager
 
-    //The void death case is handled in VoidKillListener.kt
+    // The void death case is handled in VoidKillListener.kt
     @EventHandler
     fun onDeath(event: PlayerDeathEvent) {
-
         val player: Player = event.player
 
         event.deathMessage = null
         instantRespawn(player)
 
-        val arena: Arena = arenaManager.getArenaByPlayer(player) ?: run {
-            GourPillars.spawnManager.teleportPlayerToSpawn(player)
-            return
-        }
+        val arena: Arena =
+            arenaManager.getArenaByPlayer(player) ?: run {
+                GourPillars.spawnManager.teleportPlayerToSpawn(player)
+                return
+            }
 
         val gameRunnable: GameTask = arena.gameTask
 
         if (arena.gameState != State.INGAME) return
 
         if (player.killer != null && player.killer is Player) {
-
-            //direct kill
+            // direct kill
             gameRunnable.playerEliminated(player, player.killer!!)
-
         } else if (event.entity.lastDamageCause?.cause == EntityDamageEvent.DamageCause.FALL) {
-
-            //fall damage
+            // fall damage
             gameRunnable.playerEliminatedFall(player)
-
         } else {
             gameRunnable.playerEliminated(player)
         }
-
     }
 
-    //get damager and victim in map
+    // get damager and victim in map
     @EventHandler
     fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
-
         val victim = event.entity
         if (victim !is Player) {
             return
         }
 
-        val arena: Arena = arenaManager.getArenaByPlayer(victim) ?: run {
-            return
-        }
+        val arena: Arena =
+            arenaManager.getArenaByPlayer(victim) ?: run {
+                return
+            }
 
         val damager = event.damager
         if (damager is Player) {
@@ -73,11 +67,12 @@ class GameDeathListener : Listener {
     }
 
     private fun instantRespawn(player: Player) {
-
-        Bukkit.getScheduler().runTaskLater(GourPillars.instance, Runnable {
-            player.spigot().respawn()
-        }, 1L)
-
+        Bukkit.getScheduler().runTaskLater(
+            GourPillars.instance,
+            Runnable {
+                player.spigot().respawn()
+            },
+            1L,
+        )
     }
-
 }
