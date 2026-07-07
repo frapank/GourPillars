@@ -1,4 +1,4 @@
-# GourPillars
+![PillarsLogo](./logo.png)
 
 GourPillars (full name **Gour Pillars Of Fortune**) is a Paper plugin implementing the "Pillars Of Fortune" last-man-standing minigame: players fight on a set of collapsing pillars while random items drop periodically, until a single survivor remains.
 
