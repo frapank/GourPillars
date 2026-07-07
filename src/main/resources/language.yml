@@ -90,20 +90,20 @@ party:
     - "<hover:show_text:'<white>/party join {player}'><click:run_command:/party join {player}><green><bold>CLICK HERE TO JOIN"
   party-info:
     - "<gradient:#c061cb:#3584e4>✦━━━ PARTY INFO ━━━✦</gradient>"
-    - "<gray>👑 Admin:</gray> <yellow>{partyAdmin}</yellow>"
+    - "<gray>Admin:</gray> <yellow>{partyAdmin}</yellow>"
     - "<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>"
-    - "<gray>👥 Members: {members}</gray>"
+    - "<gray>Members: {members}</gray>"
     - ""
     - "<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>"
   party-info-no-members:
     - "<gradient:#c061cb:#3584e4>✦━━━ PARTY INFO ━━━✦</gradient>"
-    - "<gray>👑 Admin:</gray> <yellow>{partyAdmin}</yellow>"
+    - "<gray>Admin:</gray> <yellow>{partyAdmin}</yellow>"
     - ""
     - "<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━━━✦</gradient>"
   command-help:
     - ""
     - "<gradient:#c061cb:#3584e4>━━━━━━━━━━━━━━━━━━━━━━━</gradient>"
-    - "<bold><gradient:#00ff99:#00ccff>☘ Party Commands ☘</gradient></bold>"
+    - "<bold><gradient:#00ff99:#00ccff>Party Commands</gradient></bold>"
     - ""
     - "<gold>/party create</gold> <gray>- <yellow>Create the party</yellow>"
     - "<gold>/party invite <player></gold> <gray>- <yellow>Invite a player</yellow>"
@@ -144,46 +144,44 @@ party:
 gui:
   # Vote GUI text/icons/layout live in config.yml (gui.vote) instead.
   stats:
-    title: "<light_purple>Vote 🌟"
+    title: "<light_purple>Player Statistics"
     item-filler-name: "<gray>────</gray>"
-    wins-name: "<gray>🏆 Wins</gray> "
+    wins-name: "<gray>Wins</gray>"
     wins-lore: "<yellow>{wins}</yellow>"
-    kills-name: "<gray>🏹 Kills</gray>"
+    kills-name: "<gray>Kills</gray>"
     kills-lore: "<yellow>{kills}</yellow>"
-    defeats-name: "<gray>⚔ Defeats<gray>"
+    defeats-name: "<gray>Defeats</gray>"
     defeats-lore: "<yellow>{defeats}</yellow>"
-    gamesplayed-name: "<gray>🎮 Games played</gray>"
+    gamesplayed-name: "<gray>Games played</gray>"
     gamesplayed-lore: "<yellow>{gamesPlayed}</yellow>"
-    winstreak-name: "<gray>🔥 WinStreak</gray>"
+    winstreak-name: "<gray>WinStreak</gray>"
     winstreak-lore: "<yellow>{winStreak}</yellow>"
 
 stats:
   stats-user:
     - "<gradient:#c061cb:#3584e4>✦━━━━━ Stats ━━━━━✦</gradient>"
     - ""
-    - "<gray>👤 Player<gray>:</gray> <yellow>{player}</yellow>"
-    - "<gray>💀 Deaths<gray>:</gray> <yellow>{deaths}</yellow>"
-    - "<gray>⚔ Defeats<gray>:</gray> <yellow>{defeats}</yellow>"
-    - "<gray>🏹 Kills:</gray> <yellow>{kills}</yellow>"
-    - "<gray>🏆 Wins:</gray> <yellow>{wins}</yellow>"
-    - "<gray>🎮 Games Played:</gray> <yellow>{gamesPlayed}</yellow>"
-    - "<gray>⭐ XP:</gray> <yellow>{xp}</yellow>"
-    - "<gray>⬆ Level:</gray> <yellow>{level}</yellow>"
+    - "<gray>Player:</gray> <yellow>{player}</yellow>"
+    - "<gray>Defeats:</gray> <yellow>{defeats}</yellow>"
+    - "<gray>Kills:</gray> <yellow>{kills}</yellow>"
+    - "<gray>Wins:</gray> <yellow>{wins}</yellow>"
+    - "<gray>Games Played:</gray> <yellow>{gamesPlayed}</yellow>"
+    - "<gray>XP:</gray> <yellow>{xp}</yellow>"
+    - "<gray>Level:</gray> <yellow>{level}</yellow>"
     - ""
     - "<gradient:#c061cb:#3584e4>✦━━━━━━━━━━━━━━━━✦</gradient>"
   stats-target:
     - ""
     - "<gradient:#ffcc00:#ff6699>✦━━━━━━━━━━━━━━━━━━━━━━━✦</gradient>"
-    - "<bold><gradient:#00ff99:#00ccff>📊 Player Statistics 📊</gradient></bold>"
+    - "<bold><gradient:#00ff99:#00ccff>Player Statistics</gradient></bold>"
     - ""
-    - "<yellow>👤 Player</yellow> <gray>»</gray> <green>{player}</green>"
-    - "<yellow>💀 Deaths</yellow> <gray>»</gray> <red>{deaths}</red>"
-    - "<yellow>⚔ Defeats</yellow> <gray>»</gray> <red>{defeats}</red>"
-    - "<yellow>🏹 Kills</yellow> <gray>»</gray> <green>{kills}</green>"
-    - "<yellow>🏆 Wins</yellow> <gray>»</gray> <aqua>{wins}</aqua>"
-    - "<yellow>🎮 Games Played</yellow> <gray>»</gray> <gold>{gamesPlayed}</gold>"
-    - "<yellow>⭐ XP</yellow> <gray>»</gray> <light_purple>{xp}</light_purple>"
-    - "<yellow>⬆ Level</yellow> <gray>»</gray> <blue>{level}</blue>"
+    - "<yellow>Player</yellow> <gray>»</gray> <green>{player}</green>"
+    - "<yellow>Defeats</yellow> <gray>»</gray> <red>{defeats}</red>"
+    - "<yellow>Kills</yellow> <gray>»</gray> <green>{kills}</green>"
+    - "<yellow>Wins</yellow> <gray>»</gray> <aqua>{wins}</aqua>"
+    - "<yellow>Games Played</yellow> <gray>»</gray> <gold>{gamesPlayed}</gold>"
+    - "<yellow>XP</yellow> <gray>»</gray> <light_purple>{xp}</light_purple>"
+    - "<yellow>Level</yellow> <gray>»</gray> <blue>{level}</blue>"
     - ""
     - "<gradient:#ff6699:#ffcc00>✦━━━━━━━━━━━━━━━━━━━━━━━✦</gradient>"
     - ""
@@ -208,17 +206,16 @@ spectate-cmd:
 
 scoreboard:
   lobby:
-    title: "<bold><red>❤ <#f6f5f4>Pillars Of Fortune <red>❤"
+    title: "<bold><red><#f6f5f4>Pillars Of Fortune"
     lines:
       - ""
       - "<#c061cb>Players: <#f6f5f4>%pillars_playersinmatch%"
       - "<#c061cb>Arenas: <#f6f5f4>%pillars_arenacount%"
       - "<#c061cb>Kills: <#f6f5f4>%pillars_kills%"
       - ""
-      - "<#62a0ea>play.frisknetwork.it"
 
   waiting:
-    title: "<bold><red>❤ <#f6f5f4>Pillars Of Fortune <red>❤"
+    title: "<bold><red><#f6f5f4>Pillars Of Fortune"
     lines:
       - ""
       - "<#c061cb>State"
@@ -228,10 +225,9 @@ scoreboard:
       - "<#cf6f5f4>(%pillars_waitingplayers%/%pillars_minplayers%)"
       - ""
       - "<#77767b>Map: %pillars_arenaname%"
-      - "<#62a0ea>play.frisknetwork.it"
 
   playing:
-    title: "<bold><red>❤ <#f6f5f4>Pillars Of Fortune <red>❤"
+    title: "<bold><red><#f6f5f4>Pillars Of Fortune"
     lines:
       - ""
       - "<#c061cb>Time: <#f6f5f4>%pillars_time%"
@@ -239,7 +235,6 @@ scoreboard:
       - "<#c061cb>Kills: <#f6f5f4>%pillars_ingamekills%"
       - ""
       - "<#77767b>Map: %pillars_arenaname%"
-      - "<#62a0ea>play.frisknetwork.it"
 
 
 cosmetics:
