@@ -17,6 +17,10 @@ object BuildCMD {
             player.sendMessage("<red>You must be in the lobby to use this command!".toMini())
             return
         }
+        if (GourPillars.arenaManager.isSpectating(player)) {
+            player.sendMessage("<red>Stop spectating first".toMini())
+            return
+        }
         if (buildSessionPlayers.contains(player)) {
             buildSessionPlayers.remove(player)
             player.sendMessage("<red>You are no longer in a build session".toMini())
