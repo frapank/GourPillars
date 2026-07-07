@@ -39,7 +39,7 @@ class MySQLDatabase private constructor(
                 config
                     .getString("database")
                     ?.trim()
-                    ?.takeIf { IDENTIFIER_REGEX.matches(it) } ?: invalid("database", "dream")
+                    ?.takeIf { IDENTIFIER_REGEX.matches(it) } ?: invalid("database", "gourpillars")
 
             val username =
                 config
