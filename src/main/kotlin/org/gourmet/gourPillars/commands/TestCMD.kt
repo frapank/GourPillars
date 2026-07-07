@@ -9,7 +9,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission
 @Command("test")
 @CommandPermission("gpillars.admin")
 object TestCMD {
-
     private val zipManager = ZipManager()
 
     @Subcommand("backup")

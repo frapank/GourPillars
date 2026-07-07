@@ -14,7 +14,6 @@ import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
 class ZipManager {
-
     private val backupFolder = File(GourPillars.instance.dataFolder, "backups").apply { mkdirs() }
 
     fun restoreBackup(worldName: String) {

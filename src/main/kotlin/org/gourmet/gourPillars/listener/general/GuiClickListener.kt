@@ -17,7 +17,6 @@ import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 
 class GuiClickListener : Listener {
-
     private val arenaManager = GourPillars.arenaManager
 
     @EventHandler
@@ -33,7 +32,6 @@ class GuiClickListener : Listener {
 
         if (event.hand != EquipmentSlot.HAND) return
         if (event.action.name.contains("RIGHT_CLICK")) {
-
             if (hasItemTag(item, "leave-item")) {
                 player.inventory.clear()
                 player.performCommand("leave")
@@ -44,13 +42,11 @@ class GuiClickListener : Listener {
                 VoteInventory.displayInventory(player)
                 event.isCancelled = true
             }
-
         }
     }
 
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent) {
-
         val player: Player = event.whoClicked as Player
         val arena = arenaManager.getArenaByPlayer(player) ?: return
 
@@ -61,7 +57,9 @@ class GuiClickListener : Listener {
         }
 
         if (hasItemTag(item, "knockback-event")) {
-            if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) || arena.noEventVote.contains(player)) {
+            if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) ||
+                arena.noEventVote.contains(player)
+            ) {
                 player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_EVENT)
                 return
             }
@@ -72,7 +70,9 @@ class GuiClickListener : Listener {
         }
 
         if (hasItemTag(item, "lava-event")) {
-            if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) || arena.noEventVote.contains(player)) {
+            if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) ||
+                arena.noEventVote.contains(player)
+            ) {
                 player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_EVENT)
                 return
             }
@@ -83,7 +83,9 @@ class GuiClickListener : Listener {
         }
 
         if (hasItemTag(item, "border-event")) {
-            if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) || arena.noEventVote.contains(player)) {
+            if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) ||
+                arena.noEventVote.contains(player)
+            ) {
                 player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_EVENT)
                 return
             }
@@ -94,7 +96,9 @@ class GuiClickListener : Listener {
         }
 
         if (hasItemTag(item, "no-event")) {
-            if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) || arena.noEventVote.contains(player)) {
+            if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) ||
+                arena.noEventVote.contains(player)
+            ) {
                 player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_EVENT)
                 return
             }
@@ -124,12 +128,10 @@ class GuiClickListener : Listener {
             arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_NIGHT_VOTED, "{player}" to player.name)
             return
         }
-
     }
 
     @EventHandler
     fun onDropItem(event: PlayerDropItemEvent) {
-
         val player = event.player
         val arena = arenaManager.getArenaByPlayer(player) ?: return
 
@@ -137,10 +139,12 @@ class GuiClickListener : Listener {
             event.isCancelled = true
             return
         }
-
     }
 
-    private fun hasItemTag(item: ItemStack, tag: String): Boolean {
+    private fun hasItemTag(
+        item: ItemStack,
+        tag: String,
+    ): Boolean {
         if (!item.hasItemMeta()) return false
 
         val meta = item.itemMeta ?: return false
@@ -149,5 +153,4 @@ class GuiClickListener : Listener {
 
         return hasTag
     }
-
 }

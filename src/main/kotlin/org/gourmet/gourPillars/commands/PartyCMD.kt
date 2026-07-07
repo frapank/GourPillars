@@ -13,7 +13,6 @@ import revxrsal.commands.annotation.Subcommand
 
 @Command("party", "p")
 object PartyCMD {
-
     private val partyManager = GourPillars.partyManager
     private val invitedPlayers: MutableMap<Player, Player> = mutableMapOf()
 
@@ -39,12 +38,16 @@ object PartyCMD {
     }
 
     @Subcommand("invite <target>")
-    fun inviteToParty(player: Player, target: Player) {
-        //todo automatic party creation & test party members size limit (test)
-        val party = partyManager.getPartyByPlayer(player) ?: run {
-            player.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_IN_PARTY)
-            return
-        }
+    fun inviteToParty(
+        player: Player,
+        target: Player,
+    ) {
+        // todo automatic party creation & test party members size limit (test)
+        val party =
+            partyManager.getPartyByPlayer(player) ?: run {
+                player.sendDynamicMessage(MessageData.PARTY_ERRORS_NOT_IN_PARTY)
+                return
+            }
         if (player == target) {
             player.sendDynamicMessage(MessageData.PARTY_ERRORS_CANT_INVITE_YOURSELF)
             return
@@ -64,18 +67,19 @@ object PartyCMD {
 
         object : BukkitRunnable() {
             override fun run() {
-
                 if (invitedPlayers.contains(target)) {
                     target.sendDynamicMessage(MessageData.PARTY_ERRORS_INVITE_EXPIRED)
                     invitedPlayers.remove(target)
                 }
-
             }
         }.runTaskLaterAsynchronously(GourPillars.instance, 20 * 20)
     }
 
     @Subcommand("remove <target>")
-    fun removeMember(player: Player, target: Player) {
+    fun removeMember(
+        player: Player,
+        target: Player,
+    ) {
         partyManager.kickPlayerFromParty(player, target)
     }
 
@@ -90,7 +94,10 @@ object PartyCMD {
     }
 
     @Subcommand("promote <target>")
-    fun partyPromote(player: Player, target: Player) {
+    fun partyPromote(
+        player: Player,
+        target: Player,
+    ) {
         partyManager.promote(player, target)
     }
 
@@ -99,19 +106,23 @@ object PartyCMD {
         val party = partyManager.getPartyByPlayer(player) ?: return
 
         if (partyManager.isInParty(player)) {
-            val membersList = party.members.filter { it != party.partyAdmin }
-                .joinToString(" <gray>|</gray> ") { "<yellow>${it.name}</yellow>" }
+            val membersList =
+                party.members
+                    .filter { it != party.partyAdmin }
+                    .joinToString(" <gray>|</gray> ") { "<yellow>${it.name}</yellow>" }
 
             if (membersList.isNotEmpty()) {
-
-                player.sendDynamicMessage(MessageData.PARTY_PARTY_INFO,
+                player.sendDynamicMessage(
+                    MessageData.PARTY_PARTY_INFO,
                     "{partyAdmin}" to party.partyAdmin.name,
-                    "{members}" to membersList)
+                    "{members}" to membersList,
+                )
             } else {
-                player.sendDynamicMessage(MessageData.PARTY_PARTY_INFO_NO_MEMBERS,
-                    "{partyAdmin}" to party.partyAdmin.name)
+                player.sendDynamicMessage(
+                    MessageData.PARTY_PARTY_INFO_NO_MEMBERS,
+                    "{partyAdmin}" to party.partyAdmin.name,
+                )
             }
-
         } else {
             player.sendDynamicMessage(MessageData.PARTY_ERRORS_PLAYER_NOT_IN_PARTY)
         }
@@ -123,4 +134,3 @@ object PartyCMD {
         player.sendDynamicMessage(MessageData.PARTY_PARTY_COMMAND_HELP)
     }
 }
-

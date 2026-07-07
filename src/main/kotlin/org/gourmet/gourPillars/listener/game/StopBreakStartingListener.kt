@@ -7,7 +7,6 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.State
 
 class StopBreakStartingListener : Listener {
-
     private val arenaManager = GourPillars.arenaManager
 
     @EventHandler
@@ -19,6 +18,5 @@ class StopBreakStartingListener : Listener {
             event.isCancelled = true
             return
         }
-
     }
 }

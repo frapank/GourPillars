@@ -8,12 +8,10 @@ import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
 
 class BorderLimitListener : Listener {
-
     private val arenaManager = GourPillars.arenaManager
 
     @EventHandler
     fun onBlockPlace(event: BlockPlaceEvent) {
-
         val player = event.player
         val arena = arenaManager.getArenaByPlayer(player) ?: return
 
