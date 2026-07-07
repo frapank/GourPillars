@@ -20,6 +20,7 @@ import org.gourmet.gourPillars.task.CountDownTask
 import org.gourmet.gourPillars.task.ResetArenaTask
 import org.gourmet.gourPillars.task.game.gametasks.GameTask
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.ArrayList
 
 class Arena(
@@ -41,6 +42,7 @@ class Arena(
     val resetArenaTask = ResetArenaTask(this)
     val inGamePlayer: MutableSet<Player> = mutableSetOf() // Death and alive ( You can find alivePlayer in GameTask.java )
     val playedPlayerNames: MutableSet<String> = mutableSetOf() // general played ( Death, quitted, etc... ), used in databases
+    val spectators: MutableSet<Player> = ConcurrentHashMap.newKeySet() // read from the async chat thread in ChatViewListener
     var gameState: State = State.WAITING
     val spawnManager = GourPillars.spawnManager
     val lastDamagerMap = mutableMapOf<UUID, UUID>()
@@ -59,6 +61,10 @@ class Arena(
 
     // Utils
     fun addPlayer(player: Player) {
+        if (GourPillars.arenaManager.isSpectating(player)) {
+            player.sendDynamicMessage(MessageData.SPECTATE_ERRORS_ALREADY_SPECTATING)
+            return
+        }
         if (isPrivate) {
             player.sendMessage("you can't join")
             return
@@ -185,6 +191,39 @@ class Arena(
             sendDynamicMessageToPlayerInGame(MessageData.ARENA_PLAYER_NEEDED, "{playerRequired}" to playerRequired.toString())
             return
         }
+    }
+
+    fun addSpectator(player: Player) {
+        player.teleport(spawnMainLocation)
+        player.gameMode = GameMode.SPECTATOR
+        if (player.gameMode != GameMode.SPECTATOR) {
+            Logger.warning(
+                "Could not switch ${player.name} to spectator mode: gamemode is still ${player.gameMode} " +
+                    "right after setting it. Another plugin is likely cancelling PlayerGameModeChangeEvent " +
+                    "(check for a per-world gamemode rule in Multiverse-Core, or a gamemode restriction in your permissions plugin).",
+            )
+        }
+        Utils.resetPlayerState(player)
+        player.inventory.clear()
+        spectators.add(player)
+    }
+
+    fun removeSpectator(player: Player) {
+        spectators.remove(player)
+        if (player.gameMode == GameMode.SPECTATOR) {
+            player.spectatorTarget = null
+        }
+        spawnManager.teleportPlayerToSpawn(player)
+        Utils.resetPlayerState(player)
+        Utils.giveLobbyItems(player)
+        GourPillars.lobbyScoreboardManager.setScoreboard(player)
+    }
+
+    fun sendDynamicMessageToSpectators(
+        message: DynamicMessage,
+        vararg pairs: Pair<String, String>,
+    ) {
+        spectators.forEach { spectator -> spectator.sendDynamicMessage(message, *pairs) }
     }
 
     private fun reloadWaitingScoreboard() {
