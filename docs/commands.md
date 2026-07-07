@@ -9,10 +9,13 @@
 | `/leave`                   | -                    | Leave the current arena               |
 | `/stats`                   | -                    | Show your own player statistics       |
 | `/stats <target>`          | `gpillars.stats.other` | Show another player's statistics    |
+| `/spec <player\|arena>`    | `gpillars.spectate` | Spectate an in-game player or arena (see [features.md](features.md)) |
 | `/party`, `/p`              | see below            | Party management (see `/party help`)  |
 | `/edit`                    | `gpillars.admin`     | Arena editing session                 |
 | `/build`                   | `gpillars.build`     | Toggle a build session in the lobby   |
 | `/setspawn`                 | `gpillars.admin`     | Set the lobby spawn to your location  |
+
+`/leave` also exits spectating, in addition to leaving an arena.
 
 ## Party commands & permissions
 
