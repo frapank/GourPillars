@@ -26,7 +26,7 @@ class GameScoreboardManager(
     fun setWaitingBoard(player: Player) {
         langCfg = GourPillars.languageManager.getLanguageConfig()
         val scoreboard = Bukkit.getScoreboardManager().newScoreboard
-        val title = PlaceholderAPI.setPlaceholders(player, langCfg.getString("scoreboard.waiting.title", "Pillars")!!)
+        val title = PlaceholderAPI.setPlaceholders(player, langCfg.getString("scoreboard.waiting.title", "Pillars Of Fortune")!!)
         val objective = scoreboard.registerNewObjective("lobby", "dummy", miniMessage.deserialize(title))
         objective.displaySlot = DisplaySlot.SIDEBAR
 
@@ -43,7 +43,7 @@ class GameScoreboardManager(
         if (arena.gameState != State.INGAME) return
 
         val scoreboard = Bukkit.getScoreboardManager().newScoreboard
-        val title = PlaceholderAPI.setPlaceholders(player, langCfg.getString("scoreboard.playing.title", "Pillars")!!)
+        val title = PlaceholderAPI.setPlaceholders(player, langCfg.getString("scoreboard.playing.title", "Pillars Of Fortune")!!)
         val objective = scoreboard.registerNewObjective("game", "dummy", miniMessage.deserialize(title))
         objective.displaySlot = DisplaySlot.SIDEBAR
 
