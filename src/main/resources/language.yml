@@ -128,8 +128,7 @@ party:
     party-invite-expired: "{prefix_party} <red>The party invite has expired"
 
 gui:
-  # The vote GUI's name/lore/icons/layout are configured in config.yml
-  # (gui.vote) instead, since they're tied to slots, materials and event ids.
+  # Vote GUI text/icons/layout live in config.yml (gui.vote) instead.
   stats:
     title: "<light_purple>Vote 🌟"
     item-filler-name: "<gray>────</gray>"

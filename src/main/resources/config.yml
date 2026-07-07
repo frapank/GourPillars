@@ -124,26 +124,21 @@ waiting-items:
     slot: 8
     material: RED_DYE
 
-# The GUI opened when a player clicks the "vote" waiting item, used to vote
-# for an event and for day/night. Also drives the slot-machine style
-# event-selection-animation below, which reuses each item's name as the
-# scrolling/reveal title.
+# GUI opened by the "vote" waiting item, to vote for an event and day/night.
+# Item names are reused by the event-selection-animation below.
 gui:
   vote:
     title: "<light_purple>Vote 🌟"
-    # Inventory size, must be a multiple of 9 between 9 and 54.
+    # Must be a multiple of 9, between 9 and 54.
     size: 27
     filler:
       material: GRAY_STAINED_GLASS_PANE
       name: "<gray>────</gray>"
-    # Each key below is a fixed internal id that also determines what the item
-    # does when clicked, so don't rename them; you can still freely change
-    # slot, material, name and lore, or remove an entry entirely to hide it
-    # (lava-event/knockback-event/border-event are also hidden automatically
-    # when their event is disabled under game.events).
-    # "material" is any Bukkit material (https://jd.papermc.io/paper/1.21/org/bukkit/Material.html).
-    # Set it to PLAYER_HEAD and add "head-texture" (a base64 skin texture
-    # value, e.g. from https://minecraft-heads.com) for a custom head icon.
+    # Each key is a fixed id, don't rename them. Slot/material/name/lore are free
+    # to change; removing an entry hides it (lava/knockback/border-event also
+    # auto-hide when their event is disabled under game.events).
+    # "material" accepts any Bukkit material, or PLAYER_HEAD with a "head-texture"
+    # (base64 skin value, e.g. from minecraft-heads.com) for a custom head.
     items:
       no-event:
         slot: 10
