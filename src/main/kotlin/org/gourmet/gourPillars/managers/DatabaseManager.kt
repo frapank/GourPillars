@@ -10,7 +10,6 @@ import java.io.File
 import java.sql.SQLException
 
 class DatabaseManager {
-
     private data class DatabaseSettings(
         val host: String,
         val port: Int,
@@ -19,7 +18,7 @@ class DatabaseManager {
         val password: String,
         val useSsl: Boolean,
         val allowPublicKeyRetrieval: Boolean,
-        val poolSize: Int
+        val poolSize: Int,
     )
 
     private companion object {
@@ -47,30 +46,44 @@ class DatabaseManager {
         }
         val config = YamlConfiguration.loadConfiguration(file)
 
-        val host = config.getString("host")?.trim()?.takeIf { it.isNotBlank() }
-            ?: invalid("host", "localhost")
+        val host =
+            config.getString("host")?.trim()?.takeIf { it.isNotBlank() }
+                ?: invalid("host", "localhost")
 
-        val port = config.getInt("port", 3306)
-            .takeIf { it in 1..65535 } ?: invalid("port", 3306)
+        val port =
+            config
+                .getInt("port", 3306)
+                .takeIf { it in 1..65535 } ?: invalid("port", 3306)
 
-        val database = config.getString("database")?.trim()
-            ?.takeIf { IDENTIFIER_REGEX.matches(it) } ?: invalid("database", "dream")
+        val database =
+            config
+                .getString("database")
+                ?.trim()
+                ?.takeIf { IDENTIFIER_REGEX.matches(it) } ?: invalid("database", "dream")
 
-        val username = config.getString("username")?.trim()
-            ?.takeIf { IDENTIFIER_REGEX.matches(it) } ?: invalid("username", "root")
+        val username =
+            config
+                .getString("username")
+                ?.trim()
+                ?.takeIf { IDENTIFIER_REGEX.matches(it) } ?: invalid("username", "root")
 
         val password = config.getString("password") ?: ""
 
         val useSsl = config.getBoolean("use-ssl", false)
         val allowPublicKeyRetrieval = config.getBoolean("allow-public-key-retrieval", true)
 
-        val poolSize = config.getInt("pool-size", 10)
-            .takeIf { it in 1..50 } ?: invalid("pool-size", 10)
+        val poolSize =
+            config
+                .getInt("pool-size", 10)
+                .takeIf { it in 1..50 } ?: invalid("pool-size", 10)
 
         return DatabaseSettings(host, port, database, username, password, useSsl, allowPublicKeyRetrieval, poolSize)
     }
 
-    private fun <T> invalid(field: String, default: T): T {
+    private fun <T> invalid(
+        field: String,
+        default: T,
+    ): T {
         Logger.warning("Missing or invalid value for '$field' in database.yml, using default: $default")
         return default
     }
@@ -105,7 +118,8 @@ class DatabaseManager {
         val databaseCreateQuery =
             "CREATE DATABASE IF NOT EXISTS `${settings.database}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
 
-        val createTableQuery = """
+        val createTableQuery =
+            """
             CREATE TABLE IF NOT EXISTS pillars_stats (
                 name VARCHAR(255) NOT NULL PRIMARY KEY,
                 kills INT DEFAULT 0,
@@ -116,7 +130,7 @@ class DatabaseManager {
                 bestWinStreak INT DEFAULT 0,
                 currentWinStreak INT DEFAULT 0
             )
-        """.trimIndent()
+            """.trimIndent()
 
         try {
             createHikariDataSource(jdbcUrl(includeDatabase = false)).use { tempDataSource ->
@@ -170,16 +184,17 @@ class DatabaseManager {
         level: Int,
         playedGame: Int,
         bestWinStreak: Int,
-        currentWinStreak: Int
+        currentWinStreak: Int,
     ) {
         if (!isOnline) return
-        val query = """
+        val query =
+            """
             INSERT INTO pillars_stats (name, kills, wins, xp, level, playedGame, bestWinStreak, currentWinStreak)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
                 kills = ?, wins = ?, xp = ?, level = ?,
                 playedGame = ?, bestWinStreak = ?, currentWinStreak = ?
-        """.trimIndent()
+            """.trimIndent()
 
         try {
             dataSource.connection.use { conn ->
@@ -226,7 +241,7 @@ class DatabaseManager {
                                 level = rs.getInt("level"),
                                 playedGame = rs.getInt("playedGame"),
                                 bestWinStreak = rs.getInt("bestWinStreak"),
-                                currentWinStreak = rs.getInt("currentWinStreak")
+                                currentWinStreak = rs.getInt("currentWinStreak"),
                             )
                         }
                     }
@@ -246,6 +261,6 @@ class DatabaseManager {
         var level: Int = 0,
         var playedGame: Int = 0,
         var bestWinStreak: Int = 0,
-        var currentWinStreak: Int = 0
+        var currentWinStreak: Int = 0,
     )
 }

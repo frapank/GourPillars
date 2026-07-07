@@ -8,8 +8,12 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.Arena
 
 class BorderHandler : GameHandler {
+    private data class BorderState(
+        val centerX: Double,
+        val centerZ: Double,
+        val size: Double,
+    )
 
-    private data class BorderState(val centerX: Double, val centerZ: Double, val size: Double)
     private val originalStates = mutableMapOf<Arena, BorderState>()
     private val tasks = mutableMapOf<Arena, BukkitTask>()
     private val plugin = GourPillars.instance
@@ -22,41 +26,49 @@ class BorderHandler : GameHandler {
         val world = arena.region.world
         val border = world.worldBorder
 
-        originalStates[arena] = BorderState(
-            border.center.x, border.center.z, border.size
-        )
+        originalStates[arena] =
+            BorderState(
+                border.center.x,
+                border.center.z,
+                border.size,
+            )
 
         val cx = (arena.region.minX + arena.region.maxX) / 2.0
         val cz = (arena.region.minZ + arena.region.maxZ) / 2.0
         border.center = Location(world, cx, 0.0, cz)
 
-        val initialSize = maxOf(
-            arena.region.maxX - arena.region.minX,
-            arena.region.maxZ - arena.region.minZ
-        ).toDouble() + 2.0
+        val initialSize =
+            maxOf(
+                arena.region.maxX - arena.region.minX,
+                arena.region.maxZ - arena.region.minZ,
+            ).toDouble() + 2.0
         border.size = initialSize
         border.damageBuffer = 0.0
         border.damageAmount = damageAmount
 
-        val task = object : BukkitRunnable() {
-            override fun run() {
-                if (!arena.gameTask.running) {
-                    cancel()
-                    return
-                }
-                if (border.size <= finalSize) {
-                    cancel()
-                    return
-                }
+        val task =
+            object : BukkitRunnable() {
+                override fun run() {
+                    if (!arena.gameTask.running) {
+                        cancel()
+                        return
+                    }
+                    if (border.size <= finalSize) {
+                        cancel()
+                        return
+                    }
 
-                border.size = border.size - 1.0
-            }
-        }.runTaskTimer(plugin, 0L, shrinkIntervalSec * 20L)
+                    border.size = border.size - 1.0
+                }
+            }.runTaskTimer(plugin, 0L, shrinkIntervalSec * 20L)
 
         tasks[arena] = task
     }
 
-    override fun onStop(arena: Arena, winner: Player?) {
+    override fun onStop(
+        arena: Arena,
+        winner: Player?,
+    ) {
         tasks.remove(arena)?.cancel()
 
         val world = arena.region.world
@@ -66,5 +78,4 @@ class BorderHandler : GameHandler {
             border.size = orig.size
         }
     }
-
 }

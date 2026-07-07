@@ -6,8 +6,7 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.ArenaManager
 
 class ShowPlayerTask : BukkitRunnable() {
-
-    val arenaManager: ArenaManager = GourPillars.arenaManager;
+    val arenaManager: ArenaManager = GourPillars.arenaManager
 
     override fun run() {
         for (viewer in Bukkit.getOnlinePlayers()) {
