@@ -10,6 +10,10 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.api.events.GourPillarsGameEndEvent
+import org.gourmet.gourPillars.api.events.GourPillarsGameStartEvent
+import org.gourmet.gourPillars.api.events.GourPillarsPlayerFinishEvent
+import org.gourmet.gourPillars.api.events.GourPillarsPlayerKillEvent
 import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.GameEvents
 import org.gourmet.gourPillars.managers.game.arena.State
@@ -34,6 +38,11 @@ class GameTask(
     private var currentEventHandler: GameHandler? = null
     private var gameEnded = false
 
+    // alivePlayer/playerKills are only set once the match has actually started (see run()).
+    fun aliveCount(): Int? = if (::alivePlayer.isInitialized) alivePlayer.size else null
+
+    fun killsOf(player: Player): Int? = if (::playerKills.isInitialized) playerKills[player] else null
+
     override fun run() {
         // Init game
         running = true
@@ -54,6 +63,7 @@ class GameTask(
 
         // Start event if present
         currentEventHandler?.onStart(arena)
+        Bukkit.getPluginManager().callEvent(GourPillarsGameStartEvent(arena.name))
 
         object : BukkitRunnable() {
             override fun run() {
@@ -148,11 +158,17 @@ class GameTask(
                     "{map}" to arena.name,
                 )
             }
+
+            Bukkit.getPluginManager().callEvent(
+                GourPillarsPlayerFinishEvent(arena.name, winner, playerKills[winner] ?: 0, won = true),
+            )
+
         }
 
         currentEventHandler?.onStop(arena, winner)
         currentEventHandler = null
         arena.gameEvent = null
+        Bukkit.getPluginManager().callEvent(GourPillarsGameEndEvent(arena.name, winner))
 
         // Arena reset
         object : BukkitRunnable() {
@@ -226,6 +242,7 @@ class GameTask(
         player.gameMode = GameMode.SPECTATOR
         arena.reloadInGameScoreboard()
         player.teleport(arena.spawnMainLocation)
+        Bukkit.getPluginManager().callEvent(GourPillarsPlayerFinishEvent(arena.name, player, kills ?: 0, won = false))
 
         // Play death sound to all players
         arena.inGamePlayer.forEach { playerSound ->
@@ -269,6 +286,7 @@ class GameTask(
         eliminationProcess(player)
         StatsUpdater.looseStreak(player)
         StatsUpdater.updateKill(killer)
+        Bukkit.getPluginManager().callEvent(GourPillarsPlayerKillEvent(arena.name, killer, player))
 
         // Send eliminated message
         arena.inGamePlayer.forEach { receiverPlayer ->
@@ -313,6 +331,7 @@ class GameTask(
         eliminationProcess(player)
         StatsUpdater.updateKill(killer)
         StatsUpdater.looseStreak(player)
+        Bukkit.getPluginManager().callEvent(GourPillarsPlayerKillEvent(arena.name, killer, player))
 
         // Send eliminated message
         arena.inGamePlayer.forEach { receiverPlayer ->
