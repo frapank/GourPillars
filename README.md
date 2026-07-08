@@ -31,6 +31,7 @@ See [docs/features.md](docs/features.md) for details on each.
 - [Database (`database.yml`)](docs/database.md)
 - [Setting Up an Arena](docs/arenas.md)
 - [Placeholders](docs/placeholders.md)
+- [API for other plugins](docs/api.md)
 
 ## Building from Source
 
