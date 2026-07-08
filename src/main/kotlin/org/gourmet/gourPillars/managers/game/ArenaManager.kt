@@ -12,10 +12,12 @@ import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.other.Logger
 import org.gourmet.gourPillars.other.Region
 import java.io.File
+import java.util.Collections
 import kotlin.random.Random
 
 class ArenaManager {
-    var onlineArenas: MutableMap<String, Arena> = hashMapOf()
+    @Volatile
+    var onlineArenas: MutableMap<String, Arena> = Collections.synchronizedMap(LinkedHashMap())
 
     private val arenasFolder = File(GourPillars.instance.dataFolder, "arenas")
 
@@ -26,41 +28,41 @@ class ArenaManager {
 
     fun getArenaByName(name: String): Arena? = onlineArenas[name]
 
-    fun getArenaByPlayer(player: Player): Arena? {
-        for (arena in onlineArenas.values) {
-            if (arena.containPlayer(player)) {
-                return arena
-            }
+    fun getArenaByPlayer(player: Player): Arena? =
+        synchronized(onlineArenas) {
+            onlineArenas.values.firstOrNull { it.containPlayer(player) }
         }
 
-        return null
-    }
-
-    fun isPlayerInArena(player: Player): Boolean {
-        for ((_, arena) in onlineArenas) {
-            if (arena.inGamePlayer.contains(player)) {
-                return true
-            }
+    fun isPlayerInArena(player: Player): Boolean =
+        synchronized(onlineArenas) {
+            onlineArenas.values.any { it.inGamePlayer.contains(player) }
         }
-        return false
-    }
 
-    fun getArenaBySpectator(player: Player): Arena? = onlineArenas.values.find { it.spectators.contains(player) }
+    fun getArenaBySpectator(player: Player): Arena? =
+        synchronized(onlineArenas) {
+            onlineArenas.values.find { it.spectators.contains(player) }
+        }
 
     fun isSpectating(player: Player): Boolean = getArenaBySpectator(player) != null
 
     // Excludes private arenas so /spec can't be used to discover or watch them.
-    fun getSpectatableArena(name: String): Arena? = onlineArenas.values.find { !it.isPrivate && it.name.equals(name, ignoreCase = true) }
+    fun getSpectatableArena(name: String): Arena? =
+        synchronized(onlineArenas) {
+            onlineArenas.values.find { !it.isPrivate && it.name.equals(name, ignoreCase = true) }
+        }
 
     // Private arenas are excluded: nothing can ever join one (see Arena.addPlayer).
-    fun maxArenaCapacity(): Int = onlineArenas.values.filterNot { it.isPrivate }.maxOfOrNull { it.maxPlayer } ?: 0
+    fun maxArenaCapacity(): Int =
+        synchronized(onlineArenas) {
+            onlineArenas.values.filterNot { it.isPrivate }.maxOfOrNull { it.maxPlayer } ?: 0
+        }
 
     fun shuffleArenas() {
-        onlineArenas =
-            onlineArenas.entries
-                .shuffled(Random.Default)
-                .associate { it.toPair() }
-                .toMutableMap()
+        val shuffled =
+            synchronized(onlineArenas) {
+                onlineArenas.entries.shuffled(Random.Default).associate { it.toPair() }
+            }
+        onlineArenas = Collections.synchronizedMap(LinkedHashMap(shuffled))
     }
 
     /**
