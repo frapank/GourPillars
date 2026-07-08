@@ -1,4 +1,5 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.Permission.Default
+import org.gradle.api.plugins.JavaPlugin
 
 plugins {
     kotlin("jvm") version "2.4.0"
@@ -18,6 +19,7 @@ repositories {
     maven {
         url = uri("https://repo.extendedclip.com/releases/")
     }
+    maven("https://repo.papermc.io/repository/maven-public/")
 }
 
 dependencies {
@@ -28,6 +30,27 @@ dependencies {
     implementation("io.github.revxrsal:lamp.common:4.0.0-rc.17")
     implementation("io.github.revxrsal:lamp.bukkit:4.0.0-rc.17")
     implementation("io.github.revxrsal:lamp.brigadier:4.0.0-rc.17")
+
+    testImplementation("me.clip:placeholderapi:2.12.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.108.0")
+    // MockBukkit ships its own Paper server mock; a plain paper-api is needed to compile/run
+    // tests since paperweight's server substitution is restricted to compileOnly below.
+    testImplementation("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    testImplementation("io.leangen.geantyref:geantyref:1.3.15")
+    testImplementation("org.bstats:bstats-base:3.1.0")
+    testImplementation("org.bstats:bstats-bukkit:3.1.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+// MockBukkit is incompatible with paperweight's real (mojang-mapped) server implementation on
+// the test classpath: https://docs.mockbukkit.org/docs/en/user_guide/advanced/paperweight
+paperweight {
+    addServerDependencyTo = configurations.named(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME).map { setOf(it) }
 }
 
 val targetJavaVersion = 21
