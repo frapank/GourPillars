@@ -231,7 +231,6 @@ class GameTask(
         arena.inGamePlayer.forEach { playerSound ->
             playerSound.playSound(playerSound.location, Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 2f)
         }
-
     }
 
     // general elimination
