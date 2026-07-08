@@ -16,7 +16,10 @@ import java.util.zip.ZipOutputStream
 class ZipManager {
     private val backupFolder = File(GourPillars.instance.dataFolder, "backups").apply { mkdirs() }
 
-    fun restoreBackup(worldName: String) {
+    fun restoreBackup(
+        worldName: String,
+        onComplete: () -> Unit = {},
+    ) {
         val backupFile = File(backupFolder, "$worldName-backup.zip")
         val worldFolder = File(Bukkit.getWorldContainer(), worldName)
 
@@ -30,51 +33,56 @@ class ZipManager {
             Bukkit.unloadWorld(world, false)
         }
 
-        worldFolder.deleteRecursively()
-        Thread.sleep(1000)
-
-        ZipInputStream(FileInputStream(backupFile)).use { zipIn ->
-            var entry: ZipEntry? = zipIn.nextEntry
-            while (entry != null) {
-                val file = File(worldFolder, entry.name)
-                if (entry.isDirectory) {
-                    file.mkdirs()
-                } else {
-                    file.parentFile.mkdirs()
-                    file.outputStream().use { zipIn.copyTo(it) }
-                }
-                zipIn.closeEntry()
-                entry = zipIn.nextEntry
-            }
-        }
-
-        File(worldFolder, "session.lock").delete()
-
         object : BukkitRunnable() {
             override fun run() {
-                val newWorld = Bukkit.createWorld(WorldCreator(worldName))
-                val spawn = newWorld?.spawnLocation
+                worldFolder.deleteRecursively()
+                Thread.sleep(1000)
 
-                if (newWorld != null && spawn != null) {
-                    val chunkX = spawn.blockX / 16
-                    val chunkZ = spawn.blockZ / 16
-                    for (x in -2..2) {
-                        for (z in -2..2) {
-                            newWorld.loadChunk(chunkX + x, chunkZ + z)
+                ZipInputStream(FileInputStream(backupFile)).use { zipIn ->
+                    var entry: ZipEntry? = zipIn.nextEntry
+                    while (entry != null) {
+                        val file = File(worldFolder, entry.name)
+                        if (entry.isDirectory) {
+                            file.mkdirs()
+                        } else {
+                            file.parentFile.mkdirs()
+                            file.outputStream().use { zipIn.copyTo(it) }
                         }
+                        zipIn.closeEntry()
+                        entry = zipIn.nextEntry
                     }
-                    newWorld.keepSpawnInMemory = true
-                    newWorld.isAutoSave = false
-                    newWorld.save()
                 }
 
-                Logger.info("Backup of $worldName loaded!")
-            }
-        }.runTaskLater(GourPillars.instance, 80L)
+                File(worldFolder, "session.lock").delete()
 
-        if (!File(worldFolder, "level.dat").exists()) {
-            Logger.warning("Warning: level.dat missing! The world might not load correctly.")
-        }
+                if (!File(worldFolder, "level.dat").exists()) {
+                    Logger.warning("Warning: level.dat missing! The world might not load correctly.")
+                }
+
+                object : BukkitRunnable() {
+                    override fun run() {
+                        val newWorld = Bukkit.createWorld(WorldCreator(worldName))
+                        val spawn = newWorld?.spawnLocation
+
+                        if (newWorld != null && spawn != null) {
+                            val chunkX = spawn.blockX / 16
+                            val chunkZ = spawn.blockZ / 16
+                            for (x in -2..2) {
+                                for (z in -2..2) {
+                                    newWorld.loadChunk(chunkX + x, chunkZ + z)
+                                }
+                            }
+                            newWorld.keepSpawnInMemory = true
+                            newWorld.isAutoSave = false
+                            newWorld.save()
+                        }
+
+                        Logger.info("Backup of $worldName loaded!")
+                        onComplete()
+                    }
+                }.runTask(GourPillars.instance)
+            }
+        }.runTaskAsynchronously(GourPillars.instance)
     }
 
     fun saveBackup(worldName: String) {
