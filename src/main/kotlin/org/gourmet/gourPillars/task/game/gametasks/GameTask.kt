@@ -133,17 +133,21 @@ class GameTask(
         arena.borderEvent.clear()
         arena.noEventVote.clear()
 
+        // Send end game message at the end of the game
         if (winner != null) {
             winner.isInvulnerable = true
             GameFunctions.playVictoryEffects(winner, arena)
-            StatsUpdater.updateWins(winner) // Update wins
+            StatsUpdater.updateWins(winner)
             StatsUpdater.incrementStreak(winner)
-            winner.sendDynamicMessage(
-                MessageData.END_GAME,
-                "{time}" to getTimeFormatted(),
-                "{kills}" to playerKills[winner].toString(),
-                "{map}" to arena.name,
-            )
+
+            arena.inGamePlayer.forEach { player ->
+                player.sendDynamicMessage(
+                    MessageData.END_GAME,
+                    "{time}" to getTimeFormatted(),
+                    "{kills}" to (playerKills[player] ?: 0).toString(),
+                    "{map}" to arena.name,
+                )
+            }
         }
 
         currentEventHandler?.onStop(arena, winner)
@@ -228,15 +232,6 @@ class GameTask(
             playerSound.playSound(playerSound.location, Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 2f)
         }
 
-        // Send end game message to player
-        if (alivePlayer.size > 1) {
-            player.sendDynamicMessage(
-                MessageData.END_GAME,
-                "{time}" to getTimeFormatted(),
-                "{kills}" to kills.toString(),
-                "{map}" to arena.name,
-            )
-        }
     }
 
     // general elimination
