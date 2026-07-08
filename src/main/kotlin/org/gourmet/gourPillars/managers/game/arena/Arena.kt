@@ -199,7 +199,7 @@ class Arena(
         reloadWaitingScoreboard()
 
         // Stop cooldown if player is not enought
-        if (inGamePlayer.size < minPlayer && gameState != State.INGAME) {
+        if (inGamePlayer.size < minPlayer && (gameState == State.WAITING || gameState == State.STARTING)) {
             gameState = State.WAITING
             val playerRequired = maxPlayer - inGamePlayer.size
             sendDynamicMessageToPlayerInGame(MessageData.ARENA_PLAYER_NEEDED, "{playerRequired}" to playerRequired.toString())
