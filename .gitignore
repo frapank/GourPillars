@@ -1,7 +1,12 @@
 # Project exclude paths
-/.gradle/
-/run/
-/.kotlin/
-/.idea/
-/build/
-/build/classes/kotlin/main/
+.gradle/
+build/
+.kotlin/
+run/
+logs/
+.idea/
+*.iml
+.vscode/
+.DS_Store
+*.swp
+examples/
