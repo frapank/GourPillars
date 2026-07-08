@@ -162,7 +162,6 @@ class GameTask(
             Bukkit.getPluginManager().callEvent(
                 GourPillarsPlayerFinishEvent(arena.name, winner, playerKills[winner] ?: 0, won = true),
             )
-
         }
 
         currentEventHandler?.onStop(arena, winner)
