@@ -8,18 +8,17 @@ interface Database {
 
     fun createUser(playerName: String): CompletableFuture<Void?>
 
-    fun updateStatistics(
-        playerName: String,
-        kills: Int,
-        wins: Int,
-        xp: Int,
-        level: Int,
-        playedGame: Int,
-        bestWinStreak: Int,
-        currentWinStreak: Int,
-    ): CompletableFuture<Void?>
-
     fun getStatistics(playerName: String): CompletableFuture<PlayerStats?>
+
+    fun incrementKills(playerName: String): CompletableFuture<Void?>
+
+    fun incrementWins(playerName: String): CompletableFuture<Void?>
+
+    fun incrementGamesPlayed(playerName: String): CompletableFuture<Void?>
+
+    fun incrementWinStreak(playerName: String): CompletableFuture<Void?>
+
+    fun resetWinStreak(playerName: String): CompletableFuture<Void?>
 
     /** Releases the connection pool and background threads. Safe to call more than once. */
     fun close()
