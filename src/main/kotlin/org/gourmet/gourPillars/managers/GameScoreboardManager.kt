@@ -13,6 +13,7 @@ import org.bukkit.scoreboard.Scoreboard
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.State
+import org.gourmet.gourPillars.other.Logger
 
 class GameScoreboardManager(
     private val arena: Arena,
@@ -26,7 +27,7 @@ class GameScoreboardManager(
     fun setWaitingBoard(player: Player) {
         langCfg = GourPillars.languageManager.getLanguageConfig()
         val scoreboard = Bukkit.getScoreboardManager().newScoreboard
-        val title = PlaceholderAPI.setPlaceholders(player, langCfg.getString("scoreboard.waiting.title", "Pillars Of Fortune")!!)
+        val title = setPlaceholdersSafely(player, langCfg.getString("scoreboard.waiting.title", "Pillars Of Fortune")!!)
         val objective = scoreboard.registerNewObjective("lobby", "dummy", miniMessage.deserialize(title))
         objective.displaySlot = DisplaySlot.SIDEBAR
 
@@ -43,7 +44,7 @@ class GameScoreboardManager(
         if (arena.gameState != State.INGAME) return
 
         val scoreboard = Bukkit.getScoreboardManager().newScoreboard
-        val title = PlaceholderAPI.setPlaceholders(player, langCfg.getString("scoreboard.playing.title", "Pillars Of Fortune")!!)
+        val title = setPlaceholdersSafely(player, langCfg.getString("scoreboard.playing.title", "Pillars Of Fortune")!!)
         val objective = scoreboard.registerNewObjective("game", "dummy", miniMessage.deserialize(title))
         objective.displaySlot = DisplaySlot.SIDEBAR
 
@@ -63,7 +64,7 @@ class GameScoreboardManager(
         var lineNumber = lines.size
 
         for (line in lines) {
-            val parsedLine = PlaceholderAPI.setPlaceholders(player, line)
+            val parsedLine = setPlaceholdersSafely(player, line)
             val componentText: Component = miniMessage.deserialize(parsedLine)
 
             val entry = ChatColor.COLOR_CHAR.toString() + lineNumber
@@ -79,4 +80,16 @@ class GameScoreboardManager(
             lineNumber--
         }
     }
+
+    // Falls back to the raw text if PlaceholderAPI's registry isn't ready (e.g. mid-reload).
+    private fun setPlaceholdersSafely(
+        player: Player,
+        text: String,
+    ): String =
+        try {
+            PlaceholderAPI.setPlaceholders(player, text)
+        } catch (e: Exception) {
+            Logger.warning("PlaceholderAPI failed to parse '$text': ${e.message}")
+            text
+        }
 }
