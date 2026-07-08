@@ -6,6 +6,12 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.api.ArenaJoinResult
+import org.gourmet.gourPillars.api.events.GourPillarsArenaStateChangeEvent
+import org.gourmet.gourPillars.api.events.GourPillarsPlayerJoinArenaEvent
+import org.gourmet.gourPillars.api.events.GourPillarsPlayerLeaveArenaEvent
+import org.gourmet.gourPillars.api.events.GourPillarsSpectateStartEvent
+import org.gourmet.gourPillars.api.events.GourPillarsSpectateStopEvent
 import org.gourmet.gourPillars.commands.BuildCMD
 import org.gourmet.gourPillars.managers.GameScoreboardManager
 import org.gourmet.gourPillars.other.Logger
@@ -44,6 +50,12 @@ class Arena(
     val playedPlayerNames: MutableSet<String> = mutableSetOf() // general played ( Death, quitted, etc... ), used in databases
     val spectators: MutableSet<Player> = ConcurrentHashMap.newKeySet() // read from the async chat thread in ChatViewListener
     var gameState: State = State.WAITING
+        set(value) {
+            if (field == value) return
+            val old = field
+            field = value
+            Bukkit.getPluginManager().callEvent(GourPillarsArenaStateChangeEvent(name, old, value))
+        }
     val spawnManager = GourPillars.spawnManager
     val lastDamagerMap = mutableMapOf<UUID, UUID>()
 
@@ -60,23 +72,23 @@ class Arena(
     }
 
     // Utils
-    fun addPlayer(player: Player) {
+    fun addPlayer(player: Player): ArenaJoinResult {
         if (GourPillars.arenaManager.isSpectating(player)) {
             player.sendDynamicMessage(MessageData.SPECTATE_ERRORS_ALREADY_SPECTATING)
-            return
+            return ArenaJoinResult.ALREADY_SPECTATING
         }
         if (isPrivate) {
             player.sendMessage("you can't join")
-            return
+            return ArenaJoinResult.ARENA_PRIVATE
         }
         if (inGamePlayer.contains(player)) {
             player.sendDynamicMessage(MessageData.ARENA_ERRORS_ALREADY_IN_GAME)
-            return
+            return ArenaJoinResult.ALREADY_IN_GAME
         }
 
         if (gameState == State.INGAME || gameState == State.STOPPED) {
             player.sendDynamicMessage(MessageData.ARENA_ERRORS_ARENA_NOT_READY)
-            return
+            return ArenaJoinResult.ARENA_NOT_READY
         }
 
         if (inGamePlayer.size < maxPlayer) {
@@ -110,10 +122,11 @@ class Arena(
                 startArena()
                 this.gameState = State.STARTING
             }
-            return
+            Bukkit.getPluginManager().callEvent(GourPillarsPlayerJoinArenaEvent(name, player))
+            return ArenaJoinResult.SUCCESS
         } else {
             player.sendDynamicMessage(MessageData.ARENA_ERRORS_THE_GAME_IS_FULL)
-            return
+            return ArenaJoinResult.ARENA_FULL
         }
     }
 
@@ -175,6 +188,7 @@ class Arena(
         dayVote.remove(player)
         nightVote.remove(player)
         inGamePlayer.remove(player)
+        Bukkit.getPluginManager().callEvent(GourPillarsPlayerLeaveArenaEvent(name, player))
 
         // clear player
         Utils.resetPlayerState(player)
@@ -206,6 +220,7 @@ class Arena(
         Utils.resetPlayerState(player)
         player.inventory.clear()
         spectators.add(player)
+        Bukkit.getPluginManager().callEvent(GourPillarsSpectateStartEvent(name, player))
     }
 
     fun removeSpectator(player: Player) {
@@ -217,6 +232,7 @@ class Arena(
         Utils.resetPlayerState(player)
         Utils.giveLobbyItems(player)
         GourPillars.lobbyScoreboardManager.setScoreboard(player)
+        Bukkit.getPluginManager().callEvent(GourPillarsSpectateStopEvent(name, player))
     }
 
     fun sendDynamicMessageToSpectators(
@@ -240,6 +256,10 @@ class Arena(
 
     // Getter and Settere
     fun containPlayer(player: Player): Boolean = inGamePlayer.contains(player)
+
+    // Glass cage is only up during WAITING/STARTING.
+    fun isPlayerCaged(player: Player): Boolean =
+        (gameState == State.WAITING || gameState == State.STARTING) && spawnMap.values.contains(player)
 
     fun sendMessageToPlayerInGame(message: String) {
         inGamePlayer.forEach { player: Player -> player.sendMessage(message.toMini()) }
