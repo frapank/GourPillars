@@ -3,7 +3,10 @@ package org.gourmet.gourPillars
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
+import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
+import org.gourmet.gourPillars.api.GourPillarsAPI
+import org.gourmet.gourPillars.api.GourPillarsAPIImpl
 import org.gourmet.gourPillars.commands.BuildCMD
 import org.gourmet.gourPillars.commands.EditCMD
 import org.gourmet.gourPillars.commands.JoinerCMD
@@ -40,7 +43,8 @@ import org.gourmet.gourPillars.other.messages.LanguageManager
 import org.gourmet.gourPillars.task.ShowPlayerTask
 import revxrsal.commands.bukkit.BukkitLamp
 
-class GourPillars : JavaPlugin() {
+// open: MockBukkit needs to subclass this to load it in tests.
+open class GourPillars : JavaPlugin() {
     companion object {
         lateinit var instance: GourPillars
         lateinit var arenaManager: ArenaManager
@@ -49,6 +53,7 @@ class GourPillars : JavaPlugin() {
         lateinit var database: Database
         lateinit var lobbyScoreboardManager: LobbyScoreboardManager
         lateinit var languageManager: LanguageManager
+        lateinit var api: GourPillarsAPI
         var isEditing = false
         val playersStats = HashMap<Player, PlayerStats>()
 
@@ -70,10 +75,15 @@ class GourPillars : JavaPlugin() {
             return
         }
 
-        PlaceHolderManager().register()
+        try {
+            PlaceHolderManager().register()
+        } catch (e: Exception) {
+            Logger.warning("Failed to register the PlaceholderAPI expansion: ${e.message}")
+        }
     }
 
     override fun onDisable() {
+        server.servicesManager.unregisterAll(this)
         if (isDatabaseInitialized) {
             database.close()
         }
@@ -100,6 +110,9 @@ class GourPillars : JavaPlugin() {
         spawnManager = SpawnManager()
         arenaManager = ArenaManager()
         lobbyScoreboardManager = LobbyScoreboardManager()
+
+        api = GourPillarsAPIImpl(arenaManager)
+        server.servicesManager.register(GourPillarsAPI::class.java, api, this, ServicePriority.Normal)
 
         ShowPlayerTask().runTaskTimer(this, 100L, 20L)
     }
