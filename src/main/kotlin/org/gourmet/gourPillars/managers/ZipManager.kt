@@ -25,12 +25,18 @@ class ZipManager {
 
         if (!backupFile.exists()) {
             Logger.warning("No backup found for $worldName!")
+            onComplete()
             return
         }
 
         val world = Bukkit.getWorld(worldName)
         if (world != null) {
-            Bukkit.unloadWorld(world, false)
+            world.players.forEach { player -> GourPillars.spawnManager.teleportPlayerToSpawn(player) }
+            if (!Bukkit.unloadWorld(world, false)) {
+                Logger.warning("Could not unload world '$worldName' (still occupied?), skipping this reset")
+                onComplete()
+                return
+            }
         }
 
         object : BukkitRunnable() {
