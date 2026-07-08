@@ -17,24 +17,18 @@ class ResetArenaTask(
         val arenaName = arena.name
         val worldName = arena.region.world.name
 
-        // Reset arena
-        zipManager.restoreBackup(worldName)
-
-        // Here I will reset all the pointers
-        object : BukkitRunnable() {
-            override fun run() {
-                arenaManager.onlineArenas.forEach { (name, arena) ->
-                    if (name == arenaName) {
-                        arena.spawnMap.forEach { (location, _) ->
-                            location.world = Bukkit.getWorld(worldName)
-                        }
-                        arena.spawnMainLocation.world = Bukkit.getWorld(worldName)
-                        arena.region.world = Bukkit.getWorld(worldName)!!
+        zipManager.restoreBackup(worldName) {
+            arenaManager.onlineArenas.forEach { (name, arena) ->
+                if (name == arenaName) {
+                    arena.spawnMap.forEach { (location, _) ->
+                        location.world = Bukkit.getWorld(worldName)
                     }
+                    arena.spawnMainLocation.world = Bukkit.getWorld(worldName)
+                    arena.region.world = Bukkit.getWorld(worldName)!!
                 }
-                arena.gameState = State.WAITING
             }
-        }.runTaskLater(GourPillars.instance, 100L)
+            arena.gameState = State.WAITING
+        }
 
         // Randomize arena order
         GourPillars.arenaManager.shuffleArenas()
