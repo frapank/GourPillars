@@ -10,6 +10,7 @@ import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
 import org.bukkit.scoreboard.Scoreboard
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.other.Logger
 
 class LobbyScoreboardManager {
     private val scoreboards: MutableMap<Player, Scoreboard> = mutableMapOf()
@@ -20,7 +21,7 @@ class LobbyScoreboardManager {
         langCfg = GourPillars.languageManager.getLanguageConfig()
 
         val scoreboard = Bukkit.getScoreboardManager().newScoreboard
-        val title = PlaceholderAPI.setPlaceholders(player, langCfg.getString("scoreboard.lobby.title", "Pillars Of Fortune")!!)
+        val title = setPlaceholdersSafely(player, langCfg.getString("scoreboard.lobby.title", "Pillars Of Fortune")!!)
         val objective = scoreboard.registerNewObjective("game", "dummy", miniMessage.deserialize(title))
         objective.displaySlot = DisplaySlot.SIDEBAR
 
@@ -38,7 +39,7 @@ class LobbyScoreboardManager {
     ) {
         var lineNumber = lines.size
         for (line in lines) {
-            val parsedLine = PlaceholderAPI.setPlaceholders(player, line)
+            val parsedLine = setPlaceholdersSafely(player, line)
             val componentText: Component = miniMessage.deserialize(parsedLine)
 
             val teamName = "line$lineNumber"
@@ -49,4 +50,16 @@ class LobbyScoreboardManager {
             lineNumber--
         }
     }
+
+    // Falls back to the raw text if PlaceholderAPI's registry isn't ready (e.g. mid-reload).
+    private fun setPlaceholdersSafely(
+        player: Player,
+        text: String,
+    ): String =
+        try {
+            PlaceholderAPI.setPlaceholders(player, text)
+        } catch (e: Exception) {
+            Logger.warning("PlaceholderAPI failed to parse '$text': ${e.message}")
+            text
+        }
 }
