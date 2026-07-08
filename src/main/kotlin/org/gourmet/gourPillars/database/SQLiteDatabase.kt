@@ -79,41 +79,60 @@ class SQLiteDatabase(
         }
     }
 
-    override fun updateStatistics(
+    private fun runUpdate(
+        query: String,
         playerName: String,
-        kills: Int,
-        wins: Int,
-        xp: Int,
-        level: Int,
-        playedGame: Int,
-        bestWinStreak: Int,
-        currentWinStreak: Int,
+        errorMessage: String,
     ): CompletableFuture<Void?> {
         if (!isOnline) return CompletableFuture.completedFuture(null)
         val source = dataSource ?: return CompletableFuture.completedFuture(null)
-        return async(null, "Database error updating statistics") {
-            val query =
-                """
-                INSERT OR REPLACE INTO pillars_stats (name, kills, wins, xp, level, playedGame, bestWinStreak, currentWinStreak)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """.trimIndent()
-
+        return async(null, errorMessage) {
             source.connection.use { conn ->
                 conn.prepareStatement(query).use { stmt ->
                     stmt.setString(1, playerName)
-                    stmt.setInt(2, kills)
-                    stmt.setInt(3, wins)
-                    stmt.setInt(4, xp)
-                    stmt.setInt(5, level)
-                    stmt.setInt(6, playedGame)
-                    stmt.setInt(7, bestWinStreak)
-                    stmt.setInt(8, currentWinStreak)
                     stmt.executeUpdate()
                 }
             }
             null
         }
     }
+
+    override fun incrementKills(playerName: String): CompletableFuture<Void?> =
+        runUpdate("UPDATE pillars_stats SET kills = kills + 1 WHERE name = ?", playerName, "Database error updating kills")
+
+    override fun incrementWins(playerName: String): CompletableFuture<Void?> =
+        runUpdate("UPDATE pillars_stats SET wins = wins + 1 WHERE name = ?", playerName, "Database error updating wins")
+
+    override fun incrementGamesPlayed(playerName: String): CompletableFuture<Void?> =
+        runUpdate(
+            "UPDATE pillars_stats SET playedGame = playedGame + 1 WHERE name = ?",
+            playerName,
+            "Database error updating playedGame",
+        )
+
+    override fun incrementWinStreak(playerName: String): CompletableFuture<Void?> =
+        runUpdate(
+            """
+            UPDATE pillars_stats
+            SET currentWinStreak = currentWinStreak + 1,
+                bestWinStreak = MAX(bestWinStreak, currentWinStreak + 1)
+            WHERE name = ?
+            """.trimIndent(),
+            playerName,
+            "Database error updating win streak",
+        )
+
+    override fun resetWinStreak(playerName: String): CompletableFuture<Void?> =
+        runUpdate(
+            """
+            UPDATE pillars_stats
+            SET bestWinStreak = MAX(bestWinStreak, currentWinStreak),
+                currentWinStreak = 0
+            WHERE name = ?
+            """.trimIndent(),
+            playerName,
+            "Database error resetting win streak",
+        )
 
     override fun getStatistics(playerName: String): CompletableFuture<PlayerStats?> {
         if (!isOnline) return CompletableFuture.completedFuture(null)
