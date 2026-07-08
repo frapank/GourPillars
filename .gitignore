@@ -8,4 +8,5 @@ logs/
 *.iml
 .vscode/
 .DS_Store
+*.swp
 examples/
