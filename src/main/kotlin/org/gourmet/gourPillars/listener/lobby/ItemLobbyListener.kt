@@ -21,6 +21,7 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.commands.BuildCMD
+import org.gourmet.gourPillars.managers.LobbyConfig
 import org.gourmet.gourPillars.managers.game.arena.State
 
 class ItemLobbyListener : Listener {
@@ -31,13 +32,18 @@ class ItemLobbyListener : Listener {
         if (e.hand != EquipmentSlot.HAND) return
         if (!isSpawnWorld(e.player.location.world)) return
 
-        val item = e.item ?: return
-        val meta = item.itemMeta ?: return
-        val key = NamespacedKey(GourPillars.instance, "lobby_command")
-        val command = meta.persistentDataContainer.get(key, PersistentDataType.STRING) ?: return
+        if (LobbyConfig.lobbyItems) {
+            val item = e.item
+            val meta = item?.itemMeta
+            val key = NamespacedKey(GourPillars.instance, "lobby_command")
+            val command = meta?.persistentDataContainer?.get(key, PersistentDataType.STRING)
+            if (command != null) {
+                e.isCancelled = true
+                e.player.performCommand(command)
+            }
+        }
 
-        e.isCancelled = true
-        e.player.performCommand(command)
+        if (!LobbyConfig.worldProtection) return
 
         val action = e.action
         val block = e.clickedBlock ?: return
@@ -79,6 +85,7 @@ class ItemLobbyListener : Listener {
 
     @EventHandler
     fun onDropItem(e: PlayerDropItemEvent) {
+        if (!LobbyConfig.itemProtection) return
         if (isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
             e.isCancelled = true
         }
@@ -86,6 +93,7 @@ class ItemLobbyListener : Listener {
 
     @EventHandler
     fun onInventoryClick(e: InventoryClickEvent) {
+        if (!LobbyConfig.itemProtection) return
         if (isSpawnWorld(e.whoClicked.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.whoClicked as Player))) {
             e.isCancelled = true
         }
@@ -93,7 +101,7 @@ class ItemLobbyListener : Listener {
 
     @EventHandler
     fun onSwapHands(e: PlayerSwapHandItemsEvent) {
-        if (isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
+        if (LobbyConfig.itemProtection && isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
             e.isCancelled = true
         }
 
@@ -106,6 +114,7 @@ class ItemLobbyListener : Listener {
 
     @EventHandler
     fun onBlockDropItem(e: BlockDropItemEvent) {
+        if (!LobbyConfig.worldProtection) return
         if (isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
             e.isCancelled = true
         }
@@ -113,6 +122,7 @@ class ItemLobbyListener : Listener {
 
     @EventHandler
     fun onItemFrameInteract(e: PlayerInteractEntityEvent) {
+        if (!LobbyConfig.worldProtection) return
         if (e.rightClicked is ItemFrame && isSpawnWorld(e.player.location.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
             e.isCancelled = true
         }
@@ -120,6 +130,7 @@ class ItemLobbyListener : Listener {
 
     @EventHandler
     fun onItemFrameDamage(e: EntityDamageByEntityEvent) {
+        if (!LobbyConfig.worldProtection) return
         if (e.entity is ItemFrame && e.damager is Player && isSpawnWorld(e.entity.location.world) &&
             (!BuildCMD.buildSessionPlayers.contains(e.damager as Player))
         ) {
@@ -129,6 +140,7 @@ class ItemLobbyListener : Listener {
 
     @EventHandler
     fun onHangingBreak(event: HangingBreakByEntityEvent) {
+        if (!LobbyConfig.worldProtection) return
         val entity = event.entity
         if (entity is ItemFrame || entity is Painting || entity is GlowItemFrame) {
             if (event.remover is Player) {
@@ -142,6 +154,7 @@ class ItemLobbyListener : Listener {
 
     @EventHandler
     fun onHangingPlace(event: HangingPlaceEvent) {
+        if (!LobbyConfig.worldProtection) return
         val entity = event.entity
         if ((entity is ItemFrame || entity is Painting || entity is GlowItemFrame) && isSpawnWorld(event.player!!.location.world) &&
             !BuildCMD.buildSessionPlayers.contains(event.player)
