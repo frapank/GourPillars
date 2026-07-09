@@ -18,6 +18,8 @@ Requires `gpillars.admin`. All commands below are `/edit <subcommand>`.
 
 One file per arena (world, height/player limits, main spawn, region, in-game spawns), created by `/edit save` or dropped in manually. Requires a server restart to be picked up.
 
-A corrupted or incomplete arena file is skipped with a warning in console instead of blocking server startup.
+`spawn-height` (default `0`) raises the glass-cage spawn point by that many blocks above the configured spawn location; `spawn-height: 2` spawns players 2 blocks higher than the pillar itself.
+
+A corrupted or incomplete arena file is skipped with a warning in console instead of blocking server startup. Any of `private-arena`, `min-height`, `min-players`, `slow-falling-time` or `spawn-height` missing from a file gets filled in with its default value (and a warning in console) the next time the arena loads.
 
 Arenas previously stored under `config.yml`'s `Arenas` section are migrated here automatically on first startup after updating.
