@@ -102,6 +102,10 @@ data class ArenaInfo(
 
 `SUCCESS`, `ARENA_NOT_FOUND`, `ALREADY_SPECTATING`, `ARENA_PRIVATE`, `ALREADY_IN_GAME`, `ARENA_NOT_READY`, `ARENA_FULL`.
 
+### EliminationCause
+
+`KILL`, `VOID`, `VOID_KILL`, `FALL`, `MOB`, `OTHER` — see `GourPillarsPlayerEliminatedEvent` below.
+
 ### PlayerStats
 
 ```kotlin
@@ -130,6 +134,8 @@ Standard Bukkit events, fire-and-forget (not cancellable), all under `org.gourme
 | `GourPillarsGameEndEvent` | `arenaName`, `winner` (nullable) | A match ends. |
 | `GourPillarsPlayerFinishEvent` | `arenaName`, `player`, `kills`, `won` | A player's match is over, win or lose. Fired once per player. |
 | `GourPillarsPlayerKillEvent` | `arenaName`, `killer`, `victim` | A player eliminates another. |
+| `GourPillarsPlayerEliminatedEvent` | `arenaName`, `player`, `cause` (`EliminationCause`), `source` (nullable `Entity`) | A player is eliminated, for any reason. Fired once per elimination, before `GourPillarsPlayerFinishEvent`. `source` is the killer/damager when there is one. |
+| `GourPillarsEventSelectedEvent` | `arenaName`, `event` (nullable `GameEvents`) | The vote closes and the match's event is picked; `null` means no event. |
 | `GourPillarsSpectateStartEvent` | `arenaName`, `player` | A player starts spectating. |
 | `GourPillarsSpectateStopEvent` | `arenaName`, `player` | A player stops spectating. |
 

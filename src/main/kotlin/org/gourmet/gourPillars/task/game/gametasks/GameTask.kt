@@ -10,8 +10,11 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.api.EliminationCause
+import org.gourmet.gourPillars.api.events.GourPillarsEventSelectedEvent
 import org.gourmet.gourPillars.api.events.GourPillarsGameEndEvent
 import org.gourmet.gourPillars.api.events.GourPillarsGameStartEvent
+import org.gourmet.gourPillars.api.events.GourPillarsPlayerEliminatedEvent
 import org.gourmet.gourPillars.api.events.GourPillarsPlayerFinishEvent
 import org.gourmet.gourPillars.api.events.GourPillarsPlayerKillEvent
 import org.gourmet.gourPillars.managers.game.arena.Arena
@@ -89,6 +92,7 @@ class GameTask(
                 GameEvents.BORDER -> BorderHandler()
                 GameEvents.KNOCKBACK, null -> null
             }
+        Bukkit.getPluginManager().callEvent(GourPillarsEventSelectedEvent(arena.name, event))
     }
 
     private fun setTimeByVote() {
@@ -231,7 +235,11 @@ class GameTask(
         }
     }
 
-    private fun eliminationProcess(player: Player) {
+    private fun eliminationProcess(
+        player: Player,
+        cause: EliminationCause,
+        source: Entity? = null,
+    ) {
         // Remove player from arena
         val kills = playerKills[player]
         if (playerKills.size <= 1) {
@@ -241,6 +249,7 @@ class GameTask(
         player.gameMode = GameMode.SPECTATOR
         arena.reloadInGameScoreboard()
         player.teleport(arena.spawnMainLocation)
+        Bukkit.getPluginManager().callEvent(GourPillarsPlayerEliminatedEvent(arena.name, player, cause, source))
         Bukkit.getPluginManager().callEvent(GourPillarsPlayerFinishEvent(arena.name, player, kills ?: 0, won = false))
 
         // Play death sound to all players
@@ -251,7 +260,7 @@ class GameTask(
 
     // general elimination
     fun playerEliminated(player: Player) {
-        eliminationProcess(player)
+        eliminationProcess(player, EliminationCause.OTHER)
         arena.inGamePlayer.forEach { receiverPlayer ->
             receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED, "{player}" to player.name)
         }
@@ -260,7 +269,7 @@ class GameTask(
 
     // fall damage death message
     fun playerEliminatedFall(player: Player) {
-        eliminationProcess(player)
+        eliminationProcess(player, EliminationCause.FALL)
         arena.inGamePlayer.forEach { receiverPlayer ->
             receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED_FALL, "{player}" to player.name)
         }
@@ -269,7 +278,7 @@ class GameTask(
 
     // fall void fall death message
     fun playerEliminatedVoid(player: Player) {
-        eliminationProcess(player)
+        eliminationProcess(player, EliminationCause.VOID)
         arena.inGamePlayer.forEach { receiverPlayer ->
             receiverPlayer.sendDynamicMessage(MessageData.ARENA_PLAYER_ELIMINATED_VOID, "{player}" to player.name)
         }
@@ -282,7 +291,7 @@ class GameTask(
         killer: Player,
     ) {
         // Update killer stats
-        eliminationProcess(player)
+        eliminationProcess(player, EliminationCause.VOID_KILL, killer)
         StatsUpdater.looseStreak(player)
         StatsUpdater.updateKill(killer)
         Bukkit.getPluginManager().callEvent(GourPillarsPlayerKillEvent(arena.name, killer, player))
@@ -311,7 +320,7 @@ class GameTask(
         player: Player,
         damager: Entity,
     ) {
-        eliminationProcess(player)
+        eliminationProcess(player, EliminationCause.MOB, damager)
         arena.inGamePlayer.forEach { receiverPlayer ->
             receiverPlayer.sendDynamicMessage(
                 MessageData.ARENA_PLAYER_ELIMINATED_MOB,
@@ -327,7 +336,7 @@ class GameTask(
         player: Player,
         killer: Player,
     ) {
-        eliminationProcess(player)
+        eliminationProcess(player, EliminationCause.KILL, killer)
         StatsUpdater.updateKill(killer)
         StatsUpdater.looseStreak(player)
         Bukkit.getPluginManager().callEvent(GourPillarsPlayerKillEvent(arena.name, killer, player))
