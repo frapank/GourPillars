@@ -2,6 +2,8 @@
 
 On startup, `config.yml` is compared against the bundled default: any option missing (e.g. after updating to a version that added new settings) is added back with its default value, logging a warning naming the option. Existing invalid entries (bad slot, unknown material, etc.) are never edited — they're logged as a warning and skipped in favor of a safe fallback at runtime.
 
+The free-form collections (`lobby-items`, `gui.vote.items`) are the exception: entries you remove from them stay removed. They're only backfilled wholesale if the whole section is missing.
+
 ## Scoreboards
 
 `scoreboards` defines the title and line layout for the three scoreboards (`lobby`, `waiting`, `in-game`), using MiniMessage formatting and the [placeholders](placeholders.md).
