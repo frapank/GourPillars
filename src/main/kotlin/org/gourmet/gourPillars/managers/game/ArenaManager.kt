@@ -12,10 +12,20 @@ import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.other.Logger
 import org.gourmet.gourPillars.other.Region
 import java.io.File
+import java.io.IOException
 import java.util.Collections
 import kotlin.random.Random
 
 class ArenaManager {
+    private val arenaScalarDefaults: List<Pair<String, Any>> =
+        listOf(
+            "private-arena" to false,
+            "min-height" to 0,
+            "min-players" to 2,
+            "slow-falling-time" to 1,
+            "spawn-height" to 0,
+        )
+
     @Volatile
     var onlineArenas: MutableMap<String, Arena> = Collections.synchronizedMap(LinkedHashMap())
 
@@ -104,6 +114,7 @@ class ArenaManager {
         arenaName: String,
     ): Arena? {
         val config: FileConfiguration = YamlConfiguration.loadConfiguration(file)
+        applyMissingArenaDefaults(config, file, arenaName)
 
         val worldName = config.getString("world")
         if (worldName.isNullOrBlank()) {
@@ -117,9 +128,10 @@ class ArenaManager {
             }
 
         val isPrivateArena = config.getBoolean("private-arena", false)
-        val minHeight = config.getInt("min-height")
+        val minHeight = config.getInt("min-height", 0)
         val minPlayer = config.getInt("min-players", 2)
         val slowFalling = config.getInt("slow-falling-time", 1)
+        val spawnHeight = config.getInt("spawn-height", 0)
 
         val mainSpawn =
             config.getConfigurationSection("main-spawn")?.toLocation(world) ?: run {
@@ -161,7 +173,30 @@ class ArenaManager {
             regionLocTwo,
             region,
             arenaName,
+            spawnHeight,
         )
+    }
+
+    private fun applyMissingArenaDefaults(
+        config: FileConfiguration,
+        file: File,
+        arenaName: String,
+    ) {
+        var added = 0
+        for ((key, default) in arenaScalarDefaults) {
+            if (!config.isSet(key)) {
+                Logger.warning("Missing arena option '$key' in arenas/$arenaName.yml, added default: $default")
+                config.set(key, default)
+                added++
+            }
+        }
+        if (added > 0) {
+            try {
+                config.save(file)
+            } catch (e: IOException) {
+                Logger.warning("Failed to save arena '$arenaName' after adding default option(s): ${e.message}")
+            }
+        }
     }
 
     private fun ConfigurationSection.toLocation(world: World): Location? {
