@@ -97,26 +97,6 @@ class SQLiteDatabase(
         }
     }
 
-    private fun runUpdate(
-        query: String,
-        intParam: Int,
-        playerName: String,
-        errorMessage: String,
-    ): CompletableFuture<Void?> {
-        if (!isOnline) return CompletableFuture.completedFuture(null)
-        val source = dataSource ?: return CompletableFuture.completedFuture(null)
-        return async(null, errorMessage) {
-            source.connection.use { conn ->
-                conn.prepareStatement(query).use { stmt ->
-                    stmt.setInt(1, intParam)
-                    stmt.setString(2, playerName)
-                    stmt.executeUpdate()
-                }
-            }
-            null
-        }
-    }
-
     override fun incrementKills(playerName: String): CompletableFuture<Void?> =
         runUpdate("UPDATE pillars_stats SET kills = kills + 1 WHERE name = ?", playerName, "Database error updating kills")
 
@@ -157,14 +137,34 @@ class SQLiteDatabase(
     override fun incrementXp(
         playerName: String,
         amount: Int,
-    ): CompletableFuture<Void?> =
-        runUpdate("UPDATE pillars_stats SET xp = xp + ? WHERE name = ?", amount, playerName, "Database error updating xp")
-
-    override fun setLevel(
-        playerName: String,
-        level: Int,
-    ): CompletableFuture<Void?> =
-        runUpdate("UPDATE pillars_stats SET level = ? WHERE name = ?", level, playerName, "Database error updating level")
+        xpPerLevel: Int,
+    ): CompletableFuture<XpUpdate?> {
+        if (!isOnline) return CompletableFuture.completedFuture(null)
+        val source = dataSource ?: return CompletableFuture.completedFuture(null)
+        return async(null, "Database error updating xp") {
+            source.connection.use { conn ->
+                conn
+                    .prepareStatement(
+                        """
+                        UPDATE pillars_stats
+                        SET xp = xp + ?,
+                            level = MAX(level, 1 + (xp + ?) / ?)
+                        WHERE name = ?
+                        """.trimIndent(),
+                    ).use { stmt ->
+                        stmt.setInt(1, amount)
+                        stmt.setInt(2, amount)
+                        stmt.setInt(3, xpPerLevel)
+                        stmt.setString(4, playerName)
+                        stmt.executeUpdate()
+                    }
+                conn.prepareStatement("SELECT xp, level FROM pillars_stats WHERE name = ? LIMIT 1").use { stmt ->
+                    stmt.setString(1, playerName)
+                    stmt.executeQuery().use { rs -> if (rs.next()) XpUpdate(rs.getInt("xp"), rs.getInt("level")) else null }
+                }
+            }
+        }
+    }
 
     override fun getStatistics(playerName: String): CompletableFuture<PlayerStats?> {
         if (!isOnline) return CompletableFuture.completedFuture(null)

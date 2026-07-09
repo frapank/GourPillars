@@ -12,12 +12,14 @@ object LevelManager {
 
     val enabled get() = config.getBoolean("level.enabled", true)
 
-    fun xpFor(source: String): Int = config.getInt("level.xp-rewards.$source", 0)
+    fun xpPerLevel(): Int = config.getInt("level.xp-per-level", 100).coerceAtLeast(1)
 
-    fun levelForXp(xp: Int): Int {
-        val xpPerLevel = config.getInt("level.xp-per-level", 100).coerceAtLeast(1)
-        return 1 + xp / xpPerLevel
+    fun xpFor(source: XpSource): Int {
+        if (!enabled) return 0
+        return config.getInt("level.xp-rewards.${source.configKey}", 0)
     }
+
+    fun levelForXp(xp: Int): Int = 1 + xp / xpPerLevel()
 
     fun announceLevelUp(
         player: Player,
