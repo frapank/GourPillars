@@ -23,6 +23,6 @@ object LevelBarManager {
                     Logger.warning("Error in updateLevelInBar: ${e.message}")
                 }
             }
-        }.runTaskLaterAsynchronously(GourPillars.instance, 20L)
+        }.runTaskLater(GourPillars.instance, 20L)
     }
 }
