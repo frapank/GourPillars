@@ -36,12 +36,16 @@ class GameDeathListener : Listener {
 
         if (arena.gameState != State.INGAME) return
 
+        val lastDamageCause = event.entity.lastDamageCause
+
         if (player.killer != null && player.killer is Player) {
             // direct kill
             gameRunnable.playerEliminated(player, player.killer!!)
-        } else if (event.entity.lastDamageCause?.cause == EntityDamageEvent.DamageCause.FALL) {
+        } else if (lastDamageCause?.cause == EntityDamageEvent.DamageCause.FALL) {
             // fall damage
             gameRunnable.playerEliminatedFall(player)
+        } else if (lastDamageCause is EntityDamageByEntityEvent && lastDamageCause.damager !is Player) {
+            gameRunnable.playerEliminatedByMob(player, lastDamageCause.damager)
         } else {
             gameRunnable.playerEliminated(player)
         }
