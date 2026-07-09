@@ -16,6 +16,16 @@ interface Database {
 
     fun incrementGamesPlayed(playerName: String): CompletableFuture<Void?>
 
+    fun incrementXp(
+        playerName: String,
+        amount: Int,
+    ): CompletableFuture<Void?>
+
+    fun setLevel(
+        playerName: String,
+        level: Int,
+    ): CompletableFuture<Void?>
+
     fun incrementWinStreak(playerName: String): CompletableFuture<Void?>
 
     fun resetWinStreak(playerName: String): CompletableFuture<Void?>

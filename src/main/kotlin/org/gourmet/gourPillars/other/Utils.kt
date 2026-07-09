@@ -5,6 +5,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.Sound
 import org.bukkit.World
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
@@ -14,6 +15,20 @@ import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 
 object Utils {
+    fun readSound(
+        name: String?,
+        default: Sound,
+        configPath: String,
+    ): Sound {
+        if (name == null) return default
+        return try {
+            Sound.valueOf(name.uppercase())
+        } catch (e: IllegalArgumentException) {
+            Logger.warning("Invalid sound '$name' in $configPath, using default")
+            default
+        }
+    }
+
     fun setGlass(
         put: Boolean,
         location: Location,

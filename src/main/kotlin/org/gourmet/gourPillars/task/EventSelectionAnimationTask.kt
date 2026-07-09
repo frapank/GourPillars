@@ -11,7 +11,7 @@ import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.EventSelector
 import org.gourmet.gourPillars.managers.game.arena.GameEvents
 import org.gourmet.gourPillars.managers.game.arena.State
-import org.gourmet.gourPillars.other.Logger
+import org.gourmet.gourPillars.other.Utils
 import org.gourmet.gourPillars.other.messages.MessageData
 import java.time.Duration
 import kotlin.random.Random
@@ -39,11 +39,13 @@ object EventSelectionAnimationTask {
                 .coerceAtLeast(startIntervalTicks)
         val revealHoldTicks = config.getLong("game.event-selection-animation.reveal-hold-ticks", 40L).coerceAtLeast(1L)
 
-        val scrollSound = readSound(config.getString("game.event-selection-animation.scroll-sound"), Sound.BLOCK_NOTE_BLOCK_PLING)
+        val scrollSoundPath = "game.event-selection-animation.scroll-sound"
+        val scrollSound = Utils.readSound(config.getString(scrollSoundPath), Sound.BLOCK_NOTE_BLOCK_PLING, scrollSoundPath)
         val scrollVolume = config.getDouble("game.event-selection-animation.scroll-sound-volume", 0.6).toFloat()
         val scrollPitch = config.getDouble("game.event-selection-animation.scroll-sound-pitch", 1.4).toFloat()
 
-        val revealSound = readSound(config.getString("game.event-selection-animation.reveal-sound"), Sound.BLOCK_NOTE_BLOCK_PLING)
+        val revealSoundPath = "game.event-selection-animation.reveal-sound"
+        val revealSound = Utils.readSound(config.getString(revealSoundPath), Sound.BLOCK_NOTE_BLOCK_PLING, revealSoundPath)
         val revealVolume = config.getDouble("game.event-selection-animation.reveal-sound-volume", 1.0).toFloat()
         val revealPitch = config.getDouble("game.event-selection-animation.reveal-sound-pitch", 2.0).toFloat()
 
@@ -138,17 +140,4 @@ object EventSelectionAnimationTask {
         VoteInventory.nameFor(GameEvents.voteItemId(event)) ?: Component.text(GameEvents.voteItemId(event))
 
     private fun plainName(event: GameEvents?): String = PlainTextComponentSerializer.plainText().serialize(eventTitle(event))
-
-    private fun readSound(
-        name: String?,
-        default: Sound,
-    ): Sound {
-        if (name == null) return default
-        return try {
-            Sound.valueOf(name.uppercase())
-        } catch (e: IllegalArgumentException) {
-            Logger.warning("Invalid sound '$name' in event-selection-animation config, using default")
-            default
-        }
-    }
 }
