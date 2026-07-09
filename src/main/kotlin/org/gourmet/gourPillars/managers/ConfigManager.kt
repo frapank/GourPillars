@@ -41,20 +41,27 @@ object ConfigManager {
         }
     }
 
+    // User-editable named collections (add/remove/reorder entries freely, see docs/config.md):
+    // only backfilled wholesale when missing entirely, never merged entry-by-entry, so an entry
+    // the user removed stays removed instead of being silently recreated on the next startup.
+    private val FREEFORM_SECTIONS = setOf("lobby-items", "gui.vote.items")
+
     private fun mergeMissingKeys(
         defaults: ConfigurationSection,
         target: ConfigurationSection,
     ): Int {
         var added = 0
         for (key in defaults.getKeys(false)) {
-            val defaultSection = defaults.getConfigurationSection(key)
+            val path = fullPath(target, key)
+            if (path in FREEFORM_SECTIONS && target.isConfigurationSection(key)) continue
 
+            val defaultSection = defaults.getConfigurationSection(key)
             if (defaultSection != null) {
                 val targetSection = target.getConfigurationSection(key) ?: target.createSection(key)
                 added += mergeMissingKeys(defaultSection, targetSection)
             } else if (!target.isSet(key)) {
                 val defaultValue = defaults.get(key)
-                Logger.warning("Missing config option '${fullPath(target, key)}', added default: $defaultValue")
+                Logger.warning("Missing config option '$path', added default: $defaultValue")
                 target.set(key, defaultValue)
                 added++
             }
