@@ -19,6 +19,7 @@ class CountDownTask(
         if (arena.inGamePlayer.size < arena.minPlayer) {
             arena.gameState = State.WAITING
             counter = countdownSeconds
+            arena.countdownTask = null
             cancel()
             return
         }
@@ -26,6 +27,7 @@ class CountDownTask(
         // End countdown
         if (counter <= 0) {
             counter = countdownSeconds
+            arena.countdownTask = null
             cancel()
             startEventSelection()
             return

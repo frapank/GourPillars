@@ -5,6 +5,7 @@ import org.bukkit.*
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import org.bukkit.scheduler.BukkitTask
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.api.ArenaJoinResult
 import org.gourmet.gourPillars.api.events.GourPillarsArenaStateChangeEvent
@@ -68,8 +69,11 @@ class Arena(
     val dayVote: ArrayList<Player> = ArrayList()
     val nightVote: ArrayList<Player> = ArrayList()
 
+    var countdownTask: BukkitTask? = null
+
     private fun startArena() {
-        CountDownTask(this).runTaskTimer(GourPillars.instance, 0L, 20L)
+        if (countdownTask != null) return
+        countdownTask = CountDownTask(this).runTaskTimer(GourPillars.instance, 0L, 20L)
     }
 
     fun cageLocation(spawn: Location): Location = spawn.clone().add(0.0, spawnHeight.toDouble(), 0.0)
@@ -205,6 +209,8 @@ class Arena(
         // Stop cooldown if player is not enought
         if (inGamePlayer.size < minPlayer && (gameState == State.WAITING || gameState == State.STARTING)) {
             gameState = State.WAITING
+            countdownTask?.cancel()
+            countdownTask = null
             val playerRequired = maxPlayer - inGamePlayer.size
             sendDynamicMessageToPlayerInGame(MessageData.ARENA_PLAYER_NEEDED, "{playerRequired}" to playerRequired.toString())
             return
