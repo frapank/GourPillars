@@ -48,6 +48,8 @@ class GameTask(
     fun killsOf(player: Player): Int? = if (::playerKills.isInitialized) playerKills[player] else null
 
     override fun run() {
+        if (running) return
+
         // Init game
         running = true
         gameEnded = false
