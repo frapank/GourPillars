@@ -2,13 +2,16 @@ package org.gourmet.gourPillars.api
 
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.entity.Zombie
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.api.events.GourPillarsArenaStateChangeEvent
+import org.gourmet.gourPillars.api.events.GourPillarsEventSelectedEvent
 import org.gourmet.gourPillars.api.events.GourPillarsGameEndEvent
 import org.gourmet.gourPillars.api.events.GourPillarsGameStartEvent
+import org.gourmet.gourPillars.api.events.GourPillarsPlayerEliminatedEvent
 import org.gourmet.gourPillars.api.events.GourPillarsPlayerFinishEvent
 import org.gourmet.gourPillars.api.events.GourPillarsPlayerJoinArenaEvent
 import org.gourmet.gourPillars.api.events.GourPillarsPlayerKillEvent
@@ -16,6 +19,7 @@ import org.gourmet.gourPillars.api.events.GourPillarsPlayerLeaveArenaEvent
 import org.gourmet.gourPillars.api.events.GourPillarsSpectateStartEvent
 import org.gourmet.gourPillars.api.events.GourPillarsSpectateStopEvent
 import org.gourmet.gourPillars.managers.game.arena.Arena
+import org.gourmet.gourPillars.managers.game.arena.GameEvents
 import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.Region
 import org.junit.jupiter.api.AfterAll
@@ -408,6 +412,8 @@ class GourPillarsAPITest {
         val ends = mutableListOf<GourPillarsGameEndEvent>()
         val finishes = mutableListOf<GourPillarsPlayerFinishEvent>()
         val kills = mutableListOf<GourPillarsPlayerKillEvent>()
+        val eliminations = mutableListOf<GourPillarsPlayerEliminatedEvent>()
+        val eventSelections = mutableListOf<GourPillarsEventSelectedEvent>()
 
         @EventHandler
         fun onStart(event: GourPillarsGameStartEvent) {
@@ -427,6 +433,16 @@ class GourPillarsAPITest {
         @EventHandler
         fun onKill(event: GourPillarsPlayerKillEvent) {
             kills.add(event)
+        }
+
+        @EventHandler
+        fun onEliminated(event: GourPillarsPlayerEliminatedEvent) {
+            eliminations.add(event)
+        }
+
+        @EventHandler
+        fun onEventSelected(event: GourPillarsEventSelectedEvent) {
+            eventSelections.add(event)
         }
     }
 
@@ -454,6 +470,11 @@ class GourPillarsAPITest {
         assertEquals(winner, listener.kills[0].killer)
         assertEquals(loser, listener.kills[0].victim)
 
+        assertEquals(1, listener.eliminations.size)
+        assertEquals(loser, listener.eliminations[0].player)
+        assertEquals(EliminationCause.KILL, listener.eliminations[0].cause)
+        assertEquals(winner, listener.eliminations[0].source)
+
         assertEquals(2, listener.finishes.size)
         val loserFinish = listener.finishes.first { it.player == loser }
         val winnerFinish = listener.finishes.first { it.player == winner }
@@ -464,6 +485,59 @@ class GourPillarsAPITest {
         assertEquals(1, listener.ends.size)
         assertEquals(winner, listener.ends[0].winner)
         assertEquals("events-match", listener.ends[0].arenaName)
+
+        HandlerList.unregisterAll(listener)
+    }
+
+    @Test
+    fun `void, fall and mob eliminations fire the eliminated event with the right cause`() {
+        val arena = newArena("cause-match", maxPlayers = 4, minPlayers = 4)
+        register(arena)
+        val voidVictim = server.addPlayer("VoidVictim")
+        val voidKillerVictim = server.addPlayer("VoidKillerVictim")
+        val voidKiller = server.addPlayer("VoidKiller")
+        val fallVictim = server.addPlayer("FallVictim")
+        val mobVictim = server.addPlayer("MobVictim")
+        listOf(voidVictim, voidKillerVictim, voidKiller, fallVictim, mobVictim).forEach { arena.inGamePlayer.add(it) }
+
+        val listener = RecordingListener()
+        server.pluginManager.registerEvents(listener, GourPillars.instance)
+
+        arena.gameState = State.INGAME
+        arena.gameTask.run()
+
+        arena.gameTask.playerEliminatedVoid(voidVictim)
+        arena.gameTask.playerEliminatedVoid(voidKillerVictim, voidKiller)
+        arena.gameTask.playerEliminatedFall(fallVictim)
+        val zombie = mobVictim.world.spawn(mobVictim.location, Zombie::class.java)
+        arena.gameTask.playerEliminatedByMob(mobVictim, zombie)
+
+        val byPlayer = listener.eliminations.associateBy { it.player }
+        assertEquals(EliminationCause.VOID, byPlayer[voidVictim]?.cause)
+        assertEquals(EliminationCause.VOID_KILL, byPlayer[voidKillerVictim]?.cause)
+        assertEquals(voidKiller, byPlayer[voidKillerVictim]?.source)
+        assertEquals(EliminationCause.FALL, byPlayer[fallVictim]?.cause)
+        assertEquals(EliminationCause.MOB, byPlayer[mobVictim]?.cause)
+        assertEquals(zombie, byPlayer[mobVictim]?.source)
+
+        HandlerList.unregisterAll(listener)
+    }
+
+    @Test
+    fun `applyEvent fires the event-selected event, including no event`() {
+        val arena = newArena("vote-match")
+        register(arena)
+
+        val listener = RecordingListener()
+        server.pluginManager.registerEvents(listener, GourPillars.instance)
+
+        arena.gameTask.applyEvent(GameEvents.LAVA)
+        arena.gameTask.applyEvent(null)
+
+        assertEquals(2, listener.eventSelections.size)
+        assertEquals(GameEvents.LAVA, listener.eventSelections[0].event)
+        assertEquals(null, listener.eventSelections[1].event)
+        assertEquals("vote-match", listener.eventSelections[0].arenaName)
 
         HandlerList.unregisterAll(listener)
     }
