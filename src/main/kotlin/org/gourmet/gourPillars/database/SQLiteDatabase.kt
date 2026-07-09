@@ -97,6 +97,26 @@ class SQLiteDatabase(
         }
     }
 
+    private fun runUpdate(
+        query: String,
+        intParam: Int,
+        playerName: String,
+        errorMessage: String,
+    ): CompletableFuture<Void?> {
+        if (!isOnline) return CompletableFuture.completedFuture(null)
+        val source = dataSource ?: return CompletableFuture.completedFuture(null)
+        return async(null, errorMessage) {
+            source.connection.use { conn ->
+                conn.prepareStatement(query).use { stmt ->
+                    stmt.setInt(1, intParam)
+                    stmt.setString(2, playerName)
+                    stmt.executeUpdate()
+                }
+            }
+            null
+        }
+    }
+
     override fun incrementKills(playerName: String): CompletableFuture<Void?> =
         runUpdate("UPDATE pillars_stats SET kills = kills + 1 WHERE name = ?", playerName, "Database error updating kills")
 
@@ -133,6 +153,18 @@ class SQLiteDatabase(
             playerName,
             "Database error resetting win streak",
         )
+
+    override fun incrementXp(
+        playerName: String,
+        amount: Int,
+    ): CompletableFuture<Void?> =
+        runUpdate("UPDATE pillars_stats SET xp = xp + ? WHERE name = ?", amount, playerName, "Database error updating xp")
+
+    override fun setLevel(
+        playerName: String,
+        level: Int,
+    ): CompletableFuture<Void?> =
+        runUpdate("UPDATE pillars_stats SET level = ? WHERE name = ?", level, playerName, "Database error updating level")
 
     override fun getStatistics(playerName: String): CompletableFuture<PlayerStats?> {
         if (!isOnline) return CompletableFuture.completedFuture(null)
