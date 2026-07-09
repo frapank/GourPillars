@@ -34,6 +34,32 @@ spawn:
   yaw: 1
   pitch: 1
 
+lobby:
+  # Set to false if another plugin fully manages the lobby world (a dedicated hub plugin,
+  # for example): GourPillars will then leave the lobby alone entirely and only take care
+  # of arenas/matches. Each check below only runs while this is true.
+  enabled: true
+  checks:
+    # Teleport players to the configured spawn on join.
+    teleport-to-spawn-on-join: true
+    # Reset health/hunger/fire/potion effects on join.
+    reset-state-on-join: true
+    # Give the lobby-items (see lobby-items below) on join, and handle clicking them.
+    lobby-items: true
+    # Show the lobby scoreboard.
+    scoreboard: true
+    # Keep hunger at full while in the lobby world.
+    unlimited-food: true
+    # Block building/breaking/signs/interactions in the lobby world (build sessions are exempt).
+    world-protection: true
+    # Cancel all damage (including PvP) in the lobby world.
+    damage-protection: true
+    # Block dropping items/inventory clicks/hand swapping in the lobby world.
+    item-protection: true
+    # Teleport a player back to the spawn if they fall into the void while not in an active
+    # match (no arena, or an arena that's waiting/starting/stopped).
+    void-teleport-to-spawn: true
+
 party:
   # A party's max size is normally the max player count of the biggest currently
   # loaded arena (in any state, including in-game ones), so a party can never be

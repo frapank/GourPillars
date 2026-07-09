@@ -11,33 +11,43 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.commands.BuildCMD
 import org.gourmet.gourPillars.managers.LevelBarManager
+import org.gourmet.gourPillars.managers.LobbyConfig
 import org.gourmet.gourPillars.other.Utils
 
 class JoinListener : Listener {
     @EventHandler
     fun joinEvent(event: PlayerJoinEvent) {
-        object : BukkitRunnable() {
-            override fun run() {
-                GourPillars.spawnManager.teleportPlayerToSpawn(event.player)
-            }
-        }.runTaskLater(GourPillars.instance, 1L)
+        if (LobbyConfig.teleportToSpawnOnJoin) {
+            object : BukkitRunnable() {
+                override fun run() {
+                    GourPillars.spawnManager.teleportPlayerToSpawn(event.player)
+                }
+            }.runTaskLater(GourPillars.instance, 1L)
+        }
 
-        Utils.resetPlayerState(event.player)
+        if (LobbyConfig.resetStateOnJoin) {
+            Utils.resetPlayerState(event.player)
+        }
         event.joinMessage = ""
 
-        Utils.giveLobbyItems(event.player)
+        if (LobbyConfig.lobbyItems) {
+            Utils.giveLobbyItems(event.player)
+        }
 
-        object : BukkitRunnable() {
-            override fun run() {
-                GourPillars.lobbyScoreboardManager.setScoreboard(event.player)
-            }
-        }.runTaskLater(GourPillars.instance, 20 * 1)
+        if (LobbyConfig.scoreboard) {
+            object : BukkitRunnable() {
+                override fun run() {
+                    GourPillars.lobbyScoreboardManager.setScoreboard(event.player)
+                }
+            }.runTaskLater(GourPillars.instance, 20 * 1)
+        }
 
         LevelBarManager.updateLevelInBar(event.player)
     }
 
     @EventHandler
     fun onFoodChange(event: FoodLevelChangeEvent) {
+        if (!LobbyConfig.unlimitedFood) return
         if (event.entity !is Player) return
         val player: Player = event.entity as Player
         if (!isSpawnWorld(player.world)) return
