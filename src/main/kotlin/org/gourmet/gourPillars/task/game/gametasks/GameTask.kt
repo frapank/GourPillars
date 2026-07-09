@@ -17,6 +17,7 @@ import org.gourmet.gourPillars.api.events.GourPillarsGameStartEvent
 import org.gourmet.gourPillars.api.events.GourPillarsPlayerEliminatedEvent
 import org.gourmet.gourPillars.api.events.GourPillarsPlayerFinishEvent
 import org.gourmet.gourPillars.api.events.GourPillarsPlayerKillEvent
+import org.gourmet.gourPillars.managers.XpSource
 import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.GameEvents
 import org.gourmet.gourPillars.managers.game.arena.State
@@ -58,6 +59,7 @@ class GameTask(
         alivePlayer.forEach { player ->
             arena.playedPlayerNames.add(player.name)
             StatsUpdater.updateGamesPlayed(player)
+            StatsUpdater.addXp(player, XpSource.GAME_PLAYED)
         }
 
         removeAllGlass()
@@ -153,6 +155,7 @@ class GameTask(
             GameFunctions.playVictoryEffects(winner, arena)
             StatsUpdater.updateWins(winner)
             StatsUpdater.incrementStreak(winner)
+            StatsUpdater.addXp(winner, XpSource.WIN)
 
             arena.inGamePlayer.forEach { player ->
                 player.sendDynamicMessage(
@@ -294,6 +297,7 @@ class GameTask(
         eliminationProcess(player, EliminationCause.VOID_KILL, killer)
         StatsUpdater.looseStreak(player)
         StatsUpdater.updateKill(killer)
+        StatsUpdater.addXp(killer, XpSource.VOID_KILL)
         Bukkit.getPluginManager().callEvent(GourPillarsPlayerKillEvent(arena.name, killer, player))
 
         // Send eliminated message
@@ -339,6 +343,7 @@ class GameTask(
         eliminationProcess(player, EliminationCause.KILL, killer)
         StatsUpdater.updateKill(killer)
         StatsUpdater.looseStreak(player)
+        StatsUpdater.addXp(killer, XpSource.KILL)
         Bukkit.getPluginManager().callEvent(GourPillarsPlayerKillEvent(arena.name, killer, player))
 
         // Send eliminated message
