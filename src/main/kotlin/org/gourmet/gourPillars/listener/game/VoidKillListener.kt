@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.managers.LobbyConfig
 import org.gourmet.gourPillars.managers.game.arena.State
 
 class VoidKillListener : Listener {
@@ -14,10 +15,9 @@ class VoidKillListener : Listener {
     fun onPlayerMove(event: PlayerMoveEvent) {
         val player = event.player
         val playerLoc = player.y
-        val arena = arenaManager.getArenaByPlayer(player) ?: return
-        val gameState = arena.gameState
+        val arena = arenaManager.getArenaByPlayer(player)
 
-        if (gameState == State.INGAME) {
+        if (arena != null && arena.gameState == State.INGAME) {
             if (playerLoc <= arena.minHeight) {
                 val damagerId = arena.lastDamagerMap.remove(player.uniqueId)
                 val damagerPlayer = damagerId?.let { Bukkit.getPlayer(it) }
@@ -28,6 +28,13 @@ class VoidKillListener : Listener {
                     arena.gameTask.playerEliminatedVoid(player)
                 }
             }
+            return
+        }
+
+        if (!LobbyConfig.voidTeleportToSpawn) return
+        val minHeight = arena?.minHeight ?: player.world.minHeight
+        if (playerLoc <= minHeight) {
+            GourPillars.spawnManager.teleportPlayerToSpawn(player)
         }
     }
 }

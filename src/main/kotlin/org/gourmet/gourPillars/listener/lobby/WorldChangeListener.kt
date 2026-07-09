@@ -14,10 +14,12 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.commands.BuildCMD
+import org.gourmet.gourPillars.managers.LobbyConfig
 
 class WorldChangeListener : Listener {
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {
+        if (!LobbyConfig.worldProtection) return
         if (isSpawnWorld(e.block.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
             e.isCancelled = true
         }
@@ -25,6 +27,7 @@ class WorldChangeListener : Listener {
 
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
+        if (!LobbyConfig.worldProtection) return
         if (isSpawnWorld(e.block.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
             e.isCancelled = true
         }
@@ -32,6 +35,7 @@ class WorldChangeListener : Listener {
 
     @EventHandler
     fun onSignChange(e: SignChangeEvent) {
+        if (!LobbyConfig.worldProtection) return
         if (isSpawnWorld(e.block.world) && (!BuildCMD.buildSessionPlayers.contains(e.player))) {
             e.isCancelled = true
         }
@@ -39,6 +43,7 @@ class WorldChangeListener : Listener {
 
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
+        if (!LobbyConfig.worldProtection) return
         if (!isSpawnWorld(e.player.world)) return
         if (BuildCMD.buildSessionPlayers.contains(e.player)) return
 
@@ -58,6 +63,7 @@ class WorldChangeListener : Listener {
     // Remove damage
     @EventHandler
     fun onAnyDamage(e: EntityDamageEvent) {
+        if (!LobbyConfig.damageProtection) return
         val entity = e.entity
         if (entity is Player && isSpawnWorld(e.entity.world)) {
             e.isCancelled = true
@@ -67,6 +73,7 @@ class WorldChangeListener : Listener {
     // Remove damage
     @EventHandler
     fun onPlayerVsPlayerDamage(e: EntityDamageByEntityEvent) {
+        if (!LobbyConfig.damageProtection) return
         val damager = e.damager
         val target = e.entity
         if (damager is Player && target is Player) {
