@@ -208,7 +208,7 @@ class GameTask(
 
     private fun removeAllGlass() {
         arena.spawnMap.forEach { (location, _) ->
-            Utils.setGlass(false, location)
+            Utils.setGlass(false, arena.cageLocation(location))
         }
     }
 
