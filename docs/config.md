@@ -21,6 +21,7 @@ On startup, `config.yml` is compared against the bundled default: any option mis
 | `match-duration-seconds`                 | Match length.                                                              |
 | `countdown-seconds`                       | Pre-match countdown.                                                       |
 | `random-item-interval-seconds`            | How often each alive player receives a random item.                       |
+| `excluded-random-items`                   | Material names never handed out by the random item task (creative-only/dev blocks, unobtainable-in-survival blocks, etc.). |
 | `knockback-multiplier`                    | Velocity multiplier applied to the victim when the Knockback event is active. |
 | `lava-rise-interval-seconds`              | How often the lava rises when the Lava event is active.                    |
 | `border.final-size`                       | Border size (in blocks) at which the shrink stops.                        |

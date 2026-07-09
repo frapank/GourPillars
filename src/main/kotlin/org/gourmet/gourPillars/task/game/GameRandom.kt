@@ -8,6 +8,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.other.Logger
 
 object GameRandom {
     fun startRandomItemTask(
@@ -39,28 +40,7 @@ object GameRandom {
     }
 
     fun getRandomMaterial(): Material {
-        val nonPlacableMaterials =
-            setOf(
-                Material.COMMAND_BLOCK,
-                Material.CHAIN_COMMAND_BLOCK,
-                Material.REPEATING_COMMAND_BLOCK,
-                Material.BARRIER,
-                Material.STRUCTURE_BLOCK,
-                Material.JIGSAW,
-                Material.DEBUG_STICK,
-                Material.KNOWLEDGE_BOOK,
-                Material.LIGHT,
-                Material.STRUCTURE_VOID,
-                Material.END_PORTAL_FRAME,
-                Material.END_PORTAL,
-                Material.NETHER_PORTAL,
-                Material.BEDROCK,
-                Material.SPAWNER,
-                Material.ENDER_DRAGON_SPAWN_EGG,
-                Material.WITHER_SPAWN_EGG,
-                Material.SNOWBALL,
-                Material.SHIELD,
-            )
+        val nonPlacableMaterials = getExcludedMaterials()
 
         val armorTrimMaterials =
             Material.entries
@@ -82,4 +62,14 @@ object GameRandom {
 
         return materials.random()
     }
+
+    private fun getExcludedMaterials(): Set<Material> =
+        GourPillars.instance.config
+            .getStringList("game.excluded-random-items")
+            .mapNotNull { name ->
+                Material.matchMaterial(name) ?: run {
+                    Logger.warning("Invalid material '$name' in game.excluded-random-items, ignoring it")
+                    null
+                }
+            }.toSet()
 }
