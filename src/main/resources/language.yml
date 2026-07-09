@@ -186,6 +186,10 @@ stats:
     - "<gradient:#ff6699:#ffcc00>✦━━━━━━━━━━━━━━━━━━━━━━━✦</gradient>"
     - ""
 
+level:
+  title: "<gold><bold>Level Up!"
+  subtitle: "<yellow>You reached level {level}"
+
 join-leave-cmd:
   errors:
     arena-editing: "{prefix_game} <red>An operator is editing the arena, you can't play"
