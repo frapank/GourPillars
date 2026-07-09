@@ -20,13 +20,12 @@ interface Database {
      * Atomically adds [amount] to the player's xp and recomputes their level from the resulting
      * total (never regressing it), all in a single statement so concurrent writers (including
      * other server instances sharing the same database) can't stomp on each other's level.
-     * Returns the authoritative post-update xp/level, or null if the player has no row yet.
      */
     fun incrementXp(
         playerName: String,
         amount: Int,
         xpPerLevel: Int,
-    ): CompletableFuture<XpUpdate?>
+    ): CompletableFuture<Void?>
 
     fun incrementWinStreak(playerName: String): CompletableFuture<Void?>
 
@@ -45,9 +44,4 @@ data class PlayerStats(
     var playedGame: Int = 0,
     var bestWinStreak: Int = 0,
     var currentWinStreak: Int = 0,
-)
-
-data class XpUpdate(
-    val xp: Int,
-    val level: Int,
 )

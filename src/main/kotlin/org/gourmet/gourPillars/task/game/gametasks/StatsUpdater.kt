@@ -64,32 +64,15 @@ object StatsUpdater {
         if (!LevelManager.enabled) return
         val amount = LevelManager.xpFor(source)
         if (amount <= 0) return
-        if (!database.isOnline) return
 
-        database
-            .incrementXp(player.name, amount, LevelManager.xpPerLevel())
-            .thenAccept { update ->
-                if (update == null) return@thenAccept
-                Bukkit.getScheduler().runTask(
-                    GourPillars.instance,
-                    Runnable {
-                        val localStats = GourPillars.playersStats[player]
-                        if (localStats == null) {
-                            Logger.warning("Can't fetch local stats, ${player.name} is not in the local cache")
-                            return@Runnable
-                        }
-                        val previousLevel = localStats.level
-                        localStats.xp = update.xp
-                        localStats.level = update.level
-                        if (update.level > previousLevel) {
-                            LevelBarManager.updateLevelInBar(player)
-                            LevelManager.announceLevelUp(player, update.level)
-                        }
-                    },
-                )
-            }.exceptionally { e ->
-                Logger.warning("Unexpected error updating xp for ${player.name}: ${e.message}")
-                null
+        apply(player, { name -> database.incrementXp(name, amount, LevelManager.xpPerLevel()) }) { stats ->
+            stats.xp += amount
+            val newLevel = LevelManager.levelForXp(stats.xp)
+            if (newLevel > stats.level) {
+                stats.level = newLevel
+                LevelBarManager.updateLevelInBar(player)
+                LevelManager.announceLevelUp(player, newLevel)
             }
+        }
     }
 }

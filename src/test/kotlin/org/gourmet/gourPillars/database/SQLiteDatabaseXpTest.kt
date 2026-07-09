@@ -52,11 +52,13 @@ class SQLiteDatabaseXpTest {
     fun `incrementXp accumulates xp and levels up once the threshold is crossed`() {
         database.createUser("Alice").get()
 
-        val first = database.incrementXp("Alice", 60, 100).get()
+        database.incrementXp("Alice", 60, 100).get()
+        val first = database.getStatistics("Alice").get()
         assertEquals(60, first?.xp)
         assertEquals(1, first?.level)
 
-        val second = database.incrementXp("Alice", 50, 100).get()
+        database.incrementXp("Alice", 50, 100).get()
+        val second = database.getStatistics("Alice").get()
         assertEquals(110, second?.xp)
         assertEquals(2, second?.level)
     }
@@ -68,8 +70,9 @@ class SQLiteDatabaseXpTest {
         // level ahead of what this instance's xp total alone would compute.
         setLevelDirectly("Bob", 9)
 
-        val result = database.incrementXp("Bob", 1, 100).get()
+        database.incrementXp("Bob", 1, 100).get()
 
+        val result = database.getStatistics("Bob").get()
         assertEquals(9, result?.level)
     }
 }
