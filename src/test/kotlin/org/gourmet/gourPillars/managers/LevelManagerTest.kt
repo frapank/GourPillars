@@ -43,14 +43,20 @@ class LevelManagerTest {
     }
 
     @Test
-    fun `xpFor is 0 (off) for an unknown source, and when explicitly set to 0`() {
-        assertEquals(0, LevelManager.xpFor("some-unconfigured-source"))
+    fun `xpFor reads the configured amount and is 0 when explicitly disabled`() {
+        GourPillars.instance.config.set("level.xp-rewards.kill", 25)
+        assertEquals(25, LevelManager.xpFor(XpSource.KILL))
 
         GourPillars.instance.config.set("level.xp-rewards.kill", 0)
-        assertEquals(0, LevelManager.xpFor("kill"))
+        assertEquals(0, LevelManager.xpFor(XpSource.KILL))
+    }
 
+    @Test
+    fun `xpFor is 0 when the whole system is disabled, even with a configured amount`() {
         GourPillars.instance.config.set("level.xp-rewards.kill", 25)
-        assertEquals(25, LevelManager.xpFor("kill"))
+        GourPillars.instance.config.set("level.enabled", false)
+
+        assertEquals(0, LevelManager.xpFor(XpSource.KILL))
     }
 
     @Test
