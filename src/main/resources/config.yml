@@ -48,6 +48,33 @@ game:
   countdown-seconds: 10
   # How often (in seconds) each alive player receives a random item.
   random-item-interval-seconds: 3.5
+  # Materials that will never be handed out by the random item task, e.g. because they're
+  # creative-only/dev blocks, unobtainable in survival, or otherwise unfit as a random drop.
+  # Uses Bukkit Material names: https://jd.papermc.io/paper/1.21/org/bukkit/Material.html
+  excluded-random-items:
+    - COMMAND_BLOCK
+    - CHAIN_COMMAND_BLOCK
+    - REPEATING_COMMAND_BLOCK
+    - COMMAND_BLOCK_MINECART
+    - BARRIER
+    - STRUCTURE_BLOCK
+    - STRUCTURE_VOID
+    - JIGSAW
+    - DEBUG_STICK
+    - KNOWLEDGE_BOOK
+    - LIGHT
+    - END_PORTAL_FRAME
+    - END_PORTAL
+    - NETHER_PORTAL
+    - BEDROCK
+    - SPAWNER
+    - TRIAL_SPAWNER
+    - VAULT
+    - REINFORCED_DEEPSLATE
+    - ENDER_DRAGON_SPAWN_EGG
+    - WITHER_SPAWN_EGG
+    - SNOWBALL
+    - SHIELD
   # Velocity multiplier applied to the victim when the "knockback" event is active.
   knockback-multiplier: 2.0
   # How often (in seconds) the lava rises when the "lava" event is active.
