@@ -60,6 +60,25 @@ lobby:
     # match (no arena, or an arena that's waiting/starting/stopped).
     void-teleport-to-spawn: true
 
+level:
+  # Master switch for the whole leveling system. When false, no XP is granted, no level-ups
+  # happen, the XP bar isn't touched, and picking up vanilla XP orbs behaves normally.
+  enabled: true
+  # XP needed to go from one level to the next.
+  xp-per-level: 100
+  # XP granted per action. Set any entry to 0 to turn that specific source off without
+  # touching the others.
+  xp-rewards:
+    kill: 10
+    void-kill: 10
+    win: 50
+    game-played: 5
+  level-up:
+    # See https://jd.papermc.io/paper/1.21/org/bukkit/Sound.html
+    sound: ENTITY_PLAYER_LEVELUP
+    sound-volume: 1.0
+    sound-pitch: 1.0
+
 party:
   # A party's max size is normally the max player count of the biggest currently
   # loaded arena (in any state, including in-game ones), so a party can never be

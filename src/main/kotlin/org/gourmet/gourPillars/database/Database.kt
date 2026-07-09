@@ -16,6 +16,17 @@ interface Database {
 
     fun incrementGamesPlayed(playerName: String): CompletableFuture<Void?>
 
+    /**
+     * Atomically adds [amount] to the player's xp and recomputes their level from the resulting
+     * total (never regressing it), all in a single statement so concurrent writers (including
+     * other server instances sharing the same database) can't stomp on each other's level.
+     */
+    fun incrementXp(
+        playerName: String,
+        amount: Int,
+        xpPerLevel: Int,
+    ): CompletableFuture<Void?>
+
     fun incrementWinStreak(playerName: String): CompletableFuture<Void?>
 
     fun resetWinStreak(playerName: String): CompletableFuture<Void?>

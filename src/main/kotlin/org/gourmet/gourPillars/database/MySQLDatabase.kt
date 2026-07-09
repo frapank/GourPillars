@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.bukkit.configuration.file.YamlConfiguration
 import org.gourmet.gourPillars.other.Logger
+import java.sql.PreparedStatement
 import java.util.concurrent.CompletableFuture
 
 class MySQLDatabase private constructor(
@@ -159,21 +160,27 @@ class MySQLDatabase private constructor(
 
     private fun runUpdate(
         query: String,
-        playerName: String,
         errorMessage: String,
+        bind: (PreparedStatement) -> Unit,
     ): CompletableFuture<Void?> {
         if (!isOnline) return CompletableFuture.completedFuture(null)
         val source = dataSource ?: return CompletableFuture.completedFuture(null)
         return async(null, errorMessage) {
             source.connection.use { conn ->
                 conn.prepareStatement(query).use { stmt ->
-                    stmt.setString(1, playerName)
+                    bind(stmt)
                     stmt.executeUpdate()
                 }
             }
             null
         }
     }
+
+    private fun runUpdate(
+        query: String,
+        playerName: String,
+        errorMessage: String,
+    ): CompletableFuture<Void?> = runUpdate(query, errorMessage) { it.setString(1, playerName) }
 
     override fun incrementKills(playerName: String): CompletableFuture<Void?> =
         runUpdate("UPDATE pillars_stats SET kills = kills + 1 WHERE name = ?", playerName, "Database error updating kills")
@@ -211,6 +218,26 @@ class MySQLDatabase private constructor(
             playerName,
             "Database error resetting win streak",
         )
+
+    override fun incrementXp(
+        playerName: String,
+        amount: Int,
+        xpPerLevel: Int,
+    ): CompletableFuture<Void?> =
+        runUpdate(
+            """
+            UPDATE pillars_stats
+            SET xp = xp + ?,
+                level = GREATEST(level, 1 + (xp + ?) DIV ?)
+            WHERE name = ?
+            """.trimIndent(),
+            "Database error updating xp",
+        ) { stmt ->
+            stmt.setInt(1, amount)
+            stmt.setInt(2, amount)
+            stmt.setInt(3, xpPerLevel)
+            stmt.setString(4, playerName)
+        }
 
     override fun getStatistics(playerName: String): CompletableFuture<PlayerStats?> {
         if (!isOnline) return CompletableFuture.completedFuture(null)

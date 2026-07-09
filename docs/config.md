@@ -28,6 +28,21 @@ Each `lobby.checks` entry only runs while `lobby.enabled` is `true`, so individu
 | `item-protection`              | Block dropping items, inventory clicks and hand swapping in the lobby world.                   |
 | `void-teleport-to-spawn`       | Teleport a player back to spawn if they fall into the void outside an active match.            |
 
+## Leveling (`level`)
+
+`level.enabled` is the master switch for the whole leveling system — when `false`, no XP is granted, no level-ups happen, the XP bar isn't touched, and vanilla XP orbs behave normally again.
+
+| Key                             | Description                                                                                   |
+|-----------------------------------|-----------------------------------------------------------------------------------------------|
+| `xp-per-level`                     | XP needed to go from one level to the next.                                                   |
+| `xp-rewards.kill`                  | XP granted for eliminating another player.                                                    |
+| `xp-rewards.void-kill`             | XP granted for knocking another player into the void.                                         |
+| `xp-rewards.win`                   | XP granted for winning a match.                                                                |
+| `xp-rewards.game-played`           | XP granted just for playing a match, win or lose.                                              |
+| `level-up.sound` / `-volume` / `-pitch` | Sound played to a player when they level up.                                             |
+
+Set any `xp-rewards` entry to `0` to turn off that specific source without touching the others. The title/subtitle shown on level-up come from `language.yml` (`level.title` / `level.subtitle`), with `{level}` as a placeholder.
+
 ## Party
 
 `party.fallback-max-size` is only used when no arena is loaded at all — normally a party's max size follows the biggest loaded arena instead. See [commands.md](commands.md) for the full party permission list.
