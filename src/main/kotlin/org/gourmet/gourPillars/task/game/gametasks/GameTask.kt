@@ -376,8 +376,9 @@ class GameTask(
     }
 
     fun getTimeFormatted(): String {
-        val minutes = secondsPassed / 60
-        val remainingSeconds = secondsPassed % 60
+        val elapsedSeconds = matchDurationSeconds - secondsPassed
+        val minutes = elapsedSeconds / 60
+        val remainingSeconds = elapsedSeconds % 60
 
         val minuteText = if (minutes == 1) "1 minute" else "$minutes minutes"
         val secondText = if (remainingSeconds == 1) "1 second" else "$remainingSeconds seconds"
