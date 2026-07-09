@@ -10,6 +10,24 @@ On startup, `config.yml` is compared against the bundled default: any option mis
 
 `spawn` sets the world/coordinates/yaw/pitch players are teleported to when they're in the lobby. Also settable in-game with `/setspawn`.
 
+## Lobby checks (`lobby`)
+
+`lobby.enabled` is the master switch for GourPillars' own lobby handling — set it to `false` if another plugin (e.g. a dedicated hub plugin) manages the lobby world instead; arenas/matches are unaffected either way.
+
+Each `lobby.checks` entry only runs while `lobby.enabled` is `true`, so individual pieces can also be handed over on their own:
+
+| Key                          | Description                                                                                   |
+|-------------------------------|-----------------------------------------------------------------------------------------------|
+| `teleport-to-spawn-on-join`    | Teleport players to the configured spawn on join.                                              |
+| `reset-state-on-join`          | Reset health/hunger/fire/potion effects on join.                                               |
+| `lobby-items`                  | Give the `lobby-items` on join and handle clicking them.                                       |
+| `scoreboard`                   | Show the lobby scoreboard.                                                                     |
+| `unlimited-food`               | Keep hunger at full while in the lobby world.                                                  |
+| `world-protection`             | Block building/breaking/signs/interactions in the lobby world (build sessions are exempt).     |
+| `damage-protection`            | Cancel all damage, including PvP, in the lobby world.                                          |
+| `item-protection`              | Block dropping items, inventory clicks and hand swapping in the lobby world.                   |
+| `void-teleport-to-spawn`       | Teleport a player back to spawn if they fall into the void outside an active match.            |
+
 ## Party
 
 `party.fallback-max-size` is only used when no arena is loaded at all — normally a party's max size follows the biggest loaded arena instead. See [commands.md](commands.md) for the full party permission list.
