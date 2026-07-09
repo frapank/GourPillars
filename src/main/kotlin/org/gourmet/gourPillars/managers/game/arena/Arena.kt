@@ -42,6 +42,7 @@ class Arena(
     val regionLocTwo: Location,
     var region: Region,
     val name: String,
+    val spawnHeight: Int = 0,
 ) {
     val scoreboardManager: GameScoreboardManager = GameScoreboardManager(this)
     val gameTask: GameTask = GameTask(this, GourPillars.instance)
@@ -70,6 +71,8 @@ class Arena(
     private fun startArena() {
         CountDownTask(this).runTaskTimer(GourPillars.instance, 0L, 20L)
     }
+
+    fun cageLocation(spawn: Location): Location = spawn.clone().add(0.0, spawnHeight.toDouble(), 0.0)
 
     // Utils
     fun addPlayer(player: Player): ArenaJoinResult {
@@ -110,8 +113,9 @@ class Arena(
             // Teleport and set glass pannel
             for ((location, playerInSpawn) in spawnMap) {
                 if (playerInSpawn == null) {
-                    Utils.setGlass(true, location)
-                    player.teleport(location)
+                    val cageLocation = cageLocation(location)
+                    Utils.setGlass(true, cageLocation)
+                    player.teleport(cageLocation)
                     spawnMap[location] = player
                     break
                 }
@@ -175,7 +179,7 @@ class Arena(
         // Remove spawn and glass
         spawnMap.forEach { (location, playerInSpawn) ->
             if (playerInSpawn == player) {
-                Utils.setGlass(false, location)
+                Utils.setGlass(false, cageLocation(location))
                 spawnMap[location] = null
             }
         }
