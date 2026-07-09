@@ -6,6 +6,7 @@ import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.database.PlayerStats
 import org.gourmet.gourPillars.managers.LevelBarManager
 import org.gourmet.gourPillars.managers.LevelManager
+import org.gourmet.gourPillars.managers.XpSource
 import org.gourmet.gourPillars.other.Logger
 import java.util.concurrent.CompletableFuture
 
@@ -58,21 +59,37 @@ object StatsUpdater {
 
     fun addXp(
         player: Player,
-        source: String,
+        source: XpSource,
     ) {
         if (!LevelManager.enabled) return
         val amount = LevelManager.xpFor(source)
         if (amount <= 0) return
+        if (!database.isOnline) return
 
-        apply(player, { name -> database.incrementXp(name, amount) }) { stats ->
-            stats.xp += amount
-            val newLevel = LevelManager.levelForXp(stats.xp)
-            if (newLevel > stats.level) {
-                stats.level = newLevel
-                database.setLevel(player.name, newLevel)
-                LevelBarManager.updateLevelInBar(player)
-                LevelManager.announceLevelUp(player, newLevel)
+        database
+            .incrementXp(player.name, amount, LevelManager.xpPerLevel())
+            .thenAccept { update ->
+                if (update == null) return@thenAccept
+                Bukkit.getScheduler().runTask(
+                    GourPillars.instance,
+                    Runnable {
+                        val localStats = GourPillars.playersStats[player]
+                        if (localStats == null) {
+                            Logger.warning("Can't fetch local stats, ${player.name} is not in the local cache")
+                            return@Runnable
+                        }
+                        val previousLevel = localStats.level
+                        localStats.xp = update.xp
+                        localStats.level = update.level
+                        if (update.level > previousLevel) {
+                            LevelBarManager.updateLevelInBar(player)
+                            LevelManager.announceLevelUp(player, update.level)
+                        }
+                    },
+                )
+            }.exceptionally { e ->
+                Logger.warning("Unexpected error updating xp for ${player.name}: ${e.message}")
+                null
             }
-        }
     }
 }
