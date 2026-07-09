@@ -158,6 +158,10 @@ object MessageData {
     lateinit var STATS_USER: DynamicMessage
     lateinit var STATS_TARGET: DynamicMessage
 
+    // level
+    lateinit var LEVEL_UP_TITLE: DynamicMessage
+    lateinit var LEVEL_UP_SUBTITLE: DynamicMessage
+
     // stats-leave cmd
     lateinit var JOIN_LEAVE_ERRORS_ARENA_EDIT: DynamicMessage
     lateinit var JOIN_LEAVE_ERRORS_ARENA_NOT_EXIST: DynamicMessage
@@ -302,6 +306,10 @@ object MessageData {
         // stats
         STATS_USER = getMessage(config, "stats.stats-user")
         STATS_TARGET = getMessage(config, "stats.stats-target")
+
+        // level
+        LEVEL_UP_TITLE = getMessage(config, "level.title")
+        LEVEL_UP_SUBTITLE = getMessage(config, "level.subtitle")
 
         // join-leave cmd
         JOIN_LEAVE_ERRORS_ARENA_EDIT = getMessage(config, "join-leave-cmd.errors.arena-editing")

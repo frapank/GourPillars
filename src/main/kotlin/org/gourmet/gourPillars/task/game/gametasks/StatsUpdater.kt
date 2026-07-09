@@ -4,6 +4,9 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.database.PlayerStats
+import org.gourmet.gourPillars.managers.LevelBarManager
+import org.gourmet.gourPillars.managers.LevelManager
+import org.gourmet.gourPillars.managers.XpSource
 import org.gourmet.gourPillars.other.Logger
 import java.util.concurrent.CompletableFuture
 
@@ -53,4 +56,23 @@ object StatsUpdater {
             it.bestWinStreak = maxOf(it.bestWinStreak, it.currentWinStreak)
             it.currentWinStreak = 0
         }
+
+    fun addXp(
+        player: Player,
+        source: XpSource,
+    ) {
+        if (!LevelManager.enabled) return
+        val amount = LevelManager.xpFor(source)
+        if (amount <= 0) return
+
+        apply(player, { name -> database.incrementXp(name, amount, LevelManager.xpPerLevel()) }) { stats ->
+            stats.xp += amount
+            val newLevel = LevelManager.levelForXp(stats.xp)
+            if (newLevel > stats.level) {
+                stats.level = newLevel
+                LevelBarManager.updateLevelInBar(player)
+                LevelManager.announceLevelUp(player, newLevel)
+            }
+        }
+    }
 }
