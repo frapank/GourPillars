@@ -71,7 +71,9 @@ object JoinerCMD {
                 }
 
                 State.INGAME -> {
-                    currentArena.gameTask.playerEliminated(player)
+                    if (currentArena.gameTask.isAlive(player)) {
+                        currentArena.gameTask.playerEliminated(player)
+                    }
                     currentArena.removePlayer(player)
                 }
 

@@ -37,10 +37,7 @@ class QuitGameListener : Listener {
 
         // If player quit during the game, he will die and leave the party
         if (arena.gameState == State.INGAME) {
-            if (partyManager.isInParty(player)) {
-                partyManager.leaveParty(player)
-                gameRunnable.playerEliminated(player)
-            } else {
+            if (gameRunnable.isAlive(player)) {
                 gameRunnable.playerEliminated(player)
             }
 
