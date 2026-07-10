@@ -12,7 +12,7 @@ class KnockbackListener : Listener {
     val arenaManager = GourPillars.arenaManager
     private val knockbackMultiplier = GourPillars.instance.config.getDouble("game.knockback-multiplier", 2.0)
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     fun onPlayerHit(event: EntityDamageByEntityEvent) {
         val attacker = event.damager
         val victim = event.entity
