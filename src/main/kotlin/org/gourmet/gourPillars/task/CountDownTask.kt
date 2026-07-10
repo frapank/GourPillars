@@ -61,7 +61,6 @@ class CountDownTask(
 
         val winner = EventSelector.selectWinner(arena)
         EventSelectionAnimationTask.run(arena, winner) {
-            arena.sendTitleToPlayerInGame("&7Uccidi i tuoi avversari", "&8Ma non cadere...")
             arena.sendDynamicTitleToPlayerInGame(MessageData.ARENA_TITLE_START, MessageData.ARENA_SUBTITLE_START)
             arena.inGamePlayer.forEach { player ->
                 player.playSound(player.location, Sound.ENTITY_WITHER_SPAWN, 0.8f, 2.0f)
