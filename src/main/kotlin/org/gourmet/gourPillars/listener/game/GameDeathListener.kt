@@ -52,7 +52,7 @@ class GameDeathListener : Listener {
     }
 
     // get damager and victim in map
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
         val victim = event.entity
         if (victim !is Player) {
