@@ -21,6 +21,7 @@ import org.gourmet.gourPillars.database.checkDatabase
 import org.gourmet.gourPillars.listener.game.BorderLimitListener
 import org.gourmet.gourPillars.listener.game.GameDeathListener
 import org.gourmet.gourPillars.listener.game.KnockbackListener
+import org.gourmet.gourPillars.listener.game.QueueDamageListener
 import org.gourmet.gourPillars.listener.game.QuitGameListener
 import org.gourmet.gourPillars.listener.game.StopBreakStartingListener
 import org.gourmet.gourPillars.listener.game.VoidKillListener
@@ -128,6 +129,7 @@ open class GourPillars : JavaPlugin() {
                 BorderLimitListener(),
                 GameDeathListener(),
                 KnockbackListener(),
+                QueueDamageListener(),
                 QuitGameListener(),
                 StopBreakStartingListener(),
                 VoidKillListener(),
