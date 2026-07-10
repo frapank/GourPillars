@@ -35,7 +35,9 @@ class GourPillarsAPIImpl(
     override fun removePlayerFromArena(player: Player): Boolean {
         val arena = arenaManager.getArenaByPlayer(player) ?: return false
         if (arena.gameState == State.INGAME) {
-            arena.gameTask.playerEliminated(player)
+            if (arena.gameTask.isAlive(player)) {
+                arena.gameTask.playerEliminated(player)
+            }
             arena.inGamePlayer.remove(player)
         } else {
             arena.removePlayer(player)

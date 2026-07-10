@@ -47,6 +47,8 @@ class GameTask(
 
     fun killsOf(player: Player): Int? = if (::playerKills.isInitialized) playerKills[player] else null
 
+    fun isAlive(player: Player): Boolean = ::alivePlayer.isInitialized && alivePlayer.contains(player)
+
     override fun run() {
         if (running) return
 
