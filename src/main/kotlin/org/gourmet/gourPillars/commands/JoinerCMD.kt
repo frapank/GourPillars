@@ -134,39 +134,28 @@ object JoinerCMD {
                 return
             }
 
-        if (arena.gameState == State.INGAME) {
-            if (partyManager.isInParty(player)) {
-                val party = partyManager.getPartyByPlayer(player)
-                if (party?.partyAdmin == player) {
-                    party.members.forEach { member ->
-                        arena.gameTask.playerEliminated(member)
-                        arena.spawnManager.teleportPlayerToSpawn(member)
-                    }
-                }
-            } else {
-                arena.gameTask.playerEliminated(player)
-                arena.inGamePlayer.remove(player)
-                arena.spawnManager.teleportPlayerToSpawn(player)
-            }
-        } else {
-            if (partyManager.isInParty(player)) {
-                val party = partyManager.getPartyByPlayer(player)
-                if (party?.partyAdmin == player) {
-                    party.members.forEach { member ->
-                        arena.removePlayer(member)
-                        arena.spawnManager.teleportPlayerToSpawn(member)
-                    }
-                }
-            } else {
-                arena.removePlayer(player)
-                arena.spawnManager.teleportPlayerToSpawn(player)
-            }
-        }
+        // The party admin takes the whole party out; everyone else only leaves for themselves.
+        val party = partyManager.getPartyByPlayer(player)
+        val leavingPlayers = if (party?.partyAdmin == player) party.members.toList() else listOf(player)
 
-        player.inventory.clear()
-        Utils.resetPlayerState(player)
-        GourPillars.lobbyScoreboardManager.setScoreboard(player)
-        Utils.giveLobbyItems(player)
+        leavingPlayers.forEach { member ->
+            if (!arena.containPlayer(member)) return@forEach
+
+            if (arena.gameState == State.INGAME) {
+                if (arena.gameTask.isAlive(member)) {
+                    arena.gameTask.playerEliminated(member)
+                }
+                arena.inGamePlayer.remove(member)
+            } else {
+                arena.removePlayer(member)
+            }
+
+            arena.spawnManager.teleportPlayerToSpawn(member)
+            member.inventory.clear()
+            Utils.resetPlayerState(member)
+            GourPillars.lobbyScoreboardManager.setScoreboard(member)
+            Utils.giveLobbyItems(member)
+        }
     }
 
     private fun hasRoomForParty(
