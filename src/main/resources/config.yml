@@ -57,7 +57,8 @@ lobby:
     # Block dropping items/inventory clicks/hand swapping in the lobby world.
     item-protection: true
     # Teleport a player back to the spawn if they fall into the void while not in an active
-    # match (no arena, or an arena that's waiting/starting/stopped).
+    # match (no arena, or an arena that has just stopped). Players still queued in an
+    # arena's cage are always teleported back into their cage instead.
     void-teleport-to-spawn: true
 
 level:

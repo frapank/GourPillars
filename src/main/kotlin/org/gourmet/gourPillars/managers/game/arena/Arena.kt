@@ -93,7 +93,9 @@ class Arena(
             return ArenaJoinResult.ALREADY_IN_GAME
         }
 
-        if (gameState == State.INGAME || gameState == State.STOPPED) {
+        // countdownTask is null between the countdown ending and the match actually starting
+        // (event selection animation included), arena is locked during that window too.
+        if (gameState == State.INGAME || gameState == State.STOPPED || (gameState == State.STARTING && countdownTask == null)) {
             player.sendDynamicMessage(MessageData.ARENA_ERRORS_ARENA_NOT_READY)
             return ArenaJoinResult.ARENA_NOT_READY
         }
@@ -211,7 +213,7 @@ class Arena(
             gameState = State.WAITING
             countdownTask?.cancel()
             countdownTask = null
-            val playerRequired = maxPlayer - inGamePlayer.size
+            val playerRequired = minPlayer - inGamePlayer.size
             sendDynamicMessageToPlayerInGame(MessageData.ARENA_PLAYER_NEEDED, "{playerRequired}" to playerRequired.toString())
             return
         }

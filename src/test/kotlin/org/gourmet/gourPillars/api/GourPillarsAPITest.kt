@@ -175,6 +175,28 @@ class GourPillarsAPITest {
     }
 
     @Test
+    fun `sendPlayerToArena rejects joins during the event selection lock`() {
+        val arena = newArena("locking")
+        register(arena)
+        arena.gameState = State.STARTING
+        val player = server.addPlayer("Late")
+
+        assertEquals(ArenaJoinResult.ARENA_NOT_READY, GourPillars.api.sendPlayerToArena(player, "locking"))
+    }
+
+    @Test
+    fun `sendPlayerToArena still accepts joins while the countdown is running`() {
+        val arena = newArena("countdown", maxPlayers = 3, minPlayers = 2)
+        register(arena)
+
+        assertEquals(ArenaJoinResult.SUCCESS, GourPillars.api.sendPlayerToArena(server.addPlayer("First"), "countdown"))
+        assertEquals(ArenaJoinResult.SUCCESS, GourPillars.api.sendPlayerToArena(server.addPlayer("Second"), "countdown"))
+        assertEquals(State.STARTING, arena.gameState)
+
+        assertEquals(ArenaJoinResult.SUCCESS, GourPillars.api.sendPlayerToArena(server.addPlayer("Third"), "countdown"))
+    }
+
+    @Test
     fun `sendPlayerToArena rejects a full arena`() {
         val arena = newArena("packed", maxPlayers = 2, minPlayers = 2)
         register(arena)
