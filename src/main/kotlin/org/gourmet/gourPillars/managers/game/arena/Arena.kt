@@ -211,7 +211,7 @@ class Arena(
             gameState = State.WAITING
             countdownTask?.cancel()
             countdownTask = null
-            val playerRequired = maxPlayer - inGamePlayer.size
+            val playerRequired = minPlayer - inGamePlayer.size
             sendDynamicMessageToPlayerInGame(MessageData.ARENA_PLAYER_NEEDED, "{playerRequired}" to playerRequired.toString())
             return
         }
