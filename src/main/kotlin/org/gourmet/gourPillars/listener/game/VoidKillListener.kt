@@ -31,6 +31,18 @@ class VoidKillListener : Listener {
             return
         }
 
+        // Still queued: put them back in their cage instead of the lobby spawn.
+        if (arena != null && (arena.gameState == State.WAITING || arena.gameState == State.STARTING)) {
+            if (playerLoc <= arena.minHeight) {
+                val cageSpawn =
+                    arena.spawnMap.entries
+                        .firstOrNull { it.value == player }
+                        ?.key
+                player.teleport(cageSpawn?.let { arena.cageLocation(it) } ?: arena.spawnMainLocation)
+            }
+            return
+        }
+
         if (!LobbyConfig.voidTeleportToSpawn) return
         val minHeight = arena?.minHeight ?: player.world.minHeight
         if (playerLoc <= minHeight) {
