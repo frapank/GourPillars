@@ -37,7 +37,6 @@ class GameTask(
     var running = false
     private val matchDurationSeconds = GourPillars.instance.config.getInt("game.match-duration-seconds", 300)
     var secondsPassed = matchDurationSeconds
-    private var lastPlayer: Player? = null
     private var lavaLevel = arena.minHeight
     private var currentEventHandler: GameHandler? = null
     private var gameEnded = false
@@ -249,9 +248,6 @@ class GameTask(
     ) {
         // Remove player from arena
         val kills = playerKills[player]
-        if (playerKills.size <= 1) {
-            lastPlayer = player
-        }
         alivePlayer.remove(player)
         player.gameMode = GameMode.SPECTATOR
         arena.reloadInGameScoreboard()
