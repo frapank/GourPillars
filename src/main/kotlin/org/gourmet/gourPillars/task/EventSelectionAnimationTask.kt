@@ -7,9 +7,9 @@ import org.bukkit.Sound
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.guis.VoteInventory
+import org.gourmet.gourPillars.managers.game.GameEventRegistry
 import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.EventSelector
-import org.gourmet.gourPillars.managers.game.arena.GameEvents
 import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.Utils
 import org.gourmet.gourPillars.other.messages.MessageData
@@ -19,7 +19,7 @@ import kotlin.random.Random
 object EventSelectionAnimationTask {
     fun run(
         arena: Arena,
-        winner: GameEvents?,
+        winner: String?,
         onComplete: () -> Unit,
     ) {
         val config = GourPillars.instance.config
@@ -136,8 +136,12 @@ object EventSelectionAnimationTask {
         playStep(0)
     }
 
-    private fun eventTitle(event: GameEvents?): Component =
-        VoteInventory.nameFor(GameEvents.voteItemId(event)) ?: Component.text(GameEvents.voteItemId(event))
+    private fun eventTitle(eventId: String?): Component =
+        if (eventId == null) {
+            VoteInventory.nameFor(GameEventRegistry.NO_EVENT_ID) ?: Component.text(GameEventRegistry.NO_EVENT_ID)
+        } else {
+            GourPillars.gameEventRegistry.displayNameOf(eventId) ?: Component.text(eventId)
+        }
 
-    private fun plainName(event: GameEvents?): String = PlainTextComponentSerializer.plainText().serialize(eventTitle(event))
+    private fun plainName(eventId: String?): String = PlainTextComponentSerializer.plainText().serialize(eventTitle(eventId))
 }
