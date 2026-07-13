@@ -121,27 +121,11 @@ game:
     - WITHER_SPAWN_EGG
     - SNOWBALL
     - SHIELD
-  # Velocity multiplier applied to the victim when the "knockback" event is active.
-  knockback-multiplier: 2.0
-  # How often (in seconds) the lava rises when the "lava" event is active.
-  lava-rise-interval-seconds: 4
-  border:
-    # Border size (in blocks) at which the shrink stops.
-    final-size: 10.0
-    # How often (in seconds) the border shrinks when the "border" event is active.
-    shrink-interval-seconds: 7
-    # Damage dealt per second to players outside the border.
-    damage-amount: 3.0
-  # Votes only make an event more likely, they never guarantee it: after the vote, one option
-  # (including "no event") is picked at random, weighted by how many votes it received.
+  # Game events (lava, knockback, border, ...) are provided by addon plugins through the
+  # GourPillars API (see docs/api.md). Votes only make an event more likely, they never
+  # guarantee it: after the vote, one option (including "no event") is picked at random,
+  # weighted by how many votes it received.
   events:
-    lava:
-      # If disabled, this event can't be voted for or picked, even with votes.
-      enabled: true
-    knockback:
-      enabled: true
-    border:
-      enabled: true
     # Weight every option (including "no event") starts with before votes are counted, so an
     # option can still be picked with zero votes. Set to 0 to require at least one vote.
     base-weight: 1.0
@@ -214,9 +198,12 @@ gui:
     filler:
       material: GRAY_STAINED_GLASS_PANE
       name: "<gray>────</gray>"
-    # Each key is a fixed id, don't rename them. Slot/material/name/lore are free
-    # to change; removing an entry hides it (lava/knockback/border-event also
-    # auto-hide when their event is disabled under game.events).
+    # Each key is a fixed id, don't rename them. Every value is optional and falls
+    # back to a built-in default, so a missing or broken entry never removes the
+    # option from the GUI; set "enabled: false" on an entry to hide it on purpose.
+    # A slot that is taken or out of bounds falls back to the first free one.
+    # Items for game events registered by addon plugins are added automatically
+    # (their look and preferred slot are defined by the addon).
     # "material" accepts any Bukkit material, or PLAYER_HEAD with a "head-texture"
     # (base64 skin value, e.g. from minecraft-heads.com) for a custom head.
     items:
@@ -227,30 +214,6 @@ gui:
         name: "<red>No event"
         lore:
           - "<gray>Vote for a classic game!"
-      lava-event:
-        slot: 11
-        material: PLAYER_HEAD
-        head-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjY5YTMyY2ZmZjAzMTU1YjlmODEwOTg1OGQ4MzAzYjA2ZmU3MGQwYjUzNWJhNjRiNTFkMDMwMmZmMzM5ZTBjYiJ9fX0="
-        name: "<yellow>Lava event"
-        lore:
-          - "<gray>A lava floor will"
-          - "<gray>appear under your feet!"
-      knockback-event:
-        slot: 12
-        material: PLAYER_HEAD
-        head-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjA2MWY5OGFhZmYxZTQwNmUwNmY2ZjEzZmZlMDYwMDU4NzNmM2QxZWFkZGIxYjU5ZTE5ZGRhMGVkOWZmYjI3MCJ9fX0="
-        name: "<green>Knockback Event"
-        lore:
-          - "<gray>Players will get a"
-          - "<gray>boosted knockback!"
-      border-event:
-        slot: 13
-        material: PLAYER_HEAD
-        head-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjk1MGNiNjVlNDFiMWQ2NjhjZjg4MmViODk4NWUwM2UxNzY2MTc5NTU2NjM2NDA3MTRmYzA4ZmJlZTFmMWE0NiJ9fX0="
-        name: "<green>Border Event"
-        lore:
-          - "<gray>the arena border"
-          - "<gray>will shrink!"
       day-vote:
         slot: 15
         material: PLAYER_HEAD
