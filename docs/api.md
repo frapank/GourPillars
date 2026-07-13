@@ -71,7 +71,13 @@ The one exception is `getPlayerStatistics`: its `CompletableFuture` completes on
 | `getAlivePlayers(arenaName)` | Snapshot list of players still alive, or `null` if the arena doesn't exist or isn't in-game. |
 | `getMatchKills(player)` | Kill count in the player's current match, or `null` if they're not in one. |
 | `getTimeRemainingSeconds(arenaName)` | Seconds left in the match, or `null` if not in-game. |
-| `getCurrentEvent(arenaName)` | Active game event, or `null` if none/not loaded. |
+| `getCurrentEvent(arenaName)` | Id of the game event active in the arena's match, or `null` if none/not loaded. |
+| `getCurrentEventOfPlayer(player)` | Id of the game event active in the player's match, or `null`. Cheap enough for hot paths (damage listeners). |
+| `registerEvent(owner, event)` | Adds a [custom game event](#custom-game-events) to the vote and the pre-match selection. `false` if the id is taken. |
+| `unregisterEvent(eventId)` | Removes a registered event (pending votes are dropped, an active handler is stopped). `false` if unknown. |
+| `unregisterEvents(owner)` | Unregisters every event a plugin registered, returns how many were removed. |
+| `getRegisteredEvents()` | Snapshot of every registered event definition, in registration order. |
+| `getRegisteredEvent(eventId)` | One registered event definition, or `null`. |
 | `getPlayerStatistics(playerName)` | Persisted stats from the database, or `null` if never recorded. |
 | `getCachedPlayerStatistics(player)` | In-memory stats cache, no database round-trip. |
 
@@ -87,16 +93,16 @@ data class ArenaInfo(
     val maxPlayers: Int,
     val minPlayers: Int,
     val isPrivate: Boolean,
-    val alivePlayers: Int?,        // set only while INGAME
-    val secondsRemaining: Int?,    // set only while INGAME
-    val currentEvent: GameEvents?, // set only while INGAME and an event was picked
+    val alivePlayers: Int?,     // set only while INGAME
+    val secondsRemaining: Int?, // set only while INGAME
+    val currentEvent: String?,  // set only while INGAME and an event was picked
 ) {
     val isFull: Boolean
     val isJoinable: Boolean
 }
 ```
 
-`GameEvents` is `LAVA`, `BORDER` or `KNOCKBACK`.
+`currentEvent` is the id of the registered game event active in the match (e.g. `"lava"` with the bundled events addon), see [Custom game events](#custom-game-events).
 
 ### ArenaJoinResult
 
@@ -135,7 +141,7 @@ Standard Bukkit events, fire-and-forget (not cancellable), all under `org.gourme
 | `GourPillarsPlayerFinishEvent` | `arenaName`, `player`, `kills`, `won` | A player's match is over, win or lose. Fired once per player. |
 | `GourPillarsPlayerKillEvent` | `arenaName`, `killer`, `victim` | A player eliminates another. |
 | `GourPillarsPlayerEliminatedEvent` | `arenaName`, `player`, `cause` (`EliminationCause`), `source` (nullable `Entity`) | A player is eliminated, for any reason. Fired once per elimination, before `GourPillarsPlayerFinishEvent`. `source` is the killer/damager when there is one. |
-| `GourPillarsEventSelectedEvent` | `arenaName`, `event` (nullable `GameEvents`) | The vote closes and the match's event is picked; `null` means no event. |
+| `GourPillarsEventSelectedEvent` | `arenaName`, `eventId` (nullable `String`) | The vote closes and the match's event is picked; `null` means no event. |
 | `GourPillarsSpectateStartEvent` | `arenaName`, `player` | A player starts spectating. |
 | `GourPillarsSpectateStopEvent` | `arenaName`, `player` | A player stops spectating. |
 
@@ -147,3 +153,70 @@ class MyListener : Listener {
     }
 }
 ```
+
+## Custom game events
+
+Match events (like the lava, knockback and border events) are not hardcoded in GourPillars: they're provided by other plugins through the API. One plugin can register any number of events; each registered event automatically:
+
+- shows up in the pre-match vote GUI (with the icon/lore you define),
+- takes part in the weighted selection and the slot-machine animation,
+- gets a fresh handler per match (multiple arenas can run the same event at once),
+- is unregistered when your plugin is disabled (pending votes are dropped and, if the event is active in a running match, its handler is stopped with `onStop(null)`).
+
+Everything lives under `org.gourmet.gourPillars.api.event`. All callbacks run on the main server thread, and `registerEvent`/`unregisterEvent` must be called from it too (register in `onEnable`).
+
+```kotlin
+class MeteorsEvent(private val plugin: JavaPlugin) : GameEventDefinition {
+    override val id = "meteors" // unique, 1-32 chars of [a-z0-9_-]
+    override val displayName = MiniMessage.miniMessage().deserialize("<red>Meteors")
+
+    override val voteItem =
+        VoteItemSpec(
+            material = Material.FIRE_CHARGE,
+            lore = listOf(Component.text("Meteors rain on the arena!")),
+            preferredSlot = 14, // optional; falls back to the first free slot
+        )
+
+    // Called once per match where this event wins the vote.
+    override fun createHandler(context: GameEventContext): GameEventHandler =
+        object : GameEventHandler {
+            private var task: BukkitTask? = null
+
+            override fun onStart() {
+                task =
+                    object : BukkitRunnable() {
+                        override fun run() {
+                            if (!context.isMatchRunning) {
+                                cancel()
+                                return
+                            }
+                            val target = context.alivePlayers.randomOrNull() ?: return
+                            val sky = target.location.add(0.0, 20.0, 0.0)
+                            context.world.spawn(sky, Fireball::class.java)
+                        }
+                    }.runTaskTimer(plugin, 100L, 100L)
+            }
+
+            override fun onStop(winner: Player?) {
+                task?.cancel()
+                task = null
+            }
+        }
+}
+
+// in onEnable:
+val api = Bukkit.getServicesManager().load(GourPillarsAPI::class.java) ?: return
+api.registerEvent(this, MeteorsEvent(this))
+```
+
+`GameEventContext` is a read-only view of the arena the handler runs in: `arenaName`, `world`, `bounds` (the build region as block coordinates), `minHeight`/`maxHeight`, `spawnLocation`, `alivePlayers`/`playersInArena` (snapshots), `isMatchRunning`, and `broadcast(component)`.
+
+Notes:
+
+- `createHandler` is only called for matches where your event was picked. For a passive event that just reacts to Bukkit events, return `GameEventHandler.EMPTY` and check `getCurrentEvent(arena)`/`ArenaInfo.currentEvent` in your listener.
+- `onStop` receives the winner (or `null`) and is guaranteed to run at most once, only after a successful `onStart`. Undo world-border/time/etc. changes there; arena *blocks* are reset by GourPillars after every match.
+- A handler that throws in `createHandler`/`onStart` is detached and the match continues without the event, so one broken addon can't kill a match.
+- `registerEvent` returns `false` when another plugin already took the id, and throws `IllegalArgumentException` for malformed or reserved ids (`no-event`, `day-vote`, `night-vote`).
+- `displayName` and `voteItem` are read once, at registration. Changing them afterwards has no effect; unregister and re-register to update an event's look.
+
+A complete working addon providing five events (lava, knockback, border, meteors, low gravity), each tunable from its own `config.yml`, lives in [`examples/gourpillars-events-addon`](../examples/gourpillars-events-addon). Build it with `./gradlew :examples:gourpillars-events-addon:build` and drop the `-all.jar` next to GourPillars.
