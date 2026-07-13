@@ -14,7 +14,7 @@ GourPillars (full name **Gour Pillars Of Fortune**) is a Paper plugin implementi
 
 - Multi-arena system with independently configurable regions, spawns, and player limits
 - Dynamic pillar collapse mechanic with periodic random item/block distribution
-- Voted, weighted-random game events (Lava, Knockback, Border) with a slot-machine selection animation
+- Voted, weighted-random game events with a slot-machine selection animation — events are pluggable via the [API](docs/api.md#custom-game-events), with Lava, Knockback, Border, Meteors and Low gravity provided by the bundled [events addon](examples/gourpillars-events-addon)
 - Party system with public/private parties, per-action permissions and a server-wide broadcast invite
 - Persistent player statistics, backed by an async MySQL or SQLite database
 - Lobby, waiting-room and in-game scoreboards
