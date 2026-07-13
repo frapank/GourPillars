@@ -18,7 +18,7 @@ cd GourPillars
 ./gradlew build
 ```
 
-The shaded plugin jar is produced at `build/libs/GourPillars-<version>-all.jar`.
+The shaded plugin jar is produced at `build/libs/GourPillars-<version>-all.jar`. The example plugins under `examples/` (the API smoke-test plugin and the events addon) are built as part of the same `./gradlew build`, each producing its own `-all.jar` under `examples/<name>/build/libs/`.
 
 ## Making changes
 
