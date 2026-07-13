@@ -2,12 +2,12 @@ package org.gourmet.gourPillars.api.events
 
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
-import org.gourmet.gourPillars.managers.game.arena.GameEvents
 
 // Fired once the vote closes and the match's event (or none) is picked.
+// eventId is the id of the registered GameEventDefinition, or null for no event.
 class GourPillarsEventSelectedEvent(
     val arenaName: String,
-    val event: GameEvents?,
+    val eventId: String?,
 ) : Event() {
     override fun getHandlers(): HandlerList = HANDLERS
 

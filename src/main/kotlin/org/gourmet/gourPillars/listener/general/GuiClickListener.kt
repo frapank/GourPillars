@@ -1,10 +1,12 @@
 package org.gourmet.gourPillars.listener.general
 
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
@@ -12,8 +14,8 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.guis.VoteInventory
-import org.gourmet.gourPillars.managers.game.arena.EventSelector
-import org.gourmet.gourPillars.managers.game.arena.GameEvents
+import org.gourmet.gourPillars.managers.game.GameEventRegistry
+import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
@@ -49,101 +51,80 @@ class GuiClickListener : Listener {
 
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent) {
-        val player: Player = event.whoClicked as Player
+        val player = event.whoClicked as? Player ?: return
         val arena = arenaManager.getArenaByPlayer(player) ?: return
 
+        // Votes are only open before the match starts.
+        if (arena.gameState != State.WAITING && arena.gameState != State.STARTING) return
+        event.isCancelled = true
+
         val item = event.currentItem ?: return
+        when (val option = voteOptionOf(item) ?: return) {
+            "day-vote" -> handleTimeVote(player, arena, day = true)
+            "night-vote" -> handleTimeVote(player, arena, day = false)
+            else -> handleEventVote(player, arena, option)
+        }
+    }
+
+    @EventHandler
+    fun onInventoryDrag(event: InventoryDragEvent) {
+        val player = event.whoClicked as? Player ?: return
+        val arena = arenaManager.getArenaByPlayer(player) ?: return
 
         if (arena.gameState == State.WAITING || arena.gameState == State.STARTING) {
             event.isCancelled = true
         }
+    }
 
-        if (hasItemTag(item, "knockback-event")) {
-            if (!EventSelector.isEnabled(GameEvents.KNOCKBACK)) {
-                player.sendDynamicMessage(MessageData.ARENA_VOTE_EVENT_DISABLED)
-                return
-            }
-
-            if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) ||
-                arena.noEventVote.contains(player)
-            ) {
-                player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_EVENT)
-                return
-            }
-
-            arena.knockbackVote.add(player)
-            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_KNOCKBACK_VOTED, "{player}" to player.name)
+    private fun handleTimeVote(
+        player: Player,
+        arena: Arena,
+        day: Boolean,
+    ) {
+        if (arena.dayVote.contains(player) || arena.nightVote.contains(player)) {
+            player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_TIME)
             return
         }
 
-        if (hasItemTag(item, "lava-event")) {
-            if (!EventSelector.isEnabled(GameEvents.LAVA)) {
-                player.sendDynamicMessage(MessageData.ARENA_VOTE_EVENT_DISABLED)
-                return
-            }
-
-            if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) ||
-                arena.noEventVote.contains(player)
-            ) {
-                player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_EVENT)
-                return
-            }
-
-            arena.lavaEvent.add(player)
-            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_LAVA_VOTED, "{player}" to player.name)
-            return
-        }
-
-        if (hasItemTag(item, "border-event")) {
-            if (!EventSelector.isEnabled(GameEvents.BORDER)) {
-                player.sendDynamicMessage(MessageData.ARENA_VOTE_EVENT_DISABLED)
-                return
-            }
-
-            if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) ||
-                arena.noEventVote.contains(player)
-            ) {
-                player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_EVENT)
-                return
-            }
-
-            arena.borderEvent.add(player)
-            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_BORDER_VOTED, "{player}" to player.name)
-            return
-        }
-
-        if (hasItemTag(item, "no-event")) {
-            if (arena.borderEvent.contains(player) || arena.knockbackVote.contains(player) || arena.lavaEvent.contains(player) ||
-                arena.noEventVote.contains(player)
-            ) {
-                player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_EVENT)
-                return
-            }
-
-            arena.noEventVote.add(player)
-            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_CLASSIC_VOTED, "{player}" to player.name)
-            return
-        }
-        if (hasItemTag(item, "day-vote")) {
-            if (arena.dayVote.contains(player) || arena.nightVote.contains(player)) {
-                player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_TIME)
-                return
-            }
-
+        if (day) {
             arena.dayVote.add(player)
             arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_DAY_VOTED, "{player}" to player.name)
+        } else {
+            arena.nightVote.add(player)
+            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_NIGHT_VOTED, "{player}" to player.name)
+        }
+    }
+
+    private fun handleEventVote(
+        player: Player,
+        arena: Arena,
+        optionId: String,
+    ) {
+        val displayName =
+            if (optionId == GameEventRegistry.NO_EVENT_ID) {
+                null
+            } else {
+                // The event got unregistered after this GUI was opened.
+                GourPillars.gameEventRegistry.displayNameOf(optionId) ?: run {
+                    player.sendDynamicMessage(MessageData.ARENA_VOTE_EVENT_DISABLED)
+                    return
+                }
+            }
+
+        if (arena.eventVotes.containsKey(player.uniqueId)) {
+            player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_EVENT)
             return
         }
 
-        if (hasItemTag(item, "night-vote")) {
-            if (arena.dayVote.contains(player) || arena.nightVote.contains(player)) {
-                player.sendDynamicMessage(MessageData.ARENA_VOTE_ALREADY_VOTED_TIME)
-                return
-            }
-
-            arena.nightVote.add(player)
-            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_NIGHT_VOTED, "{player}" to player.name)
-            return
+        arena.eventVotes[player.uniqueId] = optionId
+        if (displayName == null) {
+            arena.sendDynamicMessageToPlayerInGame(MessageData.ARENA_VOTE_CLASSIC_VOTED, "{player}" to player.name)
+        } else {
+            arena.sendDynamicMessageToPlayerInGame(
+                MessageData.ARENA_VOTE_EVENT_VOTED,
+                "{player}" to player.name,
+                "{event}" to PlainTextComponentSerializer.plainText().serialize(displayName),
+            )
         }
     }
 
@@ -156,6 +137,13 @@ class GuiClickListener : Listener {
             event.isCancelled = true
             return
         }
+    }
+
+    private fun voteOptionOf(item: ItemStack): String? {
+        if (!item.hasItemMeta()) return null
+        val meta = item.itemMeta ?: return null
+        val key = NamespacedKey(GourPillars.instance, VoteInventory.VOTE_OPTION_TAG)
+        return meta.persistentDataContainer.get(key, PersistentDataType.STRING)
     }
 
     private fun hasItemTag(
