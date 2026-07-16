@@ -6,7 +6,9 @@ Multi-arena system, each with its own region, spawns and player limit. Arenas li
 
 ## Game events
 
-Before each match, players vote for an event: Lava, Knockback, Border, or no event at all. Votes only make an option more likely, never guaranteed or excluded — after voting closes, one option is picked at random, weighted by its vote count. Each event can be disabled entirely from `config.yml`, in which case it disappears from voting. A slot-machine style animation plays once the vote closes, scrolling through the options before landing on the picked one.
+Before each match, players vote for an event, or for no event at all. Votes only make an option more likely, never guaranteed or excluded — after voting closes, one option is picked at random, weighted by its vote count. A slot-machine style animation plays once the vote closes, scrolling through the options before landing on the picked one.
+
+Events are registered by addon plugins through the [API](api.md#custom-game-events). The bundled [`gourpillars-events-addon`](../examples/gourpillars-events-addon) provides five: Lava (a rising lava floor), Knockback (boosted hits), Border (a shrinking world border), Meteors (fireballs raining on the arena) and Low gravity (slow falling plus a jump boost) — each can be disabled or tuned from the addon's own `config.yml`.
 
 See [config.md](config.md) for the full list of tunable values (weights, animation timing/sounds, event parameters).
 
