@@ -9,14 +9,49 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 object ConfigManager {
+    // Options from older versions that no longer exist (game events belong to addon
+    // plugins now, see docs/api.md). Stripped from existing configs so they can't
+    // resurface as dead entries.
+    private val OBSOLETE_KEYS =
+        listOf(
+            "game.knockback-multiplier",
+            "game.lava-rise-interval-seconds",
+            "game.border",
+            "game.events.lava",
+            "game.events.knockback",
+            "game.events.border",
+            "gui.vote.items.lava-event",
+            "gui.vote.items.knockback-event",
+            "gui.vote.items.border-event",
+        )
+
     /**
      * Compares the live config.yml against the plugin's bundled default and
      * adds any option missing from it (e.g. after updating to a version that
      * introduced new settings), logging a warning for each one added.
+     * Also removes options that no longer exist in this version.
      */
     fun applyMissingDefaults() {
         val plugin = GourPillars.instance
+        val removed = removeObsoleteKeys(plugin.config)
+        if (removed > 0) {
+            plugin.saveConfig()
+            Logger.warning(
+                "Removed $removed obsolete option(s) from config.yml: game events are now provided by addon plugins, see docs/api.md",
+            )
+        }
         applyMissingDefaults("config.yml", plugin.config) { plugin.saveConfig() }
+    }
+
+    private fun removeObsoleteKeys(target: FileConfiguration): Int {
+        var removed = 0
+        for (path in OBSOLETE_KEYS) {
+            if (target.isSet(path)) {
+                target.set(path, null)
+                removed++
+            }
+        }
+        return removed
     }
 
     /**

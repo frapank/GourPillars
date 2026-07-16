@@ -11,6 +11,7 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.api.EliminationCause
+import org.gourmet.gourPillars.api.event.GameEventHandler
 import org.gourmet.gourPillars.api.events.GourPillarsEventSelectedEvent
 import org.gourmet.gourPillars.api.events.GourPillarsGameEndEvent
 import org.gourmet.gourPillars.api.events.GourPillarsGameStartEvent
@@ -19,8 +20,9 @@ import org.gourmet.gourPillars.api.events.GourPillarsPlayerFinishEvent
 import org.gourmet.gourPillars.api.events.GourPillarsPlayerKillEvent
 import org.gourmet.gourPillars.managers.XpSource
 import org.gourmet.gourPillars.managers.game.arena.Arena
-import org.gourmet.gourPillars.managers.game.arena.GameEvents
+import org.gourmet.gourPillars.managers.game.arena.ArenaEventContext
 import org.gourmet.gourPillars.managers.game.arena.State
+import org.gourmet.gourPillars.other.Logger
 import org.gourmet.gourPillars.other.Utils
 import org.gourmet.gourPillars.other.messages.MessageData
 import org.gourmet.gourPillars.other.messages.sendDynamicMessage
@@ -37,8 +39,8 @@ class GameTask(
     var running = false
     private val matchDurationSeconds = GourPillars.instance.config.getInt("game.match-duration-seconds", 300)
     var secondsPassed = matchDurationSeconds
-    private var lavaLevel = arena.minHeight
-    private var currentEventHandler: GameHandler? = null
+    private var currentEventHandler: GameEventHandler? = null
+    private var eventHandlerStarted = false
     private var gameEnded = false
 
     // alivePlayer/playerKills are only set once the match has actually started (see run()).
@@ -48,13 +50,16 @@ class GameTask(
 
     fun isAlive(player: Player): Boolean = ::alivePlayer.isInitialized && alivePlayer.contains(player)
 
+    fun alivePlayersSnapshot(): List<Player> = if (::alivePlayer.isInitialized) alivePlayer.toList() else emptyList()
+
+    fun isMatchRunning(): Boolean = running && !gameEnded
+
     override fun run() {
         if (running) return
 
         // Init game
         running = true
         gameEnded = false
-        lavaLevel = arena.minHeight
         alivePlayer = mutableSetOf()
         playerKills = mutableMapOf()
         preparePlayer()
@@ -70,7 +75,7 @@ class GameTask(
         GameRandom.startRandomItemTask(alivePlayer) { running }
 
         // Start event if present
-        currentEventHandler?.onStart(arena)
+        startActiveEvent()
         Bukkit.getPluginManager().callEvent(GourPillarsGameStartEvent(arena.name))
 
         object : BukkitRunnable() {
@@ -89,15 +94,54 @@ class GameTask(
         }.runTaskTimer(plugin, 0L, 20L)
     }
 
-    fun applyEvent(event: GameEvents?) {
-        arena.gameEvent = event
+    // eventId must be a registered event id, or null for no event. An id that is no
+    // longer registered (its plugin got disabled after the vote) falls back to null.
+    fun applyEvent(eventId: String?) {
+        val definition = eventId?.let { GourPillars.gameEventRegistry.get(it) }
+        arena.gameEvent = definition?.id
+        eventHandlerStarted = false
         currentEventHandler =
-            when (event) {
-                GameEvents.LAVA -> LavaHandler()
-                GameEvents.BORDER -> BorderHandler()
-                GameEvents.KNOCKBACK, null -> null
+            definition?.let {
+                try {
+                    it.createHandler(ArenaEventContext(arena))
+                } catch (e: Exception) {
+                    Logger.warning("Game event '${it.id}' threw while creating its handler, the match continues without it: $e")
+                    arena.gameEvent = null
+                    null
+                }
             }
-        Bukkit.getPluginManager().callEvent(GourPillarsEventSelectedEvent(arena.name, event))
+        Bukkit.getPluginManager().callEvent(GourPillarsEventSelectedEvent(arena.name, arena.gameEvent))
+    }
+
+    private fun startActiveEvent() {
+        val handler = currentEventHandler ?: return
+        try {
+            handler.onStart()
+            eventHandlerStarted = true
+        } catch (e: Exception) {
+            Logger.warning("Game event '${arena.gameEvent}' threw in onStart, the match continues without it: $e")
+            currentEventHandler = null
+            arena.gameEvent = null
+        }
+    }
+
+    private fun stopActiveEvent(winner: Player?) {
+        val handler = currentEventHandler ?: return
+        currentEventHandler = null
+        arena.gameEvent = null
+        // Per the GameEventHandler contract, onStop only fires after a successful onStart.
+        if (!eventHandlerStarted) return
+        eventHandlerStarted = false
+        try {
+            handler.onStop(winner)
+        } catch (e: Exception) {
+            Logger.warning("Game event handler threw in onStop: $e")
+        }
+    }
+
+    // Detaches the active event mid-match, e.g. because its plugin got disabled.
+    fun clearActiveEvent() {
+        stopActiveEvent(null)
     }
 
     private fun setTimeByVote() {
@@ -147,10 +191,7 @@ class GameTask(
         // Update the statistic only for the winner
         arena.nightVote.clear()
         arena.dayVote.clear()
-        arena.knockbackVote.clear()
-        arena.lavaEvent.clear()
-        arena.borderEvent.clear()
-        arena.noEventVote.clear()
+        arena.eventVotes.clear()
 
         // Send end game message at the end of the game
         if (winner != null) {
@@ -174,9 +215,7 @@ class GameTask(
             )
         }
 
-        currentEventHandler?.onStop(arena, winner)
-        currentEventHandler = null
-        arena.gameEvent = null
+        stopActiveEvent(winner)
         Bukkit.getPluginManager().callEvent(GourPillarsGameEndEvent(arena.name, winner))
 
         // Arena reset

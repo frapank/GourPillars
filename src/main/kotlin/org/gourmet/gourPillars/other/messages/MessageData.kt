@@ -115,9 +115,7 @@ object MessageData {
 
     // Arena Vote
     lateinit var ARENA_VOTE_CLASSIC_VOTED: DynamicMessage
-    lateinit var ARENA_VOTE_LAVA_VOTED: DynamicMessage
-    lateinit var ARENA_VOTE_KNOCKBACK_VOTED: DynamicMessage
-    lateinit var ARENA_VOTE_BORDER_VOTED: DynamicMessage
+    lateinit var ARENA_VOTE_EVENT_VOTED: DynamicMessage
     lateinit var ARENA_VOTE_NIGHT_VOTED: DynamicMessage
     lateinit var ARENA_VOTE_DAY_VOTED: DynamicMessage
     lateinit var ARENA_VOTE_ALREADY_VOTED_EVENT: DynamicMessage
@@ -224,9 +222,7 @@ object MessageData {
 
         // Arena Vote
         ARENA_VOTE_CLASSIC_VOTED = getMessage(config, "arena.vote.classic-voted")
-        ARENA_VOTE_LAVA_VOTED = getMessage(config, "arena.vote.lava-voted")
-        ARENA_VOTE_KNOCKBACK_VOTED = getMessage(config, "arena.vote.knockback-voted")
-        ARENA_VOTE_BORDER_VOTED = getMessage(config, "arena.vote.border-voted")
+        ARENA_VOTE_EVENT_VOTED = getMessage(config, "arena.vote.event-voted")
         ARENA_VOTE_NIGHT_VOTED = getMessage(config, "arena.vote.night-voted")
         ARENA_VOTE_DAY_VOTED = getMessage(config, "arena.vote.day-voted")
         ARENA_VOTE_ALREADY_VOTED_EVENT = getMessage(config, "arena.vote.already-voted-event")

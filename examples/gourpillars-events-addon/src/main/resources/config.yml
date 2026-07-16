@@ -1,0 +1,67 @@
+# GourPillarsEvents - game events for GourPillars (lava, knockback, border, meteors,
+# low gravity), registered through the GourPillars API.
+#
+# "name" and "lore" are MiniMessage strings shown in the vote GUI, the selection
+# animation and chat messages. "slot" is the preferred slot in the vote GUI (falls
+# back to the first free one if taken). Set "enabled: false" to keep an event out
+# of the vote entirely.
+
+lava:
+  enabled: true
+  slot: 11
+  # How often (in seconds) the lava rises by one block.
+  rise-interval-seconds: 4
+  name: "<yellow>Lava event"
+  lore:
+    - "<gray>A lava floor will"
+    - "<gray>appear under your feet!"
+
+knockback:
+  enabled: true
+  slot: 12
+  # Velocity multiplier applied to the victim of every hit.
+  multiplier: 2.0
+  name: "<green>Knockback Event"
+  lore:
+    - "<gray>Players will get a"
+    - "<gray>boosted knockback!"
+
+border:
+  enabled: true
+  slot: 13
+  # Border size (in blocks) at which the shrink stops.
+  final-size: 10.0
+  # How often (in seconds) the border shrinks by one block.
+  shrink-interval-seconds: 7
+  # Damage dealt per second to players outside the border.
+  damage-amount: 3.0
+  name: "<green>Border Event"
+  lore:
+    - "<gray>the arena border"
+    - "<gray>will shrink!"
+
+meteors:
+  enabled: true
+  slot: 14
+  # Seconds between meteor waves.
+  interval-seconds: 8
+  # Fireballs dropped per wave.
+  meteors-per-wave: 2
+  # Explosion strength (TNT is 4.0).
+  explosion-power: 1.5
+  # Whether meteor explosions start fires.
+  set-fire: false
+  name: "<red>Meteors"
+  lore:
+    - "<gray>Meteors rain"
+    - "<gray>on the arena!"
+
+low-gravity:
+  enabled: true
+  slot: 9
+  # Jump boost level given to every player (0 keeps only the slow falling).
+  jump-boost-level: 3
+  name: "<aqua>Low gravity"
+  lore:
+    - "<gray>Float like on"
+    - "<gray>the moon!"

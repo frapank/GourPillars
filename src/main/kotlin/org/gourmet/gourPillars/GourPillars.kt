@@ -20,7 +20,6 @@ import org.gourmet.gourPillars.database.PlayerStats
 import org.gourmet.gourPillars.database.checkDatabase
 import org.gourmet.gourPillars.listener.game.BorderLimitListener
 import org.gourmet.gourPillars.listener.game.GameDeathListener
-import org.gourmet.gourPillars.listener.game.KnockbackListener
 import org.gourmet.gourPillars.listener.game.QueueDamageListener
 import org.gourmet.gourPillars.listener.game.QuitGameListener
 import org.gourmet.gourPillars.listener.game.StopBreakStartingListener
@@ -38,6 +37,7 @@ import org.gourmet.gourPillars.managers.LobbyScoreboardManager
 import org.gourmet.gourPillars.managers.PlaceHolderManager
 import org.gourmet.gourPillars.managers.SpawnManager
 import org.gourmet.gourPillars.managers.game.ArenaManager
+import org.gourmet.gourPillars.managers.game.GameEventRegistry
 import org.gourmet.gourPillars.managers.party.PartyManager
 import org.gourmet.gourPillars.other.Logger
 import org.gourmet.gourPillars.other.messages.LanguageManager
@@ -49,6 +49,7 @@ open class GourPillars : JavaPlugin() {
     companion object {
         lateinit var instance: GourPillars
         lateinit var arenaManager: ArenaManager
+        lateinit var gameEventRegistry: GameEventRegistry
         lateinit var spawnManager: SpawnManager
         lateinit var partyManager: PartyManager
         lateinit var database: Database
@@ -110,9 +111,10 @@ open class GourPillars : JavaPlugin() {
         partyManager = PartyManager()
         spawnManager = SpawnManager()
         arenaManager = ArenaManager()
+        gameEventRegistry = GameEventRegistry(arenaManager)
         lobbyScoreboardManager = LobbyScoreboardManager()
 
-        api = GourPillarsAPIImpl(arenaManager)
+        api = GourPillarsAPIImpl(arenaManager, gameEventRegistry)
         server.servicesManager.register(GourPillarsAPI::class.java, api, this, ServicePriority.Normal)
 
         ShowPlayerTask().runTaskTimer(this, 100L, 20L)
@@ -128,7 +130,6 @@ open class GourPillars : JavaPlugin() {
                 // game
                 BorderLimitListener(),
                 GameDeathListener(),
-                KnockbackListener(),
                 QueueDamageListener(),
                 QuitGameListener(),
                 StopBreakStartingListener(),
@@ -139,6 +140,8 @@ open class GourPillars : JavaPlugin() {
                 GuiClickListener(),
                 LevelListener(),
                 SpectatorGameModeListener(),
+                // auto-unregisters game events of disabled plugins
+                gameEventRegistry,
             )
 
         val pluginManager = Bukkit.getPluginManager()

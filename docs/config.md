@@ -57,15 +57,11 @@ Set any `xp-rewards` entry to `0` to turn off that specific source without touch
 | `countdown-seconds`                       | Pre-match countdown.                                                       |
 | `random-item-interval-seconds`            | How often each alive player receives a random item.                       |
 | `excluded-random-items`                   | Material names never handed out by the random item task (creative-only/dev blocks, unobtainable-in-survival blocks, etc.). |
-| `knockback-multiplier`                    | Velocity multiplier applied to the victim when the Knockback event is active. |
-| `lava-rise-interval-seconds`              | How often the lava rises when the Lava event is active.                    |
-| `border.final-size`                       | Border size (in blocks) at which the shrink stops.                        |
-| `border.shrink-interval-seconds`          | How often the border shrinks when the Border event is active.             |
-| `border.damage-amount`                    | Damage dealt per second to players outside the border.                    |
 
 ### Event voting (`game.events`)
 
-- `lava.enabled` / `knockback.enabled` / `border.enabled` — disabling an event removes it from voting entirely, even with votes.
+Game events themselves (lava, knockback, border, ...) are provided by addon plugins through the [API](api.md#custom-game-events); each addon has its own config for tuning or disabling its events. GourPillars only configures how the vote works:
+
 - `base-weight` — weight every option (including "no event") starts with before votes are counted, so an option can still be picked with zero votes. Set to `0` to require at least one vote.
 - `vote-weight` — extra weight added per vote received.
 
@@ -84,7 +80,7 @@ Slot-machine style animation played once the vote closes, right before the match
 | `reveal-sound`, `reveal-sound-volume`, `reveal-sound-pitch` | Sound played once when the picked event is revealed. |
 | `reveal-hold-ticks`                | How long the reveal stays on screen before the match actually starts.          |
 
-The animation reuses the item names configured under `gui.vote.items` below, so renaming an event there also renames it in the animation.
+The animation shows each event's display name as defined by the plugin that registered it ("no event" keeps its name from `gui.vote.items.no-event`).
 
 ## Lobby items (`lobby-items`)
 
@@ -109,7 +105,7 @@ The GUI opened by the "vote" waiting item, used to vote for an event and for day
 - `title` — inventory title.
 - `size` — inventory size, must be a multiple of 9 between 9 and 54.
 - `filler.material` / `filler.name` — the item used to pad empty slots.
-- `items` — one entry per vote option: `no-event`, `lava-event`, `knockback-event`, `border-event`, `day-vote`, `night-vote`. Each key is a fixed internal id used to decide what the item does when clicked, so don't rename them — but `slot`, `material`, `name` and `lore` are all free to change, and removing an entry hides it. `lava-event`/`knockback-event`/`border-event` also auto-hide when their event is disabled under `game.events`.
+- `items` — one entry per built-in vote option: `no-event`, `day-vote`, `night-vote`. Each key is a fixed internal id used to decide what the item does when clicked, so don't rename them. `slot`, `material`, `name`, `lore` and `head-texture` are all optional and fall back to built-in defaults, so a missing or broken entry never removes the option from the GUI; add `enabled: false` to an entry to hide it on purpose. A slot that is taken or out of bounds falls back to the first free one. Items for game events registered by addon plugins are added automatically (their look, including an optional preferred slot, is defined by the addon, with the same slot fallback).
   - `material` accepts any Bukkit material, or `PLAYER_HEAD` with a `head-texture` (base64 skin value, e.g. from [minecraft-heads.com](https://minecraft-heads.com)) for a custom head icon.
 
 ## Other files
