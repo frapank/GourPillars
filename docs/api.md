@@ -6,7 +6,7 @@ GourPillars exposes a small Bukkit-style API so other plugins can read arena/mat
 
 ```kotlin
 dependencies {
-    compileOnly(files("/path/to/GourPillars-1.1.jar"))
+    compileOnly(files("/path/to/GourPillars-2.0.jar"))
 }
 ```
 
@@ -15,7 +15,7 @@ dependencies {
 Install the jar into your local repository once:
 
 ```
-mvn install:install-file -Dfile=GourPillars-1.1.jar -DgroupId=org.gourmet -DartifactId=GourPillars -Dversion=1.1 -Dpackaging=jar
+mvn install:install-file -Dfile=GourPillars-2.0.jar -DgroupId=org.gourmet -DartifactId=GourPillars -Dversion=2.0 -Dpackaging=jar
 ```
 
 Then reference it:
@@ -24,7 +24,7 @@ Then reference it:
 <dependency>
     <groupId>org.gourmet</groupId>
     <artifactId>GourPillars</artifactId>
-    <version>1.1</version>
+    <version>2.0</version>
     <scope>provided</scope>
 </dependency>
 ```
