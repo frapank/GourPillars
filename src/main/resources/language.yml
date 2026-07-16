@@ -54,14 +54,13 @@ arena:
 
   vote:
     classic-voted: "{prefix_game} <green>{player} voted for a <yellow><bold>classic</bold></yellow> game"
-    lava-voted: "{prefix_game} <green>{player} voted for the <yellow><bold>lava</bold></yellow> event"
-    knockback-voted: "{prefix_game} <green>{player} voted for the <yellow><bold>knockback</bold></yellow> event"
-    border-voted: "{prefix_game} <green>{player} voted for the <yellow><bold>Border</bold></yellow> event"
+    # {event} is the display name of the registered game event that was voted for.
+    event-voted: "{prefix_game} <green>{player} voted for the <yellow><bold>{event}</bold></yellow> event"
     night-voted: "{prefix_game} <green>{player} voted for <yellow><bold>night</bold></yellow>"
     day-voted: "{prefix_game} <green>{player} voted for <yellow><bold>day</bold></yellow>"
     already-voted-event: "{prefix_game} <red>You already voted for an event!"
     already-voted-time: "{prefix_game} <red>You already voted for the time!"
-    event-disabled: "{prefix_game} <red>This event is disabled"
+    event-disabled: "{prefix_game} <red>This event is no longer available"
 
 items:
   waiting:

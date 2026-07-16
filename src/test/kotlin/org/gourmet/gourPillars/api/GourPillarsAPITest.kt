@@ -7,6 +7,9 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.api.event.GameEventContext
+import org.gourmet.gourPillars.api.event.GameEventDefinition
+import org.gourmet.gourPillars.api.event.GameEventHandler
 import org.gourmet.gourPillars.api.events.GourPillarsArenaStateChangeEvent
 import org.gourmet.gourPillars.api.events.GourPillarsEventSelectedEvent
 import org.gourmet.gourPillars.api.events.GourPillarsGameEndEvent
@@ -19,7 +22,6 @@ import org.gourmet.gourPillars.api.events.GourPillarsPlayerLeaveArenaEvent
 import org.gourmet.gourPillars.api.events.GourPillarsSpectateStartEvent
 import org.gourmet.gourPillars.api.events.GourPillarsSpectateStopEvent
 import org.gourmet.gourPillars.managers.game.arena.Arena
-import org.gourmet.gourPillars.managers.game.arena.GameEvents
 import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.Region
 import org.junit.jupiter.api.AfterAll
@@ -545,22 +547,34 @@ class GourPillarsAPITest {
         HandlerList.unregisterAll(listener)
     }
 
+    private class NoOpEvent(
+        override val id: String,
+    ) : GameEventDefinition {
+        override val displayName =
+            net.kyori.adventure.text.Component
+                .text(id)
+
+        override fun createHandler(context: GameEventContext): GameEventHandler = GameEventHandler.EMPTY
+    }
+
     @Test
     fun `applyEvent fires the event-selected event, including no event`() {
         val arena = newArena("vote-match")
         register(arena)
+        assertTrue(GourPillars.api.registerEvent(GourPillars.instance, NoOpEvent("test-lava")))
 
         val listener = RecordingListener()
         server.pluginManager.registerEvents(listener, GourPillars.instance)
 
-        arena.gameTask.applyEvent(GameEvents.LAVA)
+        arena.gameTask.applyEvent("test-lava")
         arena.gameTask.applyEvent(null)
 
         assertEquals(2, listener.eventSelections.size)
-        assertEquals(GameEvents.LAVA, listener.eventSelections[0].event)
-        assertEquals(null, listener.eventSelections[1].event)
+        assertEquals("test-lava", listener.eventSelections[0].eventId)
+        assertEquals(null, listener.eventSelections[1].eventId)
         assertEquals("vote-match", listener.eventSelections[0].arenaName)
 
         HandlerList.unregisterAll(listener)
+        GourPillars.api.unregisterEvent("test-lava")
     }
 }

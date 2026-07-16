@@ -2,17 +2,20 @@ package org.gourmet.gourPillars.api
 
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.api.event.GameEventDefinition
 import org.gourmet.gourPillars.database.PlayerStats
 import org.gourmet.gourPillars.managers.game.ArenaManager
+import org.gourmet.gourPillars.managers.game.GameEventRegistry
 import org.gourmet.gourPillars.managers.game.arena.Arena
-import org.gourmet.gourPillars.managers.game.arena.GameEvents
 import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.Utils
 import java.util.concurrent.CompletableFuture
 
 class GourPillarsAPIImpl(
     private val arenaManager: ArenaManager,
+    private val eventRegistry: GameEventRegistry,
 ) : GourPillarsAPI {
     override fun getArenas(): List<ArenaInfo> = arenaManager.onlineArenas.values.map { it.toInfo() }
 
@@ -77,7 +80,22 @@ class GourPillarsAPIImpl(
             ?.gameTask
             ?.secondsPassed
 
-    override fun getCurrentEvent(arenaName: String): GameEvents? = arenaManager.getArenaByName(arenaName)?.gameEvent
+    override fun getCurrentEvent(arenaName: String): String? = arenaManager.getArenaByName(arenaName)?.gameEvent
+
+    override fun getCurrentEventOfPlayer(player: Player): String? = arenaManager.getArenaByPlayer(player)?.gameEvent
+
+    override fun registerEvent(
+        owner: Plugin,
+        event: GameEventDefinition,
+    ): Boolean = eventRegistry.register(owner, event)
+
+    override fun unregisterEvent(eventId: String): Boolean = eventRegistry.unregister(eventId)
+
+    override fun unregisterEvents(owner: Plugin): Int = eventRegistry.unregisterAll(owner)
+
+    override fun getRegisteredEvents(): List<GameEventDefinition> = eventRegistry.definitions()
+
+    override fun getRegisteredEvent(eventId: String): GameEventDefinition? = eventRegistry.get(eventId)
 
     override fun getPlayerStatistics(playerName: String): CompletableFuture<PlayerStats?> = GourPillars.database.getStatistics(playerName)
 

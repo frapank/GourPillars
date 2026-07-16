@@ -61,11 +61,11 @@ class Arena(
     val spawnManager = GourPillars.spawnManager
     val lastDamagerMap = mutableMapOf<UUID, UUID>()
 
-    var gameEvent: GameEvents? = null
-    val noEventVote: ArrayList<Player> = ArrayList()
-    val knockbackVote: ArrayList<Player> = ArrayList()
-    val lavaEvent: ArrayList<Player> = ArrayList()
-    val borderEvent: ArrayList<Player> = ArrayList()
+    // Id of the registered game event active in the current match (see GameEventRegistry).
+    var gameEvent: String? = null
+
+    // Player UUID -> voted event id (GameEventRegistry.NO_EVENT_ID for a "no event" vote).
+    val eventVotes: MutableMap<UUID, String> = mutableMapOf()
     val dayVote: ArrayList<Player> = ArrayList()
     val nightVote: ArrayList<Player> = ArrayList()
 
@@ -191,10 +191,7 @@ class Arena(
         }
 
         // Clear Events vote
-        noEventVote.remove(player)
-        lavaEvent.remove(player)
-        knockbackVote.remove(player)
-        borderEvent.remove(player)
+        eventVotes.remove(player.uniqueId)
         dayVote.remove(player)
         nightVote.remove(player)
         inGamePlayer.remove(player)
