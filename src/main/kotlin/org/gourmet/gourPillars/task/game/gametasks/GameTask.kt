@@ -218,6 +218,10 @@ class GameTask(
         stopActiveEvent(winner)
         Bukkit.getPluginManager().callEvent(GourPillarsGameEndEvent(arena.name, winner))
 
+        // The match is over but the pillars are still there for a few seconds: let everyone hover
+        // instead of dropping off them. Taken back right before they are sent to the lobby.
+        arena.inGamePlayer.forEach { player -> Utils.setFlight(player, true) }
+
         // Arena reset
         object : BukkitRunnable() {
             override fun run() {
@@ -232,6 +236,7 @@ class GameTask(
 
                 // Teleport all play
                 arena.inGamePlayer.forEach { player ->
+                    Utils.setFlight(player, false)
                     GourPillars.spawnManager.teleportPlayerToSpawn(player)
                     GourPillars.lobbyScoreboardManager.setScoreboard(player)
                     player.inventory.clear()
