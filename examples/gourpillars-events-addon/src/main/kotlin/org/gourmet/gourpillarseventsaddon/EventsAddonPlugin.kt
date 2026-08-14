@@ -8,7 +8,7 @@ import org.gourmet.gourPillars.api.GourPillarsAPI
 import org.gourmet.gourPillars.api.event.GameEventDefinition
 
 /**
- * Game events for GourPillars: lava, knockback, border, meteors and low gravity,
+ * Game events for GourPillars: lava, knockback, border and meteors,
  * registered through the GourPillars event API. Each event can be disabled and
  * tuned from this plugin's config.yml.
  */
@@ -83,18 +83,6 @@ class EventsAddonPlugin : JavaPlugin() {
                     meteorsPerWave = config.getInt("meteors.meteors-per-wave", 2).coerceAtLeast(1),
                     explosionPower = config.getDouble("meteors.explosion-power", 1.5).toFloat().coerceIn(0f, 8f),
                     setFire = config.getBoolean("meteors.set-fire", false),
-                ),
-            )
-        }
-
-        if (config.getBoolean("low-gravity.enabled", true)) {
-            registerOrWarn(
-                api,
-                LowGravityGameEvent(
-                    displayName = displayName("low-gravity.name", "<aqua>Low gravity"),
-                    lore = lore("low-gravity.lore"),
-                    slot = config.getInt("low-gravity.slot", 9),
-                    jumpBoostLevel = config.getInt("low-gravity.jump-boost-level", 3).coerceIn(0, 10),
                 ),
             )
         }

@@ -221,4 +221,4 @@ Notes:
 - `registerEvent` returns `false` when another plugin already took the id, and throws `IllegalArgumentException` for malformed or reserved ids (`no-event`, `day-vote`, `night-vote`).
 - `displayName` and `voteItem` are read once, at registration. Changing them afterwards has no effect; unregister and re-register to update an event's look.
 
-A complete working addon providing five events (lava, knockback, border, meteors, low gravity), each tunable from its own `config.yml`, lives in [`examples/gourpillars-events-addon`](../examples/gourpillars-events-addon). Build it with `./gradlew :examples:gourpillars-events-addon:build` and drop the `-all.jar` next to GourPillars.
+A complete working addon providing four events (lava, knockback, border, meteors), each tunable from its own `config.yml`, lives in [`examples/gourpillars-events-addon`](../examples/gourpillars-events-addon). Build it with `./gradlew :examples:gourpillars-events-addon:build` and drop the `-all.jar` next to GourPillars.
