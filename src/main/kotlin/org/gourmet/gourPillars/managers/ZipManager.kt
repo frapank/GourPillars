@@ -8,6 +8,7 @@ import org.gourmet.gourPillars.other.Logger
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.IOException
 import java.nio.file.Files
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
@@ -41,8 +42,12 @@ class ZipManager {
 
         object : BukkitRunnable() {
             override fun run() {
-                worldFolder.deleteRecursively()
-                Thread.sleep(1000)
+                if (!deleteWorldFolder(worldFolder)) {
+                    Logger.warning(
+                        "Could not fully delete the folder of '$worldName' before restoring it: " +
+                            "the server is still holding some of its files, so the reset may be incomplete",
+                    )
+                }
 
                 ZipInputStream(FileInputStream(backupFile)).use { zipIn ->
                     var entry: ZipEntry? = zipIn.nextEntry
@@ -98,21 +103,103 @@ class ZipManager {
             return
         }
 
+        // Flush the world first, or the snapshot can miss what was just built in it.
+        if (Bukkit.isPrimaryThread()) Bukkit.getWorld(worldName)?.save()
+
         val backupFile = File(backupFolder, "$worldName-backup.zip")
-        if (backupFile.exists()) backupFile.delete()
+        val pendingFile = File(backupFolder, "$worldName-backup.zip.tmp")
 
-        ZipOutputStream(FileOutputStream(backupFile)).use { zipOut ->
-            Files.walk(worldFolder.toPath()).forEach { path ->
-                val file = path.toFile()
-                if (file.isDirectory) return@forEach
+        if (!zipFolder(worldFolder, pendingFile)) {
+            pendingFile.delete()
+            Logger.warning("Backup of $worldName failed, the previous one was left untouched")
+            return
+        }
 
-                val entryName = worldFolder.toPath().relativize(path).toString()
-                zipOut.putNextEntry(ZipEntry(entryName))
-                file.inputStream().use { it.copyTo(zipOut) }
-                zipOut.closeEntry()
-            }
+        if (backupFile.exists() && !backupFile.delete()) {
+            pendingFile.delete()
+            Logger.warning("Could not replace the existing backup of $worldName (is it open in another program?)")
+            return
+        }
+        if (!pendingFile.renameTo(backupFile)) {
+            pendingFile.delete()
+            Logger.warning("Could not put the new backup of $worldName in place")
+            return
         }
 
         Logger.info("Backup of $worldName saved to ${backupFile.absolutePath}")
+    }
+
+    /**
+     * Zips [sourceFolder] into [target], returning whether it worked.
+     *
+     * Files the server keeps locked are skipped instead of failing the whole backup: on Windows
+     * `session.lock` (and occasionally others) cannot be opened while the world is loaded, which
+     * used to abort the zip and leave the arena without a snapshot to reset from. Linux lets those
+     * same files be read, which is why the problem only ever showed up on Windows.
+     *
+     * The walk is closed explicitly for the same reason: a leaked directory stream keeps Windows
+     * handles on the world folder open, and the reset later fails to delete it.
+     */
+    internal fun zipFolder(
+        sourceFolder: File,
+        target: File,
+    ): Boolean {
+        val sourcePath = sourceFolder.toPath()
+        var skipped = 0
+
+        try {
+            ZipOutputStream(FileOutputStream(target)).use { zipOut ->
+                Files.walk(sourcePath).use { paths ->
+                    for (path in paths) {
+                        val file = path.toFile()
+                        if (file.isDirectory) continue
+                        if (file.name in LOCKED_FILE_NAMES) continue
+
+                        // Zip entries are '/'-separated by spec; Windows would otherwise write '\'.
+                        val entryName = sourcePath.relativize(path).toString().replace(File.separatorChar, '/')
+                        val input =
+                            try {
+                                file.inputStream()
+                            } catch (e: IOException) {
+                                skipped++
+                                Logger.warning("Skipping locked file '$entryName' in the backup: ${e.message}")
+                                continue
+                            }
+                        input.use {
+                            zipOut.putNextEntry(ZipEntry(entryName))
+                            it.copyTo(zipOut)
+                            zipOut.closeEntry()
+                        }
+                    }
+                }
+            }
+        } catch (e: IOException) {
+            Logger.warning("Failed to zip ${sourceFolder.name}: ${e.message}")
+            return false
+        }
+
+        if (skipped > 0) Logger.warning("$skipped file(s) were locked and left out of the backup of ${sourceFolder.name}")
+        return true
+    }
+
+    /**
+     * Deletes the world folder before the backup is unpacked over it. Windows releases the handles
+     * of a just-unloaded world lazily, so a single attempt can leave files behind (and the arena
+     * would keep whatever players built in it); retry a few times before giving up.
+     */
+    private fun deleteWorldFolder(folder: File): Boolean {
+        repeat(DELETE_ATTEMPTS) {
+            folder.deleteRecursively()
+            if (!folder.exists()) return true
+            Thread.sleep(DELETE_RETRY_MILLIS)
+        }
+        return !folder.exists()
+    }
+
+    private companion object {
+        /** Held open by the server for as long as the world is loaded; never worth backing up. */
+        val LOCKED_FILE_NAMES = setOf("session.lock")
+        const val DELETE_ATTEMPTS = 3
+        const val DELETE_RETRY_MILLIS = 500L
     }
 }
