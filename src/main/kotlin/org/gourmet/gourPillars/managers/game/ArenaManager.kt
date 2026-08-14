@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.gourmet.gourPillars.GourPillars
 import org.gourmet.gourPillars.managers.game.arena.Arena
+import org.gourmet.gourPillars.managers.game.arena.State
 import org.gourmet.gourPillars.other.Logger
 import org.gourmet.gourPillars.other.Region
 import java.io.File
@@ -16,11 +17,20 @@ import java.io.IOException
 import java.util.Collections
 import kotlin.random.Random
 
+/** Outcome of [ArenaManager.reloadArena], so callers can explain to the admin what happened. */
+enum class ArenaReloadResult {
+    RELOADED,
+    NOT_FOUND,
+    BUSY,
+    INVALID,
+}
+
 class ArenaManager {
+    // Only options whose default doesn't depend on the world: 'min-height'/'max-height' fall back to
+    // the world's own build limits at load time instead, so they are never written blindly into a file.
     private val arenaScalarDefaults: List<Pair<String, Any>> =
         listOf(
             "private-arena" to false,
-            "min-height" to 0,
             "min-players" to 2,
             "slow-falling-time" to 1,
             "spawn-height" to 0,
@@ -128,7 +138,10 @@ class ArenaManager {
             }
 
         val isPrivateArena = config.getBoolean("private-arena", false)
-        val minHeight = config.getInt("min-height", 0)
+        // Heights drive the void kill (min) and are handed to game events (max). A missing value falls
+        // back to the world's own limits: a hardcoded 0 would kill everyone in a world built below Y=0.
+        val minHeight = config.readHeight("min-height", world.minHeight, arenaName)
+        val maxHeight = config.readHeight("max-height", world.maxHeight, arenaName)
         val minPlayer = config.getInt("min-players", 2)
         val slowFalling = config.getInt("slow-falling-time", 1)
         val spawnHeight = config.getInt("spawn-height", 0)
@@ -167,7 +180,7 @@ class ArenaManager {
             slowFalling,
             spawnsList.size,
             minPlayer,
-            -1,
+            maxHeight,
             minHeight,
             regionLocOne,
             regionLocTwo,
@@ -176,6 +189,48 @@ class ArenaManager {
             spawnHeight,
         )
     }
+
+    private fun FileConfiguration.readHeight(
+        path: String,
+        fallback: Int,
+        arenaName: String,
+    ): Int {
+        if (!isSet(path)) {
+            Logger.warning("Missing arena option '$path' in arenas/$arenaName.yml, using the world limit: $fallback")
+            return fallback
+        }
+        return getInt(path)
+    }
+
+    /**
+     * Reloads a single arena from its file, so `/edit save` doesn't need a server restart.
+     * Refuses to swap an arena that is currently in use ([ArenaReloadResult.BUSY]): the running
+     * [Arena] instance holds the live player/spawn state of that match.
+     */
+    fun reloadArena(arenaName: String): ArenaReloadResult {
+        val file = File(arenasFolder, "$arenaName.yml")
+        if (!file.isFile) return ArenaReloadResult.NOT_FOUND
+
+        val existing = onlineArenas[arenaName]
+        if (existing != null && !existing.isIdle()) return ArenaReloadResult.BUSY
+
+        val arena =
+            try {
+                loadArenaFile(file, arenaName)
+            } catch (e: Exception) {
+                Logger.warning("Failed to reload arena '$arenaName': ${e.message}")
+                null
+            } ?: return ArenaReloadResult.INVALID
+
+        synchronized(onlineArenas) {
+            existing?.countdownTask?.cancel()
+            onlineArenas[arenaName] = arena
+        }
+        Logger.info("Arena '$arenaName' reloaded")
+        return ArenaReloadResult.RELOADED
+    }
+
+    private fun Arena.isIdle(): Boolean = gameState == State.WAITING && inGamePlayer.isEmpty() && spectators.isEmpty()
 
     private fun applyMissingArenaDefaults(
         config: FileConfiguration,
@@ -253,8 +308,10 @@ class ArenaManager {
         target.set("world", legacy.getString("world", "world"))
         target.set("private-arena", legacy.getBoolean("private-arena", false))
         target.set("min-players", legacy.getInt("min-players", 2))
-        target.set("max-height", legacy.getInt("max-height"))
-        target.set("min-height", legacy.getInt("min-height"))
+        // Copied only when actually present: writing a 0 for a height the legacy entry never had
+        // would turn "fall back to the world limit" into "kill everyone standing below Y=0".
+        if (legacy.isSet("max-height")) target.set("max-height", legacy.getInt("max-height"))
+        if (legacy.isSet("min-height")) target.set("min-height", legacy.getInt("min-height"))
         target.set("slow-falling-time", legacy.getInt("slow-falling-time", 1))
 
         copyLocation(legacy, "main-spawn", target, "main-spawn")

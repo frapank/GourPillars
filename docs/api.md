@@ -211,6 +211,8 @@ api.registerEvent(this, MeteorsEvent(this))
 
 `GameEventContext` is a read-only view of the arena the handler runs in: `arenaName`, `world`, `bounds` (the build region as block coordinates), `minHeight`/`maxHeight`, `spawnLocation`, `alivePlayers`/`playersInArena` (snapshots), `isMatchRunning`, and `broadcast(component)`.
 
+`minHeight` (the level below which a player is eliminated) and `maxHeight` come from the arena's own `min-height`/`max-height`; when a file doesn't set them they fall back to the world's build limits, so both are always usable values.
+
 Notes:
 
 - `createHandler` is only called for matches where your event was picked. For a passive event that just reacts to Bukkit events, return `GameEventHandler.EMPTY` and check `getCurrentEvent(arena)`/`ArenaInfo.currentEvent` in your listener.
