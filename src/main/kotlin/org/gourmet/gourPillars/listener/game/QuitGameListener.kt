@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
 import org.gourmet.gourPillars.GourPillars
+import org.gourmet.gourPillars.commands.EditCMD
 import org.gourmet.gourPillars.managers.game.ArenaManager
 import org.gourmet.gourPillars.managers.game.arena.Arena
 import org.gourmet.gourPillars.managers.game.arena.State
@@ -19,6 +20,9 @@ class QuitGameListener : Listener {
     @EventHandler
     fun quitListener(event: PlayerQuitEvent) {
         val player: Player = event.player
+
+        // An editing session left open would keep every arena locked for everyone else.
+        EditCMD.handleQuit(player)
 
         val spectatingArena = arenaManager.getArenaBySpectator(player)
         if (spectatingArena != null) {
