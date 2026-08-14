@@ -2,6 +2,7 @@ package org.gourmet.gourPillars.other
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -61,6 +62,27 @@ object Utils {
         player.clearActivePotionEffects()
         player.health = 20.0
         player.foodLevel = 20
+        // Creative/spectator get flight from their gamemode; taking it away there would fight the server.
+        if (player.gameMode != GameMode.CREATIVE && player.gameMode != GameMode.SPECTATOR) {
+            setFlight(player, false)
+        }
+    }
+
+    /**
+     * Grants or removes flight. Order matters: the server refuses `isFlying = true` while flight
+     * is not allowed yet, and leaving a player mid-air with flight revoked would drop them.
+     */
+    fun setFlight(
+        player: Player,
+        enabled: Boolean,
+    ) {
+        if (enabled) {
+            player.allowFlight = true
+            player.isFlying = true
+        } else {
+            player.isFlying = false
+            player.allowFlight = false
+        }
     }
 
     fun giveLobbyItems(player: Player) {
