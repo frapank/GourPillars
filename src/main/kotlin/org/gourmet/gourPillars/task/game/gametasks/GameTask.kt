@@ -240,9 +240,7 @@ class GameTask(
                 }
 
                 // Restore map pointer
-                arena.spawnMap.forEach { (location, _) ->
-                    arena.spawnMap[location] = null
-                }
+                arena.releaseAllSpawns()
 
                 arena.playedPlayerNames.clear()
                 arena.lastDamagerMap.clear()
