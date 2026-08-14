@@ -2,7 +2,7 @@
 
 ## Arenas
 
-Multi-arena system, each with its own region, spawns and player limit. Arenas live one-per-file under `arenas/<name>.yml`, built in-game with `/edit` — see [arenas.md](arenas.md). The editor draws the region, the height limits and the spawns with coloured particles (visible only to whoever is editing), keeps a live status in the action bar, fills in what you leave unset (the height limits come from the region you defined), refuses anything that would produce a broken arena, and loads the arena as soon as you save it, without a restart. Pillars collapse dynamically during the match, and random items/blocks are handed out to alive players on an interval.
+Multi-arena system, each with its own region, spawns and player limit. When a match ends, everyone still in the arena is given flight for the few seconds before they are sent back to the lobby, so nobody drops off a pillar during the celebration. Arenas live one-per-file under `arenas/<name>.yml`, built in-game with `/edit` — see [arenas.md](arenas.md). The editor draws the region, the height limits and the spawns with coloured particles (visible only to whoever is editing), keeps a live status in the action bar, fills in what you leave unset (the height limits come from the region you defined), refuses anything that would produce a broken arena, and loads the arena as soon as you save it, without a restart. Pillars collapse dynamically during the match, and random items/blocks are handed out to alive players on an interval.
 
 ## Game events
 
