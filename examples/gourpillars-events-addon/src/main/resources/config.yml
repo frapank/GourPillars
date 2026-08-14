@@ -1,5 +1,5 @@
-# GourPillarsEvents - game events for GourPillars (lava, knockback, border, meteors,
-# low gravity), registered through the GourPillars API.
+# GourPillarsEvents - game events for GourPillars (lava, knockback, border,
+# meteors), registered through the GourPillars API.
 #
 # "name" and "lore" are MiniMessage strings shown in the vote GUI, the selection
 # animation and chat messages. "slot" is the preferred slot in the vote GUI (falls
@@ -55,13 +55,3 @@ meteors:
   lore:
     - "<gray>Meteors rain"
     - "<gray>on the arena!"
-
-low-gravity:
-  enabled: true
-  slot: 9
-  # Jump boost level given to every player (0 keeps only the slow falling).
-  jump-boost-level: 3
-  name: "<aqua>Low gravity"
-  lore:
-    - "<gray>Float like on"
-    - "<gray>the moon!"
