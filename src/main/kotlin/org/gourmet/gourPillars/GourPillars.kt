@@ -14,7 +14,6 @@ import org.gourmet.gourPillars.commands.PartyCMD
 import org.gourmet.gourPillars.commands.SetSpawnCMD
 import org.gourmet.gourPillars.commands.SpecCMD
 import org.gourmet.gourPillars.commands.StatsCMD
-import org.gourmet.gourPillars.commands.TestCMD
 import org.gourmet.gourPillars.database.Database
 import org.gourmet.gourPillars.database.PlayerStats
 import org.gourmet.gourPillars.database.checkDatabase
@@ -152,7 +151,6 @@ open class GourPillars : JavaPlugin() {
         val lamp = BukkitLamp.builder(this).build()
         lamp.register(
             JoinerCMD,
-            TestCMD,
             PartyCMD,
             EditCMD,
             BuildCMD,
