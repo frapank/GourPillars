@@ -89,6 +89,12 @@ Without `loadArena`, `/edit startEditing` + `setName <existing>` overwrites that
 - `teleportToArena` — teleports you to the arena you are editing (its death spawn, or the first thing it has); `teleportToSpawn <number>` goes to a specific spawn.
 - `removeSpawn <number>` — removes a spawn.
 
+## World snapshot and reset
+
+Saving takes a zip snapshot of the arena's world under `backups/<world>-backup.zip`; after every match the world is unloaded, wiped and unpacked from that snapshot, so each game starts from the same map.
+
+Files the server keeps locked (`session.lock`) are left out of the snapshot instead of aborting it — on Windows they cannot be read at all while the world is loaded, which is why a `/edit saveArena` there used to end without a usable backup while the same thing worked on Linux. Any other file that can't be read is named in the console and skipped, the new zip only replaces the previous one once it is written in full, and the folder deletion done before restoring is retried a few times, since Windows releases the handles of a just-unloaded world lazily.
+
 ## Rules the editor enforces
 
 - An arena lives in exactly **one** world: any location set in a different world than the first one is refused, instead of being silently rewritten into the arena's world on load.
