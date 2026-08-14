@@ -78,6 +78,59 @@ class Arena(
 
     fun cageLocation(spawn: Location): Location = spawn.clone().add(0.0, spawnHeight.toDouble(), 0.0)
 
+    /**
+     * Reserves the first free spawn for [player] and returns the cage location to send them to,
+     * or null when every spawn is taken.
+     *
+     * Iterating over a snapshot of the keys matters: writing back into [spawnMap] while looping
+     * over it directly is only safe as long as the keys hash exactly as they did when inserted.
+     */
+    fun claimFreeSpawn(player: Player): Location? {
+        for (spawn in spawnMap.keys.toList()) {
+            if (spawnMap[spawn] == null) {
+                spawnMap[spawn] = player
+                return cageLocation(spawn)
+            }
+        }
+        return null
+    }
+
+    /** Frees whatever spawn [player] was holding, taking its glass cage down with it. */
+    fun releaseSpawn(player: Player) {
+        for (spawn in spawnMap.keys.toList()) {
+            if (spawnMap[spawn] == player) {
+                Utils.setGlass(false, cageLocation(spawn))
+                spawnMap[spawn] = null
+            }
+        }
+    }
+
+    fun releaseAllSpawns() {
+        for (spawn in spawnMap.keys.toList()) {
+            spawnMap[spawn] = null
+        }
+    }
+
+    /**
+     * Points the arena at the freshly (re)created [world] after a reset.
+     *
+     * The spawn keys are **rebuilt** rather than edited in place: [Location.hashCode] mixes in the
+     * world, so changing the world of a key that is already inside [spawnMap] leaves it in the
+     * wrong bucket — later writes then insert a duplicate instead of updating the entry, every
+     * player after the first gets handed the same "still free" spawn, and the whole match starts
+     * stacked on one pillar.
+     */
+    fun rebindToWorld(world: World) {
+        val spawns = spawnMap.keys.map { Location(world, it.x, it.y, it.z, it.yaw, it.pitch) }
+        spawnMap.clear()
+        spawns.forEach { spawnMap[it] = null }
+
+        spawnMainLocation.world = world
+        regionLocOne.world = world
+        regionLocTwo.world = world
+        region.world = world
+    }
+
     // Utils
     fun addPlayer(player: Player): ArenaJoinResult {
         if (GourPillars.arenaManager.isSpectating(player)) {
@@ -117,14 +170,9 @@ class Arena(
             )
 
             // Teleport and set glass pannel
-            for ((location, playerInSpawn) in spawnMap) {
-                if (playerInSpawn == null) {
-                    val cageLocation = cageLocation(location)
-                    Utils.setGlass(true, cageLocation)
-                    player.teleport(cageLocation)
-                    spawnMap[location] = player
-                    break
-                }
+            claimFreeSpawn(player)?.let { cageLocation ->
+                Utils.setGlass(true, cageLocation)
+                player.teleport(cageLocation)
             }
 
             // Start arena if player is enoght
@@ -183,12 +231,7 @@ class Arena(
 
     fun removePlayer(player: Player) {
         // Remove spawn and glass
-        spawnMap.forEach { (location, playerInSpawn) ->
-            if (playerInSpawn == player) {
-                Utils.setGlass(false, cageLocation(location))
-                spawnMap[location] = null
-            }
-        }
+        releaseSpawn(player)
 
         // Clear Events vote
         eventVotes.remove(player.uniqueId)
