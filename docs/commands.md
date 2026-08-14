@@ -42,6 +42,28 @@ When a party leader runs `/join <arena>` or `/joinrandom`, the whole party is on
 
 ## Edit commands
 
-Requires `gpillars.admin`. All commands below are `/edit <subcommand>`, used to build an arena — see [arenas.md](arenas.md) for the full walkthrough.
+Requires `gpillars.admin`. All commands below are `/edit <subcommand>`, used to build an arena — see [arenas.md](arenas.md) for the full walkthrough. `/edit` alone (or `/edit help`) lists them in game, and an action bar shows the state of the session while you build.
 
-`start`, `save`, `stop`, `name <name>`, `minplayers <min>`, `setMaxHeight`, `setMinHeight`, `setFallingTime <number>`, `setDeathSpawn`, `setRegionOne`, `setRegionTwo`, `spawn <number>`, `check`.
+Each subcommand says what it does; the short form in the last column is the same command, kept so older habits and guides keep working. Names are case-insensitive (`setspawn` works as well as `setSpawn`).
+
+| Subcommand | Description | Short form |
+|---|---|---|
+| `startEditing` | Start a new arena (switches you to creative) | `start` |
+| `loadArena <name>` | Open an existing arena for editing, values included | `load` |
+| `setName <name>` | Set the arena name (and its file name) | `name` |
+| `setSpawn <number>` | Add/move a player spawn where you stand | `spawn` |
+| `removeSpawn <number>` | Remove a spawn | `delSpawn` |
+| `listSpawns` | List every spawn with its coordinates | `spawns` |
+| `teleportToArena` | Teleport to the arena you are editing | `tp` |
+| `teleportToSpawn <number>` | Teleport to one of its spawns | `tp <number>` |
+| `setRegionOne`, `setRegionTwo` | The two opposite corners: they define the height limits too | `pos1`, `pos2` |
+| `setDeathSpawn` | Where eliminated players and spectators are sent | — |
+| `setMinPlayers <min>` | Players needed to start the countdown | `minplayers` |
+| `setSlowFalling <seconds>` | Slow falling given at the start of the match | `setFallingTime` |
+| `setSpawnHeight <blocks>` | Raise the glass cages above the spawns | — |
+| `setPrivate <true\|false>` | Hide the arena from joining players | `private` |
+| `showStatus` | Show what is set, what is defaulted and what is missing | `check` |
+| `toggleMarkers` | Turn the particle markers on and off | `view` |
+| `toggleAlignment` | Turn the block-centring / view-alignment assist on and off | `snap` |
+| `saveArena` | Write the file and load the arena, no restart needed | `save` |
+| `stopEditing` | Close the session without saving, restoring your gamemode and position | `stop` |
