@@ -41,6 +41,10 @@ See [docs/features.md](docs/features.md) for details on each.
 
 The shaded plugin jar is produced at `build/libs/GourPillars-<version>-all.jar`.
 
+## AI disclaimer
+
+The documentation for this project is AI assisted. As for the code, AI was used to identify some bugs. The project is not “vibe coded” in any way.
+
 ## License
 
 GPLv3, see [LICENSE](LICENSE).
